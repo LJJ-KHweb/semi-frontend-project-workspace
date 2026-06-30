@@ -27,13 +27,19 @@ const Header = () => {
 
       <Nav>
         {navs.map((n) => (
-          <NavLink onClick={() => navi(n.nav)}>{n.content}</NavLink>
+          <NavLink key={n.nav} onClick={() => navi(n.nav)}>
+            {n.content}
+          </NavLink>
         ))}
       </Nav>
 
       <Btns>
-        <LoginBtn type="button">로그인</LoginBtn>
-        <SignupBtn type="button">회원가입</SignupBtn>
+        <LoginBtn type="button" onClick={() => navi("/login")}>
+          로그인
+        </LoginBtn>
+        <SignupBtn type="button" onClick={() => navi("/signup")}>
+          회원가입
+        </SignupBtn>
       </Btns>
     </HeaderWrap>
   );

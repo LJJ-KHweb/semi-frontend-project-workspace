@@ -28,7 +28,6 @@ const Main = () => {
       try {
         const res = await axios.get("http://192.168.51.26/api/rasp");
         setRaspData(res.data.data);
-        // console.log(res.data.data);
       } catch (e) {
         console.log("조회 실패", e);
       }
@@ -55,10 +54,10 @@ const Main = () => {
             <LineChart data={raspData}>
               <CartesianGrid vertical={false} stroke={Theme.color.border} />
               <XAxis
-                dataKey="day"
+                dataKey="dayDate"
                 axisLine={false}
                 tickLine={false}
-                padding={{ left: 20, right: 20 }}
+                padding={{ left: 30, right: 30 }}
               />
               <Tooltip />
               <Legend />

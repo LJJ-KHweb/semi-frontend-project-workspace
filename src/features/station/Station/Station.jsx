@@ -79,7 +79,11 @@ const Map = () => {
   const positions = useMemo(
     () =>
       stations.map((s) => ({
-        title: s.stationName,
+        stationNo: s.stationNo,
+        name: s.stationName,
+        region: s.region,
+        address: s.address,
+        chargers: s.chargerCount,
         lat: s.lat,
         lng: s.lng,
       })),

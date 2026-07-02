@@ -31,7 +31,7 @@ export const TitlePoint = styled.span`
 `;
 
 export const ChartCard = styled.div`
-  width: 480px;
+  width: 600px;
 
   background: ${Theme.color.headerBg};
   border-radius: ${Theme.radius.lg};

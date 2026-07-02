@@ -169,7 +169,7 @@ const Map = () => {
               )}
               {groupStart + PAGE_GROUP_SIZE < totalPages && (
                 <PageButton
-                  onClick={() => setPage(groupStart + 5)}
+                  onClick={() => setPage(groupStart + PAGE_GROUP_SIZE)}
                   data-active={true}
                 >
                   ··

@@ -1,4 +1,4 @@
-export const theme = {
+export const Theme = {
   color: {
     // --- 포인트 칼라 ---
     point: "#0EA5E9", // 포인트 컬러
@@ -9,6 +9,7 @@ export const theme = {
     // --- 배경 ---
     bg: "#F8F9FA", // 배경색
     bgSoft: "#F1F5F9", // 구역 구분색
+    bgDark: "#E2E8F0", // 클릭
 
     // --- 해더 ---
     headerBg: "#FFFFFF",

@@ -1,38 +1,43 @@
 import { Route, Routes } from "react-router-dom";
-import Header from "./components/layout/Header/Header";
 import { ErrMsg, Spacer, ErrSpace } from "./App.styles";
-import Footer from "./components/layout/Footer/Footer";
+import DefaultLayout from "./components/layout/DefaultLayout";
+import AdminLayout from "./features/admin/AdminLayout/AdminLayout";
 import Main from "./components/pages/Main/Main";
-import Login from "./features/user/Login";
-import SignUp from "./features/user/SignUp";
-import Board from "./board/Board";
+import Board from "./features/boards/board/Board";
+import Map from "./features/station/Station/Station";
+import Admin from "./features/admin/Admin/Admin";
 
 const App = () => {
   return (
-    <>
-      <Header />
-      <Routes>
+    <Routes>
+      <Route element={<DefaultLayout />}>
         <Route path="/" element={<Main />} />
-
-        <Route path="/login" element={<Login />} />
-        <Route path="/signup" element={<SignUp />} />
-
-        <Route path="/chargeStations" element={<Spacer />} />
+        <Route path="/chargeStations" element={<Map />} />
         <Route path="/guide" element={<Spacer />} />
         <Route path="/notices" element={<Spacer />} />
         <Route path="/boards" element={<Board />} />
         <Route path="/ranks" element={<Spacer />} />
-        <Route
-          path="/*"
-          element={
-            <ErrSpace>
-              <ErrMsg>없는 페이지 입니다.</ErrMsg>
-            </ErrSpace>
-          }
-        />
-      </Routes>
-      <Footer />
-    </>
+        <Route path="/*" element={<ErrPage />} />
+      </Route>
+
+      <Route element={<AdminLayout />}>
+        <Route path="/admin" element={<Admin />} />
+        <Route path="/admin/users" element={<Spacer />} />
+        <Route path="/admin/stations" element={<Spacer />} />
+        <Route path="/admin/chargers" element={<Spacer />} />
+        <Route path="/admin/requires" element={<Spacer />} />
+        <Route path="/admin/notices" element={<Spacer />} />
+        <Route path="/admin/boards" element={<Spacer />} />
+      </Route>
+    </Routes>
+  );
+};
+
+const ErrPage = () => {
+  return (
+    <ErrSpace>
+      <ErrMsg>없는 페이지 입니다.</ErrMsg>
+    </ErrSpace>
   );
 };
 

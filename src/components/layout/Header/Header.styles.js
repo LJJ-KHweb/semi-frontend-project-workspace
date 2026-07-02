@@ -1,5 +1,6 @@
 import styled from "styled-components";
-import { theme } from "../../../styles/theme";
+
+import { Theme } from "../../../styles/Theme";
 
 export const HeaderWrap = styled.header`
   display: flex;
@@ -7,14 +8,16 @@ export const HeaderWrap = styled.header`
   justify-content: space-between;
   height: 64px;
   padding: 0 24px;
-  background: ${theme.color.headerBg};
-  border-bottom: 1px solid ${theme.color.border};
+
+  background: ${Theme.color.headerBg};
+  border-bottom: 1px solid ${Theme.color.border};
 `;
 
 export const Logo = styled.h1`
   font-size: 30px;
   font-weight: 800;
-  color: ${theme.color.point};
+
+  color: ${Theme.color.point};
   cursor: pointer;
 `;
 
@@ -26,10 +29,11 @@ export const Nav = styled.nav`
 
 export const NavLink = styled.p`
   font-size: 15px;
-  color: ${theme.color.headerText};
+
+  color: ${Theme.color.headerText};
   cursor: pointer;
   &:hover {
-    color: ${theme.color.point};
+    color: ${Theme.color.point};
   }
 `;
 
@@ -41,34 +45,38 @@ export const Btns = styled.div`
 
 export const LoginBtn = styled.button`
   padding: 8px 16px;
-  border-radius: ${theme.radius.sm};
-  border: 1px solid ${theme.color.point};
+
+  border-radius: ${Theme.radius.sm};
+  border: 1px solid ${Theme.color.point};
   background: transparent;
-  color: ${theme.color.point};
+  color: ${Theme.color.point};
+
   font-size: 14px;
   font-weight: 500;
   cursor: pointer;
 
   &:hover {
-    background: ${theme.color.pointSoft};
+    background: ${Theme.color.pointSoft};
   }
 `;
 
 export const SignupBtn = styled.button`
   padding: 8px 16px;
-  border-radius: ${theme.radius.sm};
+
+  border-radius: ${Theme.radius.sm};
   border: none;
-  background: ${theme.color.point};
+  background: ${Theme.color.point};
+
   color: #ffffff;
   font-size: 14px;
   font-weight: 500;
   cursor: pointer;
 
   &:hover {
-    background: ${theme.color.pointHover};
+    background: ${Theme.color.pointHover};
   }
 
   &:active {
-    background: ${theme.color.pointDark};
+    background: ${Theme.color.pointDark};
   }
 `;

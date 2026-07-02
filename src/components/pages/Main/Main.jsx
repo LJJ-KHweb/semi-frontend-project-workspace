@@ -8,7 +8,7 @@ import {
   XAxis,
 } from "recharts";
 import { Spacer } from "../../../App.styles";
-import { theme } from "../../../styles/theme";
+import { Theme } from "../../../styles/Theme";
 import {
   ChartCard,
   ChartTitle,
@@ -17,18 +17,28 @@ import {
   Title,
   TitlePoint,
 } from "./Main.styles";
-
-const data = [
-  { day: "월", km: 60, co2Kg: 24 },
-  { day: "화", km: 75, co2Kg: 30 },
-  { day: "수", km: 68, co2Kg: 27 },
-  { day: "목", km: 82, co2Kg: 33 },
-  { day: "금", km: 90, co2Kg: 36 },
-  { day: "토", km: 70, co2Kg: 28 },
-  { day: "일", km: 55, co2Kg: 22 },
-];
+import axios from "axios";
+import { useEffect, useState } from "react";
 
 const Main = () => {
+  const [raspData, setRaspData] = useState([]);
+
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const res = await axios.get("http://192.168.51.26/api/rasp");
+        setRaspData(res.data.data);
+        // console.log(res.data.data);
+      } catch (e) {
+        console.log("조회 실패", e);
+      }
+    };
+
+    fetchData();
+    const interval = setInterval(fetchData, 5000);
+    return () => clearInterval(interval);
+  }, []);
+
   return (
     <Spacer>
       <Wrap>
@@ -42,14 +52,19 @@ const Main = () => {
         <ChartCard>
           <ChartTitle>이번주 통계</ChartTitle>
           <ResponsiveContainer width="100%" height={240}>
-            <LineChart data={data}>
-              <CartesianGrid vertical={false} stroke={theme.color.border} />
-              <XAxis dataKey="day" axisLine={false} tickLine={false} />
+            <LineChart data={raspData}>
+              <CartesianGrid vertical={false} stroke={Theme.color.border} />
+              <XAxis
+                dataKey="day"
+                axisLine={false}
+                tickLine={false}
+                padding={{ left: 20, right: 20 }}
+              />
               <Tooltip />
               <Legend />
               <Line
                 type="monotone"
-                dataKey="km"
+                dataKey="distanceSum"
                 name="km"
                 stroke="#EC4899"
                 strokeWidth={2}
@@ -57,8 +72,8 @@ const Main = () => {
               />
               <Line
                 type="monotone"
-                dataKey="co2Kg"
-                name="co2kg"
+                dataKey="carbonReduction"
+                name="kg"
                 stroke="#6366F1"
                 strokeWidth={2}
                 dot={{ r: 4 }}

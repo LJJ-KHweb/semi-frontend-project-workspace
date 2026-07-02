@@ -7,6 +7,7 @@ import Board from "./features/boards/board/Board";
 import Map from "./features/station/Station/Station";
 import Admin from "./features/admin/Admin/Admin";
 import StationDetail from "./features/station/Station/StationDetail";
+import AdminStations from "./features/admin/AdminStations/AdminStations";
 
 const App = () => {
   return (
@@ -25,7 +26,7 @@ const App = () => {
       <Route element={<AdminLayout />}>
         <Route path="/admin" element={<Admin />} />
         <Route path="/admin/users" element={<Spacer />} />
-        <Route path="/admin/stations" element={<Spacer />} />
+        <Route path="/admin/stations" element={<AdminStations />} />
         <Route path="/admin/chargers" element={<Spacer />} />
         <Route path="/admin/requires" element={<Spacer />} />
         <Route path="/admin/notices" element={<Spacer />} />

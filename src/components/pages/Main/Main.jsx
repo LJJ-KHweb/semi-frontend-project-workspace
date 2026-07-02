@@ -20,16 +20,6 @@ import {
 import axios from "axios";
 import { useEffect, useState } from "react";
 
-// const data = [
-//   { day: "월", km: 60, kg: 24 },
-//   { day: "화", km: 75, kg: 30 },
-//   { day: "수", km: 68, kg: 27 },
-//   { day: "목", km: 82, kg: 33 },
-//   { day: "금", km: 90, kg: 36 },
-//   { day: "토", km: 70, kg: 28 },
-//   { day: "일", km: 55, kg: 22 },
-// ];
-
 const Main = () => {
   const [raspData, setRaspData] = useState([]);
 
@@ -38,7 +28,7 @@ const Main = () => {
       try {
         const res = await axios.get("http://192.168.51.26/api/rasp");
         setRaspData(res.data.data);
-        console.log(res.data.data);
+        // console.log(res.data.data);
       } catch (e) {
         console.log("조회 실패", e);
       }

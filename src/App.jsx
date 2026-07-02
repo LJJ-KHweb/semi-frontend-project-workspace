@@ -6,6 +6,7 @@ import Main from "./components/pages/Main/Main";
 import Board from "./features/boards/board/Board";
 import Map from "./features/station/Station/Station";
 import Admin from "./features/admin/Admin/Admin";
+import StationDetail from "./features/station/Station/StationDetail";
 
 const App = () => {
   return (
@@ -13,6 +14,7 @@ const App = () => {
       <Route element={<DefaultLayout />}>
         <Route path="/" element={<Main />} />
         <Route path="/chargeStations" element={<Map />} />
+        <Route path="/chargeStations/:stationNo" element={<StationDetail />} />
         <Route path="/guide" element={<Spacer />} />
         <Route path="/notices" element={<Spacer />} />
         <Route path="/boards" element={<Board />} />

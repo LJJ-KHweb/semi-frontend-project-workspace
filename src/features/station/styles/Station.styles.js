@@ -166,3 +166,104 @@ export const ErrorMsg = styled.p`
   padding: 24px;
   color: #64748b;
 `;
+
+export const DetailCard = styled.div`
+  margin: auto;
+  width: 100%;
+  height: 85%;
+  background: ${Theme.color.bg};
+  border: 1px solid ${Theme.color.border};
+  border-radius: ${Theme.radius.lg};
+`;
+
+export const DetailTitle = styled.h2`
+  text-align: center;
+  font-size: 30px;
+  color: ${Theme.color.point};
+`;
+
+export const DetailWrap = styled.div`
+  margin: auto;
+  width: 100%;
+  height: 80%;
+  display: flex;
+  justify-content: space-between;
+`;
+
+export const DetailContentWrap = styled.div`
+  width: 30%;
+  height: 100%;
+  margin-left: 10px;
+  display: flex;
+  flex-direction: column;
+  gap: 120px;
+  background: ${Theme.color.bgSoft};
+  border-radius: ${Theme.radius.md};
+  border: 1px solid ${Theme.color.border};
+`;
+
+export const DetailContent = styled.h3`
+  margin: 0;
+  font-size: 22px;
+  font-weight: 600;
+  color: ${Theme.color.text};
+  margin-left: 35px;
+
+  &[data-type="sm"] {
+    margin-left: 35px;
+    font-size: 14px;
+    font-weigth: 300;
+  }
+
+  &[data-type="charger"] {
+    font-size: 18px;
+    color: ${Theme.color.success};
+  }
+`;
+
+export const DetailField = styled.div`
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+`;
+
+export const DetailGap = styled.div`
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+`;
+
+export const DetailTitleGap = styled.div`
+  margin-top: 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+`;
+
+export const DetailAddress = styled.div`
+  margin: auto;
+  margin-bottom: 10px;
+  padding: 10px;
+  width: 80%;
+  min-height: 48px;
+  background: ${Theme.color.headerBg};
+  border: 1px solid ${Theme.color.border};
+  border-radius: ${Theme.radius.md};
+`;
+
+export const DetailDesc = styled.div`
+  margin: auto;
+  padding: 10px;
+  width: 80%;
+  min-height: 140px;
+  background: ${Theme.color.headerBg};
+  border: 1px solid ${Theme.color.border};
+  border-radius: ${Theme.radius.md};
+`;
+
+export const DetailMap = styled.div`
+  width: 65%;
+  height: 100%;
+  border-radius: ${Theme.radius.md};
+  border: 1px solid ${Theme.color.border};
+`;

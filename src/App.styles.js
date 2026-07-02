@@ -1,5 +1,6 @@
 import styled from "styled-components";
-import { Theme } from "./styles/Theme";
+
+import { theme } from "./styles/theme";
 
 export const Spacer = styled.div`
   flex: 1;
@@ -14,5 +15,6 @@ export const ErrSpace = styled(Spacer)`
 export const ErrMsg = styled.h1`
   font-size: 50px;
   font-weight: 700;
-  color: ${Theme.color.danger};
+
+  color: ${theme.color.danger};
 `;

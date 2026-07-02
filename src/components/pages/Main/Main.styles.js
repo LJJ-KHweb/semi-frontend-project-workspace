@@ -1,5 +1,6 @@
 import styled from "styled-components";
-import { Theme } from "../../../styles/Theme";
+
+import { theme } from "../../../styles/theme";
 
 export const Wrap = styled.div`
   display: flex;
@@ -21,23 +22,26 @@ export const Title = styled.h1`
   margin-bottom: 300px;
   font-size: 50px;
   font-weight: 700;
-  color: ${Theme.color.text};
+
+  color: ${theme.color.text};
 `;
 
 export const TitlePoint = styled.span`
-  color: ${Theme.color.point};
+  color: ${theme.color.point};
 `;
 
 export const ChartCard = styled.div`
   width: 480px;
-  background: ${Theme.color.headerBg};
-  border-radius: ${Theme.radius.lg};
-  box-shadow: ${Theme.shadow.sm};
+
+  background: ${theme.color.headerBg};
+  border-radius: ${theme.radius.lg};
+  box-shadow: ${theme.shadow.sm};
   padding: 24px;
 `;
 
 export const ChartTitle = styled.p`
   font-size: 16px;
   font-weight: 600;
-  color: ${Theme.color.point};
+
+  color: ${theme.color.point};
 `;

@@ -34,8 +34,12 @@ const Header = () => {
       </Nav>
 
       <Btns>
-        <LoginBtn type="button">로그인</LoginBtn>
-        <SignupBtn type="button">회원가입</SignupBtn>
+        <LoginBtn type="button" onClick={() => navi("/login")}>
+          로그인
+        </LoginBtn>
+        <SignupBtn type="button" onClick={() => navi("/signup")}>
+          회원가입
+        </SignupBtn>
       </Btns>
     </HeaderWrap>
   );

@@ -8,6 +8,8 @@ import Map from "./features/station/Station/Station";
 import Admin from "./features/admin/Admin/Admin";
 import StationDetail from "./features/station/Station/StationDetail";
 import AdminStations from "./features/admin/AdminStations/AdminStations";
+import Login from "./features/user/Login";
+import SignUp from "./features/user/SignUp";
 
 const App = () => {
   return (
@@ -20,6 +22,9 @@ const App = () => {
         <Route path="/notices" element={<Spacer />} />
         <Route path="/boards" element={<Board />} />
         <Route path="/ranks" element={<Spacer />} />
+        <Route path="/login" element={<Login />} />
+        <Route path="/signup" element={<SignUp />} />
+        <Route path="/mypage" element={<Spacer />} />
         <Route path="/*" element={<ErrPage />} />
       </Route>
 

@@ -7,6 +7,7 @@ import {
   PageTitle,
   LogoutBtn,
 } from "./AdminLayout.styles";
+import { useAuth } from "../../../context/AuthContext";
 
 const pageTitles = {
   "/admin": "대시보드",
@@ -22,6 +23,12 @@ const AdminLayout = () => {
   const { pathname } = useLocation();
   const navi = useNavigate();
   const title = pageTitles[pathname] ?? "관리자";
+  const { logout } = useAuth();
+
+  const adminLogout = () => {
+    logout();
+    navi("/");
+  };
 
   return (
     <AdminWrap>
@@ -29,7 +36,7 @@ const AdminLayout = () => {
       <MainArea>
         <TopBar>
           <PageTitle>{title}</PageTitle>
-          <LogoutBtn type="button" onClick={() => navi("/")}>
+          <LogoutBtn type="button" onClick={adminLogout}>
             로그아웃
           </LogoutBtn>
         </TopBar>

@@ -94,3 +94,21 @@ export const NextButton = styled.button`
     background: ${Theme.color.pointDark};
   }
 `;
+
+export const StatusBadge = styled.span`
+  display: inline-block;
+  padding: 2px 10px;
+  border-radius: ${Theme.radius.sm};
+  font-size: 12px;
+  font-weight: 600;
+
+  &[data-status="Y"] {
+    background: ${Theme.color.successSoft};
+    color: ${Theme.color.success};
+  }
+
+  &[data-status="N"] {
+    background: ${Theme.color.dangerSoft};
+    color: ${Theme.color.danger};
+  }
+`;

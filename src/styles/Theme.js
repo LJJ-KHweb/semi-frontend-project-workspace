@@ -35,6 +35,8 @@ export const Theme = {
     // --- 경고색
     danger: "#DC2626", // 경고, 실패
     success: "#16A34A", // 성공
+    dangerSoft: "#FEE2E2",
+    successSoft: "#DCFCE7",
   },
 
   // --- 모서리 각 ---

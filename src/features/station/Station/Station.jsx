@@ -17,6 +17,7 @@ import {
   ErrorMsg,
 } from "../styles/Station.styles";
 import MapApi from "../MapApi/MapApi";
+import api from "../../../api/axios";
 
 const DISTANCES = [1, 5, 10, 20];
 // 한 번에 보여질 페이지 버튼 개수
@@ -47,7 +48,7 @@ const Map = () => {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const res = await axios.get("http://localhost/api/chargeStations", {
+        const res = await api.get("/chargeStations", {
           params: {
             page: page + 1,
             lat: coords.lat,

@@ -29,7 +29,7 @@ const AdminStations = () => {
     const fetchData = async () => {
       try {
         // 어드민 뒷단 끝내고 수정 해야함
-        const res = await api.get("http://localhost/api/admin/chargeStations", {
+        const res = await api.get("/admin/chargeStations", {
           params: {
             page: page + 1,
             size: pages.size,

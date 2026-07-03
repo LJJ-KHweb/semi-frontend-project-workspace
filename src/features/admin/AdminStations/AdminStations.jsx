@@ -11,36 +11,28 @@ import {
   TableHead,
   TableHeaderCell,
   TableRow,
+  StatusBadge,
 } from "./AdminStations.styles";
+import { useAuth } from "../../../context/AuthContext";
+import api from "../../../api/axios";
 
 const PAGE_GROUP_SIZE = 5;
 
 const AdminStations = () => {
-  const [coords, setCoords] = useState({ lat: 37.5665, lng: 126.978 });
   const [stations, setStations] = useState([]);
   const [page, setPage] = useState(0);
   // 뒷단에서 어드민은 size 늘려줘야함
-  const [pages, setPages] = useState({ size: 3, boardCounts: 0 });
+  const [pages, setPages] = useState({ size: 10, boardCounts: 0 });
   const [error, setError] = useState(null);
-
-  useEffect(() => {
-    navigator.geolocation.getCurrentPosition(
-      (pos) =>
-        setCoords({ lat: pos.coords.latitude, lng: pos.coords.longitude }),
-      (err) => console.log("위치 조회 실패", err),
-    );
-  }, []);
 
   useEffect(() => {
     const fetchData = async () => {
       try {
         // 어드민 뒷단 끝내고 수정 해야함
-        const res = await axios.get("http://localhost/api/chargeStations", {
+        const res = await api.get("http://localhost/api/admin/chargeStations", {
           params: {
             page: page + 1,
-            lat: coords.lat,
-            lng: coords.lng,
-            dist: 100000,
+            size: pages.size,
           },
         });
         // console.log(res.data.data.stations);
@@ -52,7 +44,7 @@ const AdminStations = () => {
     };
 
     fetchData();
-  }, [page, coords]);
+  }, [page]);
 
   const totalPages = Math.ceil(pages.boardCounts / pages.size);
   const currentGroup = Math.floor(page / PAGE_GROUP_SIZE);
@@ -74,7 +66,11 @@ const AdminStations = () => {
                 <TableHeaderCell>충전소명</TableHeaderCell>
                 <TableHeaderCell>지역</TableHeaderCell>
                 <TableHeaderCell>주소</TableHeaderCell>
+                {/*추후에 상태 누르면 정렬 되게*/}
+                <TableHeaderCell>상태</TableHeaderCell>
                 <TableHeaderCell>충전기 수</TableHeaderCell>
+                <TableHeaderCell>고장난 충전기 수</TableHeaderCell>
+                <TableHeaderCell>등록일</TableHeaderCell>
               </TableRow>
             </TableHead>
             <tbody>
@@ -84,7 +80,16 @@ const AdminStations = () => {
                   <TableCell>{s.stationName}</TableCell>
                   <TableCell>{s.region}</TableCell>
                   <TableCell>{s.address}</TableCell>
+                  <TableCell>
+                    {s.status === "Y" ? (
+                      <StatusBadge data-status="Y">정상 운영</StatusBadge>
+                    ) : (
+                      <StatusBadge data-status="N">운영 중지</StatusBadge>
+                    )}
+                  </TableCell>
                   <TableCell>{s.chargerCount}</TableCell>
+                  <TableCell>{s.unableChargerCount}</TableCell>
+                  <TableCell>{s.createDate}</TableCell>
                 </TableRow>
               ))}
             </tbody>

@@ -2,6 +2,17 @@ import axios from "axios";
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { useAuth } from "../../context/AuthContext";
+import {
+  AuthWrapper,
+  AuthCard,
+  AuthTitle,
+  AuthSubTitle,
+  InsertForm,
+  FieldGroup,
+  FieldLabel,
+  InputBox,
+  SubmitButton,
+} from "./Auth.styles";
 
 const Login = () => {
   const [userId, setUserId] = useState("");
@@ -9,7 +20,8 @@ const Login = () => {
   const { login } = useAuth();
   const navi = useNavigate();
 
-  const onSubmit = () => {
+  const onSubmit = (e) => {
+    e.preventDefault();
     axios
       .post("http://192.168.51.4/api/auth/login", {
         userId: userId,
@@ -26,25 +38,31 @@ const Login = () => {
       .catch((err) => console.log(err.response));
   };
   return (
-    <>
-      ID
-      <input
-        type="text"
-        onChange={(e) => {
-          //console.log(e.target.value);
-          setUserId(e.target.value);
-        }}
-      />
-      PASSWORD
-      <input
-        type="text"
-        onChange={(e) => {
-          //console.log(e.target.value);
-          setUserPwd(e.target.value);
-        }}
-      />
-      <button onClick={onSubmit}>로그인</button>
-    </>
+    <AuthWrapper>
+      <AuthCard>
+        <AuthTitle>로그인</AuthTitle>
+        <AuthSubTitle>아이디와 비밀번호를 입력해주세요</AuthSubTitle>
+        <InsertForm onSubmit={onSubmit}>
+          <FieldGroup>
+            <FieldLabel>ID</FieldLabel>
+            <InputBox
+              type="text"
+              placeholder="아이디를 입력하세요"
+              onChange={(e) => setUserId(e.target.value)}
+            />
+          </FieldGroup>
+          <FieldGroup>
+            <FieldLabel>PASSWORD</FieldLabel>
+            <InputBox
+              type="password"
+              placeholder="비밀번호를 입력하세요"
+              onChange={(e) => setUserPwd(e.target.value)}
+            />
+          </FieldGroup>
+          <SubmitButton type="submit">로그인</SubmitButton>
+        </InsertForm>
+      </AuthCard>
+    </AuthWrapper>
   );
 };
 

@@ -63,65 +63,69 @@ const Guide = () => {
   const navi = useNavigate();
 
   return (
-    <Spacer>
-      <Wrap>
-        <TopBar>
-          <Title>
-            <TitlePoint>공유전기차</TitlePoint> 이용방법
-          </Title>
-          <BackButton type="button" onClick={() => navi(-1)}>
-            돌아가기
-          </BackButton>
-        </TopBar>
+    <>
+      <Spacer>
+        <Wrap>
+          <TopBar>
+            <Title>
+              <TitlePoint>공유전기차</TitlePoint> 이용방법
+            </Title>
+            <BackButton type="button" onClick={() => navi(-1)}>
+              돌아가기
+            </BackButton>
+          </TopBar>
 
-        <StepsRow>
-          {steps.map((step, i) => (
-            <Fragment key={step.no}>
-              <StepCard>
-                <StepBadge>{step.no}</StepBadge>
-                <StepIcon>{step.icon}</StepIcon>
-                <StepTitle>{step.title}</StepTitle>
-                {step.tag && (
-                  <StepTag data-required={!!step.required}>{step.tag}</StepTag>
-                )}
-                <StepDesc>
-                  {step.desc.split("\n").map((line, idx) => (
-                    <span key={idx}>
-                      {line}
-                      <br />
-                    </span>
-                  ))}
-                </StepDesc>
-              </StepCard>
-              {i < steps.length - 1 && <Arrow>➜</Arrow>}
-            </Fragment>
-          ))}
-        </StepsRow>
+          <StepsRow>
+            {steps.map((step, i) => (
+              <Fragment key={step.no}>
+                <StepCard>
+                  <StepBadge>{step.no}</StepBadge>
+                  <StepIcon>{step.icon}</StepIcon>
+                  <StepTitle>{step.title}</StepTitle>
+                  {step.tag && (
+                    <StepTag data-required={!!step.required}>
+                      {step.tag}
+                    </StepTag>
+                  )}
+                  <StepDesc>
+                    {step.desc.split("\n").map((line, idx) => (
+                      <span key={idx}>
+                        {line}
+                        <br />
+                      </span>
+                    ))}
+                  </StepDesc>
+                </StepCard>
+                {i < steps.length - 1 && <Arrow>➜</Arrow>}
+              </Fragment>
+            ))}
+          </StepsRow>
 
-        <MileageSection>
-          <MileageTitle>마일리지 적립 안내</MileageTitle>
-          <MileageTable>
-            <thead>
-              <tr>
-                <MileageHeadCell>적립 조건</MileageHeadCell>
-                <MileageHeadCell>적립 마일리지</MileageHeadCell>
-              </tr>
-            </thead>
-            <tbody>
-              {mileageRows.map((row) => (
-                <tr key={row.desc}>
-                  <MileageCell>{row.desc}</MileageCell>
-                  <MileageCell>{row.point}</MileageCell>
+          <MileageSection>
+            <MileageTitle>마일리지 적립 안내</MileageTitle>
+            <MileageTable>
+              <thead>
+                <tr>
+                  <MileageHeadCell>적립 조건</MileageHeadCell>
+                  <MileageHeadCell>적립 마일리지</MileageHeadCell>
                 </tr>
-              ))}
-            </tbody>
-          </MileageTable>
-          <MileageNote>
-            마일리지는 로그인 후 충전을 이용해야 적립됩니다.
-          </MileageNote>
-        </MileageSection>
-      </Wrap>
-    </Spacer>
+              </thead>
+              <tbody>
+                {mileageRows.map((row) => (
+                  <tr key={row.desc}>
+                    <MileageCell>{row.desc}</MileageCell>
+                    <MileageCell>{row.point}</MileageCell>
+                  </tr>
+                ))}
+              </tbody>
+            </MileageTable>
+            <MileageNote>
+              마일리지는 로그인 후 충전을 이용해야 적립됩니다.
+            </MileageNote>
+          </MileageSection>
+        </Wrap>
+      </Spacer>
+    </>
   );
 };
 

@@ -3,6 +3,13 @@ import { Theme } from "../../../styles/Theme";
 
 export const AdminStationsWrap = styled.div`
   padding: 24px;
+  display: flex;
+  flex-direction: column;
+`;
+
+export const Gapper = styled.div`
+  width: 100%;
+  height: 10%;
 `;
 
 export const StationTable = styled.table`

@@ -3,7 +3,9 @@ import { ErrMsg, Spacer, ErrSpace } from "./App.styles";
 import DefaultLayout from "./components/layout/DefaultLayout";
 import AdminLayout from "./features/admin/AdminLayout/AdminLayout";
 import Main from "./components/pages/Main/Main";
-import Board from "./features/boards/board/Board";
+import Board from "./features/boards/Board/Board";
+import Notice from "./features/boards/Notice/Notice";
+import Guide from "./components/pages/Guide/Guide";
 import Map from "./features/station/Station/Station";
 import Admin from "./features/admin/Admin/Admin";
 import StationDetail from "./features/station/Station/StationDetail";
@@ -18,8 +20,8 @@ const App = () => {
         <Route path="/" element={<Main />} />
         <Route path="/chargeStations" element={<Map />} />
         <Route path="/chargeStations/:stationNo" element={<StationDetail />} />
-        <Route path="/guide" element={<Spacer />} />
-        <Route path="/notices" element={<Spacer />} />
+        <Route path="/guide" element={<Guide />} />
+        <Route path="/notices" element={<Notice />} />
         <Route path="/boards" element={<Board />} />
         <Route path="/ranks" element={<Spacer />} />
         <Route path="/login" element={<Login />} />

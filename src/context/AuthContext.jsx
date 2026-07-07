@@ -32,7 +32,6 @@ export function AuthProvider({ children }) {
   };
 
   const logout = () => {
-    console.log(localStorage.getItem("refreshToken"));
     api
       .delete("/auth/logout", {
         data: {

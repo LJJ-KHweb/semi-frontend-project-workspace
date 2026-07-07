@@ -12,6 +12,7 @@ import StationDetail from "./features/station/Station/StationDetail";
 import AdminStations from "./features/admin/AdminStations/AdminStations";
 import Login from "./features/user/Login";
 import SignUp from "./features/user/SignUp";
+import MyPage from "./features/user/MyPage";
 
 const App = () => {
   return (
@@ -26,7 +27,7 @@ const App = () => {
         <Route path="/ranks" element={<Spacer />} />
         <Route path="/login" element={<Login />} />
         <Route path="/signup" element={<SignUp />} />
-        <Route path="/mypage" element={<Spacer />} />
+        <Route path="/mypage" element={<MyPage />} />
         <Route path="/*" element={<ErrPage />} />
       </Route>
 

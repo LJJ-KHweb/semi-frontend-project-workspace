@@ -12,7 +12,7 @@ import {
   FieldLabel,
   InputBox,
   SubmitButton,
-} from "./Auth.styles";
+} from "./styles/Auth.styles";
 
 const Login = () => {
   const [userId, setUserId] = useState("");

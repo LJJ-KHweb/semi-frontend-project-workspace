@@ -1,5 +1,5 @@
 import styled from "styled-components";
-import { Theme } from "../../styles/Theme";
+import { Theme } from "../../../styles/Theme";
 
 export const AuthWrapper = styled.div`
   display: flex;
@@ -136,5 +136,62 @@ export const SwitchText = styled.p`
     &:hover {
       color: ${Theme.color.pointHover};
     }
+  }
+`;
+
+export const BackButton = styled.button`
+  height: 46px;
+  margin-top: 8px;
+  border: none;
+  border: 1px solid ${Theme.color.border};
+  border-radius: ${Theme.radius.sm};
+
+  background: #fff;
+
+  font-family: ${Theme.font};
+  font-size: 15px;
+  font-weight: 700;
+  color: ${Theme.color.text};
+
+  cursor: pointer;
+  transition: all 0.15s ease;
+
+  &:hover {
+    background: ${Theme.color.bgSoft};
+    border-color: ${Theme.color.point};
+    color: ${Theme.color.point};
+  }
+
+  &:active {
+    background: ${Theme.color.bgDark};
+  }
+`;
+export const UpdateButton = styled.button`
+  height: 46px;
+  margin-top: 8px;
+  border: none;
+  border-radius: ${Theme.radius.sm};
+
+  background: ${Theme.color.point};
+
+  font-family: ${Theme.font};
+  font-size: 15px;
+  font-weight: 700;
+  color: #fff;
+
+  cursor: pointer;
+  transition: background 0.15s ease;
+
+  &:hover {
+    background: ${Theme.color.pointHover};
+  }
+
+  &:active {
+    background: ${Theme.color.pointDark};
+  }
+
+  &:disabled {
+    background: ${Theme.color.disabled};
+    cursor: not-allowed;
   }
 `;

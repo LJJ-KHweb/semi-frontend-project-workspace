@@ -1,5 +1,6 @@
 import { useState, createContext, useContext } from "react";
 import axios from "axios";
+import api from "../api/axios";
 
 // 보관함 만들기
 const AuthContext = createContext(null);
@@ -31,13 +32,22 @@ export function AuthProvider({ children }) {
   };
 
   const logout = () => {
-    // 원래는 RefreshToken을 보내서 refreshToken값을 DB에서 DELETE해야함
-    axios.get(
-      `http://localhost/api/auth/logout?id=${localStorage.getItem("userId")}`,
-    );
-    ["token", "refreshToken", "userId", "userName", "role"].forEach((k) =>
-      localStorage.removeItem(k),
-    );
+    console.log(localStorage.getItem("refreshToken"));
+    api
+      .delete("/auth/logout", {
+        data: {
+          refreshToken: localStorage.getItem("refreshToken"),
+        },
+      })
+      .then((result) => {
+        if (result.status === 200) {
+          console.log("들어왔음22");
+          ["token", "refreshToken", "userId", "userName", "role"].forEach((k) =>
+            localStorage.removeItem(k),
+          );
+        }
+      });
+
     setUser(null);
   };
 

@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import {
   Wrap,
   Header,
@@ -14,101 +14,36 @@ import {
   NextButton,
 } from "../styles/Board.styles";
 import { Spacer } from "../../../App.styles";
+import api from "../../../api/axios";
+import { useNavigate } from "react-router-dom";
 
-const lists = [
-  {
-    no: 10,
-    type: "notice",
-    title: "게시판 이용 안내",
-    writer: "관리자",
-    date: "2026-06-20",
-    views: 152,
-  },
-  {
-    no: 9,
-    type: "notice",
-    title: "공지 공지",
-    writer: "관리자",
-    date: "2026-06-18",
-    views: 98,
-  },
-  {
-    no: 8,
-    type: "nomal",
-    title: "user01이 글을 씀2222",
-    writer: "user01",
-    date: "2026-06-15",
-    views: 41,
-  },
-  {
-    no: 7,
-    type: "nomal",
-    title: "user01이 글을 씀",
-    writer: "user01",
-    date: "2026-06-14",
-    views: 67,
-  },
-  {
-    no: 6,
-    type: "nomal",
-    title: "삼겹살 먹고 싶다",
-    writer: "두리",
-    date: "2026-06-13",
-    views: 33,
-  },
-  {
-    no: 5,
-    type: "nomal",
-    title: "뭉치 돼지임ㅋ",
-    writer: "아토",
-    date: "2026-06-12",
-    views: 58,
-  },
-  {
-    no: 4,
-    type: "nomal",
-    title: "나는 뭉치",
-    writer: "mungchi",
-    date: "2026-06-11",
-    views: 22,
-  },
-  {
-    no: 3,
-    type: "nomal",
-    title: "나는 아토",
-    writer: "ato",
-    date: "2026-06-10",
-    views: 14,
-  },
-  {
-    no: 2,
-    type: "nomal",
-    title: "나는 두리",
-    writer: "doori",
-    date: "2026-06-09",
-    views: 76,
-  },
-  {
-    no: 1,
-    type: "nomal",
-    title: "내가 첫번째 글이다",
-    writer: "user01",
-    date: "2026-06-08",
-    views: 5,
-  },
-];
-
-const pages = 5;
+const PAGE_GROUP_SIZE = 5;
 
 const Board = () => {
-  const [page, setPage] = useState(0);
-
+  const [page, setPage] = useState(1);
+  const [pages, setPages] = useState({ size: 10, boardCounts: 0 });
+  const [boards, setBoards] = useState([]);
+  const [notices, setNotices] = useState([]);
+  const navi = useNavigate();
+  useEffect(() => {
+    api.get(`/boards?page=${page}&size=${pages.size}`).then((result) => {
+      setBoards(result.data.data.boards);
+      setNotices(result.data.data.notices);
+      setPages(result.data.data.pageInfo);
+    });
+  }, [page]);
+  const totalPages = Math.ceil(pages.boardCounts / pages.size);
+  const currentGroup = Math.floor(page / PAGE_GROUP_SIZE);
+  const groupStart = currentGroup * PAGE_GROUP_SIZE;
+  const groupEnd = Math.min(groupStart + PAGE_GROUP_SIZE, totalPages);
   return (
     <Spacer>
       <Wrap>
         <Header>
           <Title>게시판</Title>
-          <WriteButton>게시글 작성하기</WriteButton>
+          <WriteButton onClick={() => navi("/boards/write")}>
+            게시글 작성하기
+          </WriteButton>
         </Header>
 
         <Table>
@@ -121,38 +56,74 @@ const Board = () => {
             <Cell>조회수</Cell>
           </HeadRow>
 
-          {lists.map((list) => (
-            <Row key={list.no}>
-              <Cell>{list.no}</Cell>
+          {notices.map((n) => (
+            <Row key={n.noticeNo} onClick={() => navi("/notices/detail")}>
+              <Cell>{n.noticeNo}</Cell>
               <Cell>
-                <TypeBadge data-notice={list.type === "notice"}>
-                  {list.type === "notice" ? "공지" : "일반"}
-                </TypeBadge>
+                <TypeBadge data-notice={true}>공지</TypeBadge>
               </Cell>
-              <Cell>{list.title}</Cell>
-              <Cell>{list.writer}</Cell>
-              <Cell>{list.date}</Cell>
+              <Cell>{n.noticeTitle}</Cell>
+              <Cell>{n.userName}</Cell>
+              <Cell>{n.createDate}</Cell>
+              <Cell>{n.views}</Cell>
+            </Row>
+          ))}
+
+          {boards.map((list) => (
+            <Row
+              key={list.boardNo}
+              onClick={() => navi(`/boards/detail/${list.boardNo}`)}
+            >
+              <Cell>{list.boardNo}</Cell>
+              <Cell>
+                <TypeBadge data-notice={false}>일반</TypeBadge>
+              </Cell>
+              <Cell>{list.boardTitle}</Cell>
+              <Cell>{list.userName}</Cell>
+              <Cell>{list.createDate}</Cell>
               <Cell>{list.views}</Cell>
             </Row>
           ))}
         </Table>
 
         <Pagination>
-          <NextButton>이전</NextButton>
-          {Array.from({ length: pages }).map((_, p) => (
+          {currentGroup > 0 && (
             <PageButton
-              key={p}
-              data-active={p === page}
-              onClick={() => setPage(p)}
+              onClick={() => setPage(groupStart - 1)}
+              data-active={true}
             >
-              {p + 1}
+              ··
             </PageButton>
-          ))}
-          <NextButton>다음</NextButton>
+          )}
+          {page > 0 && (
+            <NextButton onClick={() => setPage(page - 1)}>이전</NextButton>
+          )}
+          {Array.from({ length: groupEnd - groupStart }).map((_, i) => {
+            const p = groupStart + i;
+            return (
+              <PageButton
+                key={p + 1}
+                data-active={p + 1 === page}
+                onClick={() => setPage(p + 1)}
+              >
+                {p + 1}
+              </PageButton>
+            );
+          })}
+          {page < totalPages - 1 && (
+            <NextButton onClick={() => setPage(page + 1)}>다음</NextButton>
+          )}
+          {groupStart + PAGE_GROUP_SIZE < totalPages && (
+            <PageButton
+              onClick={() => setPage(groupStart + PAGE_GROUP_SIZE)}
+              data-active={true}
+            >
+              ··
+            </PageButton>
+          )}
         </Pagination>
       </Wrap>
     </Spacer>
   );
 };
-
 export default Board;

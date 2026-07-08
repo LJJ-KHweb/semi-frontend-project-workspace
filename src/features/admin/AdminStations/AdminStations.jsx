@@ -13,9 +13,12 @@ import {
   TableRow,
   StatusBadge,
   Gapper,
+  WriteButton,
+  StationHeader,
 } from "./AdminStations.styles";
 import { useAuth } from "../../../context/AuthContext";
 import api from "../../../api/axios";
+import { useNavigate } from "react-router-dom";
 
 const PAGE_GROUP_SIZE = 5;
 
@@ -25,6 +28,7 @@ const AdminStations = () => {
   // 뒷단에서 어드민은 size 늘려줘야함
   const [pages, setPages] = useState({ size: 10, boardCounts: 0 });
   const [error, setError] = useState(null);
+  const navi = useNavigate();
 
   useEffect(() => {
     const fetchData = async () => {
@@ -56,6 +60,11 @@ const AdminStations = () => {
     <>
       <Gapper></Gapper>
       <AdminStationsWrap>
+        <StationHeader>
+          <WriteButton onClick={() => navi("/admin/stations/form")}>
+            충전소 등록하기
+          </WriteButton>
+        </StationHeader>
         {error && <EmptyMsg>{error}</EmptyMsg>}
         {!error && stations.length === 0 && (
           <EmptyMsg>등록된 충전소가 없습니다.</EmptyMsg>

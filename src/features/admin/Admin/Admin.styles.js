@@ -193,3 +193,35 @@ export const ChartDay = styled.p`
   font-weight: 700;
   color: ${({ theme }) => theme.color.sub};
 `;
+
+export const DashboardGrid = styled.div`
+  margin-top: 36px;
+  display: grid;
+  grid-template-columns: 4fr 1fr;
+  gap: 24px;
+  align-items: start;
+`;
+
+export const RightColumn = styled.div`
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+`;
+
+export const ChartCard = styled.section`
+  padding: 28px;
+  background: #fff;
+  border: 1px solid ${({ theme }) => theme.color.border};
+  border-radius: ${({ theme }) => theme.radius.lg};
+  box-shadow: ${({ theme }) => theme.shadow.sm};
+`;
+
+export const SmallChartBox = styled.div`
+  width: 100%;
+  height: 240px;
+`;
+
+export const LargeChartBox = styled.div`
+  width: 100%;
+  height: 420px;
+`;

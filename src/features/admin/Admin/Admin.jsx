@@ -33,6 +33,11 @@ import {
   ProductName,
   ProductSubText,
   PurchaseCount,
+  DashboardGrid,
+  RightColumn,
+  ChartCard,
+  SmallChartBox,
+  LargeChartBox,
 } from "./Admin.styles";
 
 const Admin = () => {
@@ -133,73 +138,86 @@ const Admin = () => {
         </Card>
       </CardGrid>
 
-      <RankingSection>
-        <SectionTitle>상품 구매 랭킹</SectionTitle>
+      <DashboardGrid>
+        <ChartCard>
+          <SectionTitle>라즈베리 주행 / 탄소 절감 선 그래프</SectionTitle>
 
-        <RankingList>
-          {ranking.map((item, index) => (
-            <RankingItem key={index}>
-              <RankBadge>{index + 1}</RankBadge>
+          <LargeChartBox>
+            <ResponsiveContainer>
+              <LineChart data={raspStats}>
+                <CartesianGrid strokeDasharray="3 3" />
+                <XAxis dataKey="dayDate" />
+                <YAxis />
+                <Tooltip />
+                <Legend />
 
-              <ProductInfo>
-                <ProductName>{item.productName}</ProductName>
-                <ProductSubText>구매 횟수</ProductSubText>
-              </ProductInfo>
+                <Line
+                  type="monotone"
+                  dataKey="distanceSum"
+                  name="주행거리"
+                  stroke="#DC2626"
+                  strokeWidth={3}
+                  dot={{ r: 5, fill: "#DC2626" }}
+                  activeDot={{ r: 7 }}
+                />
 
-              <PurchaseCount>{item.purchaseCount}회</PurchaseCount>
-            </RankingItem>
-          ))}
-        </RankingList>
-      </RankingSection>
+                <Line
+                  type="monotone"
+                  dataKey="carbonReduction"
+                  name="탄소 절감량"
+                  stroke="#16A34A"
+                  strokeWidth={3}
+                  dot={{ r: 5, fill: "#16A34A" }}
+                  activeDot={{ r: 7 }}
+                />
+              </LineChart>
+            </ResponsiveContainer>
+          </LargeChartBox>
+        </ChartCard>
 
-      <RankingSection>
-        <SectionTitle>라즈베리 주행거리 선 그래프</SectionTitle>
+        <RightColumn>
+          <RankingSection>
+            <SectionTitle>상품 구매 랭킹</SectionTitle>
 
-        <div style={{ width: "100%", height: "320px" }}>
-          <ResponsiveContainer>
-            <LineChart data={raspStats}>
-              <CartesianGrid strokeDasharray="3 3" />
-              <XAxis dataKey="dayDate" />
-              <YAxis />
-              <Tooltip />
-              <Line
-                type="monotone"
-                dataKey="distanceSum"
-                name="주행거리"
-                stroke="#DC2626"
-                strokeWidth={3}
-                dot={{ r: 5, fill: "#DC2626" }}
-                activeDot={{ r: 7 }}
-              />
+            <RankingList>
+              {ranking.map((item, index) => (
+                <RankingItem key={index}>
+                  <RankBadge>{index + 1}</RankBadge>
 
-              <Line
-                type="monotone"
-                dataKey="carbonReduction"
-                name="탄소 절감량"
-                stroke="#16A34A"
-                strokeWidth={3}
-              />
-            </LineChart>
-          </ResponsiveContainer>
-        </div>
-      </RankingSection>
-      <RankingSection>
-        <SectionTitle>요일별 총 구매 횟수</SectionTitle>
+                  <ProductInfo>
+                    <ProductName>{item.productName}</ProductName>
+                    <ProductSubText>구매 횟수</ProductSubText>
+                  </ProductInfo>
 
-        <div style={{ width: "100%", height: "320px" }}>
-          <ResponsiveContainer>
-            <BarChart data={purchaseCharts}>
-              <CartesianGrid strokeDasharray="3 3" />
-              <XAxis dataKey="day" />
-              <YAxis />
-              <Tooltip />
-              <Legend />
+                  <PurchaseCount>{item.purchaseCount}회</PurchaseCount>
+                </RankingItem>
+              ))}
+            </RankingList>
+          </RankingSection>
 
-              <Bar dataKey="purchaseCount" name="구매 횟수" fill="#0EA5E9" />
-            </BarChart>
-          </ResponsiveContainer>
-        </div>
-      </RankingSection>
+          <ChartCard>
+            <SectionTitle>요일별 구매 횟수</SectionTitle>
+
+            <SmallChartBox>
+              <ResponsiveContainer>
+                <BarChart data={purchaseCharts}>
+                  <CartesianGrid strokeDasharray="3 3" />
+                  <XAxis dataKey="day" />
+                  <YAxis />
+                  <Tooltip />
+                  <Legend />
+
+                  <Bar
+                    dataKey="purchaseCount"
+                    name="구매 횟수"
+                    fill="#0EA5E9"
+                  />
+                </BarChart>
+              </ResponsiveContainer>
+            </SmallChartBox>
+          </ChartCard>
+        </RightColumn>
+      </DashboardGrid>
     </AdminContainer>
   );
 };

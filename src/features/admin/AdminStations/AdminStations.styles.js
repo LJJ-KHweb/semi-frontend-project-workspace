@@ -119,3 +119,28 @@ export const StatusBadge = styled.span`
     color: ${Theme.color.danger};
   }
 `;
+
+export const StationHeader = styled.div`
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  margin-bottom: 16px;
+`;
+
+export const WriteButton = styled.button`
+  padding: 10px 20px;
+  border: none;
+  border-radius: ${Theme.radius.sm};
+  background: ${Theme.color.point};
+  color: #fff;
+  font-weight: 600;
+  cursor: pointer;
+
+  &:hover {
+    background: ${Theme.color.pointHover};
+  }
+
+  &:active {
+    background: ${Theme.color.pointDark};
+  }
+`;

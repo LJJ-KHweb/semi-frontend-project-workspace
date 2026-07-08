@@ -156,3 +156,8 @@ export const MileagePoint = styled.div`
 export const MileageMinus = styled(MileagePoint)`
   color: ${Theme.color.danger};
 `;
+
+export const TextArea = styled.textarea`
+  width: 500px;
+  height: 300px;
+`;

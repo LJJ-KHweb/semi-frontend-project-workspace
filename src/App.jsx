@@ -3,7 +3,6 @@ import { ErrMsg, Spacer, ErrSpace } from "./App.styles";
 import DefaultLayout from "./components/layout/DefaultLayout";
 import AdminLayout from "./features/admin/AdminLayout/AdminLayout";
 import Main from "./components/pages/Main/Main";
-import Board from "./features/boards/Board/Board";
 import Notice from "./features/boards/Notice/Notice";
 import Guide from "./components/pages/Guide/Guide";
 import Map from "./features/station/Station/Station";
@@ -13,6 +12,10 @@ import AdminStations from "./features/admin/AdminStations/AdminStations";
 import Login from "./features/user/Login";
 import SignUp from "./features/user/SignUp";
 import MyPage from "./features/user/MyPage";
+import StationForm from "./features/admin/AdminStations/StationForm";
+import Board from "./features/boards/board/Board";
+import BoardDetail from "./features/boards/board/BoardDetail";
+import BoardForm from "./features/boards/board/BoardForm";
 
 const App = () => {
   return (
@@ -24,6 +27,9 @@ const App = () => {
         <Route path="/guide" element={<Guide />} />
         <Route path="/notices" element={<Notice />} />
         <Route path="/boards" element={<Board />} />
+        <Route path="/boards/write" element={<BoardForm />} />
+        <Route path="/boards/:boardNo/edit" element={<BoardForm />} />
+        <Route path="/boards/detail/:boardNo" element={<BoardDetail />} />
         <Route path="/ranks" element={<Spacer />} />
         <Route path="/login" element={<Login />} />
         <Route path="/signup" element={<SignUp />} />
@@ -35,6 +41,7 @@ const App = () => {
         <Route path="/admin" element={<Admin />} />
         <Route path="/admin/users" element={<Spacer />} />
         <Route path="/admin/stations" element={<AdminStations />} />
+        <Route path="/admin/stations/form" element={<StationForm />} />
         <Route path="/admin/chargers" element={<Spacer />} />
         <Route path="/admin/requires" element={<Spacer />} />
         <Route path="/admin/notices" element={<Spacer />} />

@@ -19,12 +19,17 @@ import {
   Img,
   ImgWrap,
 } from "../styles/BoardDetail.styles";
+import { useAuth } from "../../../context/AuthContext";
 
 const BoardDetail = () => {
   const { boardNo } = useParams();
   const [board, setBoard] = useState();
   const [files, setFiles] = useState([]);
   const navi = useNavigate();
+
+  const { user } = useAuth();
+  const isAdmin = user?.role === "[ROLE_ADMIN]";
+  const isAuthor = user?.userName === board?.userName;
 
   useEffect(() => {
     api
@@ -68,14 +73,17 @@ const BoardDetail = () => {
 
           <ButtonRow>
             <ListButton onClick={() => navi("/boards")}>목록</ListButton>
-            <ButtonGroup>
-              <ActionButton onClick={() => navi(`/boards/${boardNo}/edit`)}>
-                수정
-              </ActionButton>
-              <ActionButton data-danger={true} onClick={handleDelete}>
-                삭제
-              </ActionButton>
-            </ButtonGroup>
+
+            {(isAuthor || isAdmin) && (
+              <ButtonGroup>
+                <ActionButton onClick={() => navi(`/boards/${boardNo}/edit`)}>
+                  수정
+                </ActionButton>
+                <ActionButton data-danger={true} onClick={handleDelete}>
+                  삭제
+                </ActionButton>
+              </ButtonGroup>
+            )}
           </ButtonRow>
         </Card>
       </Wrap>

@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import {
   Wrap,
   Header,
@@ -13,95 +13,28 @@ import {
   NextButton,
 } from "../styles/Board.styles";
 import { Spacer } from "../../../App.styles";
+import { useNavigate } from "react-router-dom";
+import api from "../../../api/axios";
 
-const lists = [
-  {
-    no: 10,
-    type: "notice",
-    title: "게시판 이용 안내",
-    writer: "관리자",
-    date: "2026-06-20",
-    views: 152,
-  },
-  {
-    no: 9,
-    type: "notice",
-    title: "공지 공지",
-    writer: "관리자",
-    date: "2026-06-18",
-    views: 98,
-  },
-  {
-    no: 8,
-    type: "notice",
-    title: "여름철 차량 이용 시 주의사항",
-    writer: "관리자",
-    date: "2026-06-16",
-    views: 87,
-  },
-  {
-    no: 7,
-    type: "notice",
-    title: "개인정보 처리방침 개정 안내",
-    writer: "관리자",
-    date: "2026-06-12",
-    views: 64,
-  },
-  {
-    no: 6,
-    type: "notice",
-    title: "차에 강아지 태우면 밴입니다",
-    writer: "관리자",
-    date: "2026-06-08",
-    views: 210,
-  },
-  {
-    no: 5,
-    type: "notice",
-    title: "차에 고양이 태우면 밴입니다",
-    writer: "관리자",
-    date: "2026-06-04",
-    views: 133,
-  },
-  {
-    no: 4,
-    type: "notice",
-    title: "충전소 신규 오픈 안내",
-    writer: "관리자",
-    date: "2026-05-28",
-    views: 176,
-  },
-  {
-    no: 3,
-    type: "notice",
-    title: "마일리지 개편 안내",
-    writer: "관리자",
-    date: "2026-05-20",
-    views: 245,
-  },
-  {
-    no: 2,
-    type: "notice",
-    title: "업데이트 안내",
-    writer: "관리자",
-    date: "2026-05-14",
-    views: 92,
-  },
-  {
-    no: 1,
-    type: "notice",
-    title: "EVRE 서비스 오픈 안내",
-    writer: "관리자",
-    date: "2026-05-01",
-    views: 320,
-  },
-];
-
-const pages = 5;
+const PAGE_GROUP_SIZE = 5;
 
 const Notice = () => {
   const [page, setPage] = useState(0);
-
+  const [pages, setPages] = useState({ size: 10, boardCounts: 0 });
+  const [notices, setNotices] = useState([]);
+  const navi = useNavigate();
+  useEffect(() => {
+    api.get(`/notices?page=${page + 1}&size=${pages.size}`).then((result) => {
+      console.log(result);
+      setNotices(result.data.data.notices);
+      setPages(result.data.data.pageInfo);
+      console.log(pages.boardCounts);
+    });
+  }, [page]);
+  const totalPages = Math.ceil(pages.boardCounts / pages.size);
+  const currentGroup = Math.floor(page / PAGE_GROUP_SIZE);
+  const groupStart = currentGroup * PAGE_GROUP_SIZE;
+  const groupEnd = Math.min(groupStart + PAGE_GROUP_SIZE, totalPages);
   return (
     <Spacer>
       <Wrap>
@@ -119,32 +52,58 @@ const Notice = () => {
             <Cell>조회수</Cell>
           </HeadRow>
 
-          {lists.map((list) => (
-            <Row key={list.no}>
-              <Cell>{list.no}</Cell>
+          {notices.map((n) => (
+            <Row
+              key={n.noticeNo}
+              onClick={() => navi(`/notices/detail/${n.noticeNo}`)}
+            >
+              <Cell>{n.noticeNo}</Cell>
               <Cell>
                 <TypeBadge data-notice={true}>공지</TypeBadge>
               </Cell>
-              <Cell>{list.title}</Cell>
-              <Cell>{list.writer}</Cell>
-              <Cell>{list.date}</Cell>
-              <Cell>{list.views}</Cell>
+              <Cell>{n.noticeTitle}</Cell>
+              <Cell>{n.noticeWriter}</Cell>
+              <Cell>{n.createDate}</Cell>
+              <Cell>{n.views}</Cell>
             </Row>
           ))}
         </Table>
 
         <Pagination>
-          <NextButton>이전</NextButton>
-          {Array.from({ length: pages }).map((_, p) => (
+          {currentGroup > 0 && (
             <PageButton
-              key={p}
-              data-active={p === page}
-              onClick={() => setPage(p)}
+              onClick={() => setPage(groupStart - 1)}
+              data-active={true}
             >
-              {p + 1}
+              ··
             </PageButton>
-          ))}
-          <NextButton>다음</NextButton>
+          )}
+          {page > 0 && (
+            <NextButton onClick={() => setPage(page - 1)}>이전</NextButton>
+          )}
+          {Array.from({ length: groupEnd - groupStart }).map((_, i) => {
+            const p = groupStart + i;
+            return (
+              <PageButton
+                key={p}
+                data-active={p === page}
+                onClick={() => setPage(p)}
+              >
+                {p + 1}
+              </PageButton>
+            );
+          })}
+          {page < totalPages - 1 && (
+            <NextButton onClick={() => setPage(page + 1)}>다음</NextButton>
+          )}
+          {groupStart + PAGE_GROUP_SIZE < totalPages && (
+            <PageButton
+              onClick={() => setPage(groupStart + PAGE_GROUP_SIZE)}
+              data-active={true}
+            >
+              ··
+            </PageButton>
+          )}
         </Pagination>
       </Wrap>
     </Spacer>

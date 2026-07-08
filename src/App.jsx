@@ -16,6 +16,8 @@ import StationForm from "./features/admin/AdminStations/StationForm";
 import Board from "./features/boards/board/Board";
 import BoardDetail from "./features/boards/board/BoardDetail";
 import BoardForm from "./features/boards/board/BoardForm";
+import NoticeForm from "./features/boards/Notice/NoticeForm";
+import NoticeDetail from "./features/boards/Notice/NoticeDetail";
 
 const App = () => {
   return (
@@ -26,6 +28,9 @@ const App = () => {
         <Route path="/chargeStations/:stationNo" element={<StationDetail />} />
         <Route path="/guide" element={<Guide />} />
         <Route path="/notices" element={<Notice />} />
+        <Route path="/notices/form" element={<NoticeForm />} />
+        <Route path="/notices/:noticeNo/edit" element={<NoticeForm />} />
+        <Route path="/notices/detail/:noticeNo" element={<NoticeDetail />} />
         <Route path="/boards" element={<Board />} />
         <Route path="/boards/form" element={<BoardForm />} />
         <Route path="/boards/:boardNo/edit" element={<BoardForm />} />

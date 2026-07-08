@@ -150,3 +150,71 @@ export const RemoveButton = styled.button`
     opacity: 0.9;
   }
 `;
+
+export const OptionRow = styled.div`
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+`;
+
+export const RadioRow = styled.div`
+  display: flex;
+  align-items: center;
+  gap: 16px;
+`;
+
+export const RadioLabel = styled.label`
+  display: flex;
+  align-items: center;
+  gap: 8px;
+
+  font-size: 14px;
+  font-weight: 500;
+  color: ${Theme.color.text};
+
+  cursor: pointer;
+  user-select: none;
+
+  input {
+    appearance: none;
+    width: 18px;
+    height: 18px;
+
+    border: 2px solid ${Theme.color.border};
+    border-radius: 50%;
+
+    position: relative;
+    cursor: pointer;
+
+    transition: all 0.2s ease;
+
+    &:checked {
+      border-color: ${Theme.color.point};
+    }
+
+    &:checked::after {
+      content: "";
+      position: absolute;
+
+      width: 8px;
+      height: 8px;
+
+      top: 50%;
+      left: 50%;
+
+      transform: translate(-50%, -50%);
+
+      border-radius: 50%;
+      background: ${Theme.color.point};
+    }
+
+    &:hover {
+      border-color: ${Theme.color.point};
+    }
+  }
+
+  &:hover {
+    color: ${Theme.color.point};
+  }
+`;

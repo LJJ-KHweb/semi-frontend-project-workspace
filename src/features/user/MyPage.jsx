@@ -55,15 +55,21 @@ import {
   PageButton,
   Pagination,
 } from "../boards/styles/Board.styles";
+import { useAuth } from "../../context/AuthContext";
+import { data } from "react-router-dom";
 
 const PAGE_GROUP_SIZE = 3;
 
 const MyPage = () => {
+  const { user } = useAuth();
   const [raspData, setRaspData] = useState([]);
   const [mileageHistory, setMileageHistory] = useState([]);
-  const [page, setPage] = useState(1);
+  const [page, setPage] = useState(0);
   const [pages, setPages] = useState({ size: 3, boardCounts: 0 });
   const [mileageSum, setMileageSum] = useState(0);
+  const [userName, setUserName] = useState(0);
+  const [email, setEmail] = useState("");
+  const [userPwd, setUserPwd] = useState("");
 
   useEffect(() => {
     api.get("/rasp/mypage").then((result) => {
@@ -72,8 +78,9 @@ const MyPage = () => {
     });
 
     api
-      .get(`/users/mypage?page=${page}&size=${pages.size}`)
+      .get(`/users/mypage?page=${page + 1}&size=${pages.size}`)
       .then((result) => {
+        console.log(result.data.data);
         setMileageHistory(result.data.data.mileages);
         setPages(result.data.data.pageInfo);
         setMileageSum(result.data.data.mileageSum);
@@ -85,6 +92,15 @@ const MyPage = () => {
   const currentGroup = Math.floor(page / PAGE_GROUP_SIZE);
   const groupStart = currentGroup * PAGE_GROUP_SIZE;
   const groupEnd = Math.min(groupStart + PAGE_GROUP_SIZE, totalPages);
+
+  const onSubmit = () => {
+    api.patch("/users", {
+      data: {
+        userPwd: userPwd,
+        email: email,
+      },
+    });
+  };
   return (
     <Main>
       <TitleSection>
@@ -98,18 +114,7 @@ const MyPage = () => {
           <InsertForm>
             <FieldGroup>
               <FieldLabel>ID</FieldLabel>
-              <InputBox
-                placeholder="아이디를 입력하세요"
-                onChange={(e) => setUserId(e.target.value)}
-              />
-            </FieldGroup>
-            <FieldGroup>
-              <FieldLabel>PASSWORD</FieldLabel>
-              <InputBox
-                type="password"
-                placeholder="비밀번호를 입력하세요"
-                onChange={(e) => setUserPwd(e.target.value)}
-              />
+              <InputBox value={user.userId} readOnly />
             </FieldGroup>
             <FieldGroup>
               <FieldLabel>EMAIL</FieldLabel>
@@ -121,21 +126,17 @@ const MyPage = () => {
             </FieldGroup>
             <FieldGroup>
               <FieldLabel>이름</FieldLabel>
-              <InputBox
-                type="text"
-                placeholder="이름을 입력하세요"
-                onChange={(e) => setUserName(e.target.value)}
-              />
+              <InputBox value={user.userName} readOnly />
             </FieldGroup>
             <FieldGroup>
-              <FieldLabel>ID</FieldLabel>
+              <FieldLabel>비밀번호</FieldLabel>
               <InputBox
-                type="text"
-                placeholder="아이디를 입력하세요"
-                onChange={(e) => setUserId(e.target.value)}
+                type="password"
+                placeholder="비밀번호를 입력하세요"
+                onChange={(e) => setUserPwd(e.target.value)}
               />
             </FieldGroup>
-            <UpdateButton>수정</UpdateButton>
+            <UpdateButton onClick={onSubmit}>수정</UpdateButton>
             <BackButton>돌아가기</BackButton>
           </InsertForm>
         </AuthCard>
@@ -179,13 +180,17 @@ const MyPage = () => {
               <TotalMileage>총 {mileageSum} 마일리지</TotalMileage>
             </MileageHeader>
             <MileageList>
-              {mileageHistory.map((mileage, index) => (
-                <MileageItem key={index}>
-                  <MileageDate>{mileage.createDate}</MileageDate>
-                  <MileageContent>{mileage.productName}</MileageContent>
-                  <MileagePoint>{mileage.price}</MileagePoint>
-                </MileageItem>
-              ))}
+              {mileageHistory != null ? (
+                mileageHistory.map((mileage, index) => (
+                  <MileageItem key={index}>
+                    <MileageDate>{mileage.createDate}</MileageDate>
+                    <MileageContent>{mileage.productName}</MileageContent>
+                    <MileagePoint>{mileage.change}</MileagePoint>
+                  </MileageItem>
+                ))
+              ) : (
+                <MileageItem>아직 마일리지 내역이 없습니다.</MileageItem>
+              )}
             </MileageList>
             <Pagination>
               {currentGroup > 0 && (

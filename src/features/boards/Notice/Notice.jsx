@@ -11,6 +11,7 @@ import {
   Pagination,
   PageButton,
   NextButton,
+  WriteButton,
 } from "../styles/Board.styles";
 import { Spacer } from "../../../App.styles";
 import { useNavigate } from "react-router-dom";
@@ -40,6 +41,9 @@ const Notice = () => {
       <Wrap>
         <Header>
           <Title>공지사항</Title>
+          <WriteButton onClick={() => navi("/notices/form")}>
+            공지사항 작성하기
+          </WriteButton>
         </Header>
 
         <Table>

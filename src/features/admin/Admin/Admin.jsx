@@ -1,7 +1,20 @@
-// 어드민 페이지 만들 공간
+import { useEffect, useState } from "react";
+import api from "../../../api/axios";
 
 const Admin = () => {
-  return null;
+  const [adminPage, setAdminPage] = useState([]);
+
+  useEffect(() => {
+    api.get("/admin/adminPage").then((result) => {
+      console.log(result);
+    });
+
+    return (
+      <>
+        <p> 관리자 페이지 </p>
+      </>
+    );
+  });
 };
 
 export default Admin;

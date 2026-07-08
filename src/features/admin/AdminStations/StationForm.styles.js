@@ -3,10 +3,11 @@ import { Theme } from "../../../styles/Theme";
 
 export const FormWrap = styled.form`
   display: flex;
+  margin: auto;
   flex-direction: column;
   gap: 16px;
   padding: 24px;
-  max-width: 560px;
+  width: 80%;
 `;
 
 export const FormRow = styled.div`

@@ -69,7 +69,7 @@ const Guide = () => {
           <Title>
             <TitlePoint>공유전기차</TitlePoint> 이용방법
           </Title>
-          <BackButton type="button" onClick={() => navi(-1)}>
+          <BackButton type="button" onClick={() => navi("/")}>
             돌아가기
           </BackButton>
         </TopBar>

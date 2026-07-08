@@ -20,22 +20,25 @@ import { useNavigate } from "react-router-dom";
 const PAGE_GROUP_SIZE = 5;
 
 const Board = () => {
-  const [page, setPage] = useState(1);
+  const [page, setPage] = useState(0);
   const [pages, setPages] = useState({ size: 10, boardCounts: 0 });
   const [boards, setBoards] = useState([]);
   const [notices, setNotices] = useState([]);
   const navi = useNavigate();
+
   useEffect(() => {
-    api.get(`/boards?page=${page}&size=${pages.size}`).then((result) => {
+    api.get(`/boards?page=${page + 1}&size=${pages.size}`).then((result) => {
       setBoards(result.data.data.boards);
       setNotices(result.data.data.notices);
       setPages(result.data.data.pageInfo);
     });
   }, [page]);
+
   const totalPages = Math.ceil(pages.boardCounts / pages.size);
   const currentGroup = Math.floor(page / PAGE_GROUP_SIZE);
   const groupStart = currentGroup * PAGE_GROUP_SIZE;
   const groupEnd = Math.min(groupStart + PAGE_GROUP_SIZE, totalPages);
+
   return (
     <Spacer>
       <Wrap>
@@ -102,9 +105,9 @@ const Board = () => {
             const p = groupStart + i;
             return (
               <PageButton
-                key={p + 1}
-                data-active={p + 1 === page}
-                onClick={() => setPage(p + 1)}
+                key={p}
+                data-active={p === page}
+                onClick={() => setPage(p)}
               >
                 {p + 1}
               </PageButton>

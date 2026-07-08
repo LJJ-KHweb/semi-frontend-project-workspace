@@ -90,7 +90,7 @@ const BoardForm = () => {
           </PreviewWrap>
 
           <ButtonRow>
-            <CancelButton type="button" onClick={() => navi("/")}>
+            <CancelButton type="button" onClick={() => navi("/boards")}>
               취소
             </CancelButton>
             <SubmitButton type="submit">등록</SubmitButton>

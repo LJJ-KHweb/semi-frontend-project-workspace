@@ -24,6 +24,7 @@ import RequireForm from "./features/boards/require/RequireFrom";
 import RequireDetail from "./features/boards/require/RequireDetail";
 import AdminRequire from "./features/admin/require/AdminRequire";
 import AdminRequireDetail from "./features/admin/require/AdminRequireDetail";
+import AdminProducts from "./features/admin/adminProducts/AdminProducts";
 
 const App = () => {
   return (
@@ -63,6 +64,7 @@ const App = () => {
           path="/admin/requires/:requireNo"
           element={<AdminRequireDetail />}
         />
+        <Route path="/admin/products" element={<AdminProducts />} />
         <Route path="/admin/notices" element={<Spacer />} />
         <Route path="/admin/boards" element={<Spacer />} />
       </Route>

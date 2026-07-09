@@ -17,6 +17,7 @@ const adminNavs = [
   { content: "문의사항 관리", nav: "/admin/requires" },
   { content: "공지사항 관리", nav: "/admin/notices" },
   { content: "게시판 관리", nav: "/admin/boards" },
+  { content: "상품 관리", nav: "/admin/products" },
 ];
 
 const AdminNav = () => {

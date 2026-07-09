@@ -23,6 +23,14 @@ import {
   MileageContent,
   MileagePoint,
   MileageMinus,
+  ModalOverlay,
+  ModalContainer,
+  ModalTitle,
+  ModalDescription,
+  ModalInput,
+  ModalButtonGroup,
+  ModalConfirmButton,
+  ModalCancelButton,
 } from "./styles/MyPageStyle";
 
 import {
@@ -70,6 +78,8 @@ const MyPage = () => {
   const [userName, setUserName] = useState(0);
   const [email, setEmail] = useState("");
   const [userPwd, setUserPwd] = useState("");
+  const [rawPwd, setRawPwd] = useState("");
+  const [PwdModal, isPwdModal] = useState(false);
 
   useEffect(() => {
     api.get("/rasp/mypage").then((result) => {
@@ -92,14 +102,19 @@ const MyPage = () => {
   const groupEnd = Math.min(groupStart + PAGE_GROUP_SIZE, totalPages);
 
   const onSubmit = () => {
+    console.log(localStorage.getItem("password"));
     api
       .patch("/users/mypage", {
         data: {
+          rawPwd: rawPwd,
           userPwd: userPwd,
           email: email,
         },
       })
-      .then((result) => console.log(result))
+      .then((result) => {
+        console.log(result);
+        setIsPwdModal(false);
+      })
       .catch((e) => console.log(result));
   };
   return (
@@ -232,6 +247,37 @@ const MyPage = () => {
           </MileageSection>
         </RightSection>
       </Content>
+      {isPwdModal && (
+        <ModalOverlay>
+          <ModalContainer>
+            <ModalTitle>비밀번호 확인</ModalTitle>
+
+            <ModalDescription>
+              회원 정보를 수정하려면 현재 비밀번호를 입력해주세요.
+            </ModalDescription>
+
+            <ModalInput
+              type="password"
+              placeholder="현재 비밀번호"
+              value={rawPwd}
+              onChange={(e) => setRawPwd(e.target.value)}
+            />
+
+            <ModalButtonGroup>
+              <ModalCancelButton
+                onClick={() => {
+                  isPwdModal(false);
+                  setRawPwd("");
+                }}
+              >
+                취소
+              </ModalCancelButton>
+
+              <ModalConfirmButton onClick={onSubmit}>확인</ModalConfirmButton>
+            </ModalButtonGroup>
+          </ModalContainer>
+        </ModalOverlay>
+      )}
     </Main>
   );
 };

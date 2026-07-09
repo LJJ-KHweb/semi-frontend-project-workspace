@@ -6,7 +6,7 @@ import Main from "./components/pages/Main/Main";
 import Notice from "./features/boards/Notice/Notice";
 import Guide from "./components/pages/Guide/Guide";
 import Map from "./features/station/Station/Station";
-import Admin from "./features/admin/Admin/Admin";
+import Admin from "./features/admin/adminPage/Admin";
 import StationDetail from "./features/station/Station/StationDetail";
 import AdminStations from "./features/admin/AdminStations/AdminStations";
 import Login from "./features/user/Login";
@@ -18,6 +18,11 @@ import BoardDetail from "./features/boards/board/BoardDetail";
 import BoardForm from "./features/boards/board/BoardForm";
 import NoticeForm from "./features/boards/Notice/NoticeForm";
 import NoticeDetail from "./features/boards/Notice/NoticeDetail";
+import Require from "./features/boards/require/Require";
+import RequireForm from "./features/boards/require/RequireFrom";
+import RequireDetail from "./features/boards/require/RequireDetail";
+import AdminRequire from "./features/admin/require/AdminRequire";
+import AdminRequireDetail from "./features/admin/require/AdminRequireDetail";
 
 const App = () => {
   return (
@@ -39,6 +44,9 @@ const App = () => {
         <Route path="/login" element={<Login />} />
         <Route path="/signup" element={<SignUp />} />
         <Route path="/mypage" element={<MyPage />} />
+        <Route path="/requires" element={<Require />} />
+        <Route path="/requires/write" element={<RequireForm />} />
+        <Route path="/requires/:requireNo" element={<RequireDetail />} />
         <Route path="/*" element={<ErrPage />} />
       </Route>
 
@@ -48,7 +56,11 @@ const App = () => {
         <Route path="/admin/stations" element={<AdminStations />} />
         <Route path="/admin/stations/form" element={<StationForm />} />
         <Route path="/admin/chargers" element={<Spacer />} />
-        <Route path="/admin/requires" element={<Spacer />} />
+        <Route path="/admin/requires" element={<AdminRequire />} />
+        <Route
+          path="/admin/requires/:requireNo"
+          element={<AdminRequireDetail />}
+        />
         <Route path="/admin/notices" element={<Spacer />} />
         <Route path="/admin/boards" element={<Spacer />} />
       </Route>

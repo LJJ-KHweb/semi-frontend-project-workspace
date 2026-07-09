@@ -139,8 +139,8 @@ const StationForm = () => {
       return;
     }
 
-    if (chargerCount === "" || Number(chargerCount) <= 0) {
-      alert("충전기 수를 1대 이상 입력해주세요.");
+    if (chargerCount === "" || Number(chargerCount) < 0) {
+      alert("충전기 수를 0대 이상 입력해주세요.");
       return;
     }
 

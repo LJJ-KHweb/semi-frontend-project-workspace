@@ -129,22 +129,40 @@ const AdminStationDetail = () => {
     mapRef.current.setCenter(latlng);
   }, [position]);
 
-  const handleAddressSearch = () => {
+  const geocodeAddress = (addr) =>
+    new Promise((resolve) => {
+      if (!geocoderRef.current) {
+        resolve(null);
+        return;
+      }
+      geocoderRef.current.addressSearch(addr, (result, status) => {
+        if (status !== window.kakao.maps.services.Status.OK || !result[0]) {
+          resolve(null);
+          return;
+        }
+        resolve({
+          lat: Number(result[0].y),
+          lng: Number(result[0].x),
+          ...parseGeocodeResult(result[0]),
+        });
+      });
+    });
+
+  const handleAddressSearch = async () => {
     if (!address.trim()) {
       alert("주소를 입력해주세요.");
       return;
     }
-    if (!geocoderRef.current) return;
 
-    geocoderRef.current.addressSearch(address, (result, status) => {
-      if (status !== window.kakao.maps.services.Status.OK) {
-        alert("주소를 찾을 수 없습니다.");
-        return;
-      }
+    const result = await geocodeAddress(address);
+    if (!result) {
+      alert("주소를 찾을 수 없습니다.");
+      return;
+    }
 
-      setPosition({ lat: Number(result[0].y), lng: Number(result[0].x) });
-      setRegion(parseGeocodeResult(result[0]).region);
-    });
+    setPosition({ lat: result.lat, lng: result.lng });
+    setAddress(result.address);
+    setRegion(result.region);
   };
 
   const handleEnter = (e) => {
@@ -157,26 +175,38 @@ const AdminStationDetail = () => {
   const onSubmit = async (e) => {
     e.preventDefault();
 
-    if (!position) {
-      alert("지도를 클릭해서 충전소 위치를 지정해주세요.");
+    if (!address.trim()) {
+      alert("주소를 입력해주세요.");
       return;
     }
 
-    if (chargerCount === "" || Number(chargerCount) <= 0) {
-      alert("충전기 수를 1대 이상 입력해주세요.");
+    if (chargerCount === "" || Number(chargerCount) < 0) {
+      alert("충전기 수를 0대 이상 입력해주세요.");
       return;
     }
+
+    const result = await geocodeAddress(address);
+    if (!result) {
+      alert(
+        "올바른 주소를 입력해주세요. (지도 검색으로 확인되지 않는 주소입니다)",
+      );
+      return;
+    }
+
+    setPosition({ lat: result.lat, lng: result.lng });
+    setAddress(result.address);
+    setRegion(result.region);
 
     try {
       await api.patch(`/admin/chargeStations/${stationNo}`, {
         stationName,
-        region,
-        address,
+        region: result.region,
+        address: result.address,
         chargerCount: Number(chargerCount),
         stationDesc,
         status,
-        lat: position.lat,
-        lng: position.lng,
+        lat: result.lat,
+        lng: result.lng,
       });
       alert("충전소 정보가 수정되었습니다.");
       navi("/admin/stations");

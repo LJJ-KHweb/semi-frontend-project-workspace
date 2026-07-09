@@ -19,6 +19,7 @@ import {
   TitleBox,
   Title,
   SubTitle,
+  MainDashboard,
   CardGrid,
   Card,
   CardTitle,
@@ -33,8 +34,6 @@ import {
   ProductName,
   ProductSubText,
   PurchaseCount,
-  DashboardGrid,
-  RightColumn,
   ChartCard,
   SmallChartBox,
   LargeChartBox,
@@ -72,6 +71,7 @@ const Admin = () => {
       console.error(e);
     }
   };
+
   const getPurchaseCharts = async () => {
     try {
       const result = await api.get("/admin/charts");
@@ -104,41 +104,60 @@ const Admin = () => {
         <SubTitle>사이트의 회원 및 운영 현황을 확인할 수 있습니다.</SubTitle>
       </TitleBox>
 
-      <CardGrid>
-        <Card>
-          <CardTitle>전체 회원 수</CardTitle>
-          <CardNumber>
-            {adminPage.sumUsers}
-            <CardUnit>명</CardUnit>
-          </CardNumber>
-        </Card>
+      <MainDashboard>
+        <CardGrid>
+          <Card>
+            <CardTitle>전체 회원 수</CardTitle>
+            <CardNumber>
+              {adminPage.sumUsers}
+              <CardUnit>명</CardUnit>
+            </CardNumber>
+          </Card>
 
-        <Card>
-          <CardTitle>전체 문의 수</CardTitle>
-          <CardNumber>
-            {adminPage.sumRequires}
-            <CardUnit>건</CardUnit>
-          </CardNumber>
-        </Card>
+          <Card>
+            <CardTitle>전체 문의 수</CardTitle>
+            <CardNumber>
+              {adminPage.sumRequires}
+              <CardUnit>건</CardUnit>
+            </CardNumber>
+          </Card>
 
-        <Card>
-          <CardTitle>답변 완료 문의</CardTitle>
-          <CardNumber>
-            {adminPage.finishRequires}
-            <CardUnit>건</CardUnit>
-          </CardNumber>
-        </Card>
+          <Card>
+            <CardTitle>답변 완료 문의</CardTitle>
+            <CardNumber>
+              {adminPage.finishRequires}
+              <CardUnit>건</CardUnit>
+            </CardNumber>
+          </Card>
 
-        <Card>
-          <CardTitle>미답변 문의</CardTitle>
-          <CardNumber>
-            {adminPage.notFinishRequires}
-            <CardUnit>건</CardUnit>
-          </CardNumber>
-        </Card>
-      </CardGrid>
+          <Card>
+            <CardTitle>미답변 문의</CardTitle>
+            <CardNumber>
+              {adminPage.notFinishRequires}
+              <CardUnit>건</CardUnit>
+            </CardNumber>
+          </Card>
+        </CardGrid>
 
-      <DashboardGrid>
+        <RankingSection>
+          <SectionTitle>상품 구매 랭킹</SectionTitle>
+
+          <RankingList>
+            {ranking.map((item, index) => (
+              <RankingItem key={index}>
+                <RankBadge>{index + 1}</RankBadge>
+
+                <ProductInfo>
+                  <ProductName>{item.productName}</ProductName>
+                  <ProductSubText>구매 횟수</ProductSubText>
+                </ProductInfo>
+
+                <PurchaseCount>{item.purchaseCount}회</PurchaseCount>
+              </RankingItem>
+            ))}
+          </RankingList>
+        </RankingSection>
+
         <ChartCard>
           <SectionTitle>라즈베리 주행 / 탄소 절감 선 그래프</SectionTitle>
 
@@ -175,49 +194,24 @@ const Admin = () => {
           </LargeChartBox>
         </ChartCard>
 
-        <RightColumn>
-          <RankingSection>
-            <SectionTitle>상품 구매 랭킹</SectionTitle>
+        <ChartCard>
+          <SectionTitle>요일별 구매 횟수</SectionTitle>
 
-            <RankingList>
-              {ranking.map((item, index) => (
-                <RankingItem key={index}>
-                  <RankBadge>{index + 1}</RankBadge>
+          <SmallChartBox>
+            <ResponsiveContainer>
+              <BarChart data={purchaseCharts}>
+                <CartesianGrid strokeDasharray="3 3" />
+                <XAxis dataKey="day" />
+                <YAxis />
+                <Tooltip />
+                <Legend />
 
-                  <ProductInfo>
-                    <ProductName>{item.productName}</ProductName>
-                    <ProductSubText>구매 횟수</ProductSubText>
-                  </ProductInfo>
-
-                  <PurchaseCount>{item.purchaseCount}회</PurchaseCount>
-                </RankingItem>
-              ))}
-            </RankingList>
-          </RankingSection>
-
-          <ChartCard>
-            <SectionTitle>요일별 구매 횟수</SectionTitle>
-
-            <SmallChartBox>
-              <ResponsiveContainer>
-                <BarChart data={purchaseCharts}>
-                  <CartesianGrid strokeDasharray="3 3" />
-                  <XAxis dataKey="day" />
-                  <YAxis />
-                  <Tooltip />
-                  <Legend />
-
-                  <Bar
-                    dataKey="purchaseCount"
-                    name="구매 횟수"
-                    fill="#0EA5E9"
-                  />
-                </BarChart>
-              </ResponsiveContainer>
-            </SmallChartBox>
-          </ChartCard>
-        </RightColumn>
-      </DashboardGrid>
+                <Bar dataKey="purchaseCount" name="구매 횟수" fill="#0EA5E9" />
+              </BarChart>
+            </ResponsiveContainer>
+          </SmallChartBox>
+        </ChartCard>
+      </MainDashboard>
     </AdminContainer>
   );
 };

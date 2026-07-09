@@ -23,9 +23,20 @@ export const SubTitle = styled.p`
   font-size: 15px;
 `;
 
+/* ===================== 전체 2 x 2 대시보드 ===================== */
+
+export const MainDashboard = styled.div`
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 24px;
+  align-items: stretch;
+`;
+
+/* ===================== 관리자 카드 2 x 2 ===================== */
+
 export const CardGrid = styled.div`
   display: grid;
-  grid-template-columns: repeat(4, 1fr);
+  grid-template-columns: repeat(2, 1fr);
   gap: 20px;
 `;
 
@@ -56,16 +67,25 @@ export const CardUnit = styled.span`
   color: ${({ theme }) => theme.color.sub};
 `;
 
+/* ===================== 공통 카드/제목 ===================== */
+
 export const SectionTitle = styled.h3`
   margin: 0 0 20px;
   font-size: 22px;
   color: ${({ theme }) => theme.color.text};
 `;
 
+export const ChartCard = styled.section`
+  padding: 28px;
+  background: #fff;
+  border: 1px solid ${({ theme }) => theme.color.border};
+  border-radius: ${({ theme }) => theme.radius.lg};
+  box-shadow: ${({ theme }) => theme.shadow.sm};
+`;
+
 /* ===================== 랭킹 ===================== */
 
 export const RankingSection = styled.section`
-  margin-top: 36px;
   padding: 28px;
   background: #fff;
   border: 1px solid ${({ theme }) => theme.color.border};
@@ -125,103 +145,14 @@ export const PurchaseCount = styled.p`
   color: ${({ theme }) => theme.color.pointDark};
 `;
 
-/* ===================== 차트 ===================== */
+/* ===================== Recharts 박스 ===================== */
 
-export const ChartSection = styled.section`
-  margin-top: 36px;
-  padding: 28px;
-  background: #fff;
-  border: 1px solid ${({ theme }) => theme.color.border};
-  border-radius: ${({ theme }) => theme.radius.lg};
-  box-shadow: ${({ theme }) => theme.shadow.sm};
-`;
-
-export const ChartBox = styled.div`
-  height: 320px;
-  display: flex;
-  align-items: flex-end;
-  justify-content: space-between;
-  gap: 18px;
-`;
-
-export const ChartItem = styled.div`
-  flex: 1;
-  height: 100%;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-`;
-
-export const BarWrapper = styled.div`
-  flex: 1;
+export const LargeChartBox = styled.div`
   width: 100%;
-  display: flex;
-  justify-content: center;
-  align-items: flex-end;
-`;
-
-export const Bar = styled.div`
-  width: 48px;
-  height: ${({ height }) => height}px;
-  max-height: 220px;
-  background: linear-gradient(
-    to top,
-    ${({ theme }) => theme.color.pointDark},
-    ${({ theme }) => theme.color.pointHover}
-  );
-  border-radius: ${({ theme }) => theme.radius.md}
-    ${({ theme }) => theme.radius.md} 0 0;
-  transition: 0.3s;
-`;
-
-export const ChartCount = styled.p`
-  margin: 12px 0 4px;
-  font-size: 15px;
-  font-weight: 700;
-  color: ${({ theme }) => theme.color.text};
-`;
-
-export const ChartSubCount = styled.p`
-  margin: 0 0 8px;
-  font-size: 13px;
-  color: ${({ theme }) => theme.color.success};
-`;
-
-export const ChartDay = styled.p`
-  margin: 0;
-  font-size: 14px;
-  font-weight: 700;
-  color: ${({ theme }) => theme.color.sub};
-`;
-
-export const DashboardGrid = styled.div`
-  margin-top: 36px;
-  display: grid;
-  grid-template-columns: 4fr 1fr;
-  gap: 24px;
-  align-items: start;
-`;
-
-export const RightColumn = styled.div`
-  display: flex;
-  flex-direction: column;
-  gap: 24px;
-`;
-
-export const ChartCard = styled.section`
-  padding: 28px;
-  background: #fff;
-  border: 1px solid ${({ theme }) => theme.color.border};
-  border-radius: ${({ theme }) => theme.radius.lg};
-  box-shadow: ${({ theme }) => theme.shadow.sm};
+  height: 360px;
 `;
 
 export const SmallChartBox = styled.div`
   width: 100%;
-  height: 240px;
-`;
-
-export const LargeChartBox = styled.div`
-  width: 100%;
-  height: 420px;
+  height: 360px;
 `;

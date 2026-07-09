@@ -161,3 +161,87 @@ export const TextArea = styled.textarea`
   width: 500px;
   height: 300px;
 `;
+export const ModalOverlay = styled.div`
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.45);
+
+  display: flex;
+  justify-content: center;
+  align-items: center;
+
+  z-index: 999;
+`;
+
+export const ModalContainer = styled.div`
+  width: 420px;
+  background: #fff;
+  border-radius: ${Theme.radius.lg};
+  padding: 30px;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+`;
+
+export const ModalTitle = styled.h3`
+  margin: 0 0 12px;
+  color: ${Theme.color.text};
+`;
+
+export const ModalDescription = styled.p`
+  margin-bottom: 20px;
+  color: ${Theme.color.sub};
+  font-size: 14px;
+  line-height: 1.5;
+`;
+
+export const ModalInput = styled.input`
+  width: 93%;
+  height: 46px;
+  padding: 0 14px;
+  border: 1px solid ${Theme.color.inputBorder};
+  border-radius: ${Theme.radius.sm};
+
+  &:focus {
+    outline: none;
+    border-color: ${Theme.color.point};
+  }
+`;
+
+export const ModalButtonGroup = styled.div`
+  display: flex;
+  justify-content: flex-end;
+  gap: 12px;
+  margin-top: 24px;
+`;
+
+export const ModalCancelButton = styled.button`
+  min-width: 90px;
+  height: 42px;
+  border: 1px solid ${Theme.color.border};
+  border-radius: ${Theme.radius.sm};
+  background: #fff;
+  cursor: pointer;
+
+  &:hover {
+    background: #f5f5f5;
+  }
+`;
+
+export const ModalConfirmButton = styled.button`
+  min-width: 90px;
+  height: 42px;
+  border: none;
+  border-radius: ${Theme.radius.sm};
+  background: ${Theme.color.point};
+  color: #fff;
+  cursor: pointer;
+
+  &:hover {
+    opacity: 0.9;
+  }
+`;
+
+export const ErrorText = styled.span`
+  font-family: ${Theme.font};
+  font-size: 13px;
+  color: ${Theme.color.danger};
+`;

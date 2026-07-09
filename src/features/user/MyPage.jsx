@@ -23,15 +23,24 @@ import {
   MileageContent,
   MileagePoint,
   MileageMinus,
+  ModalOverlay,
+  ModalContainer,
+  ModalTitle,
+  ModalDescription,
+  ModalInput,
+  ModalButtonGroup,
+  ModalConfirmButton,
+  ModalCancelButton,
+  ErrorText,
 } from "./styles/MyPageStyle";
 
 import {
   AuthCard,
   AuthSubTitle,
   AuthTitle,
-  FieldGroup,
   FieldLabel,
   InputBox,
+  FieldGroup,
   InsertForm,
   SubmitButton,
   UpdateButton,
@@ -56,7 +65,7 @@ import {
   Pagination,
 } from "../boards/styles/Board.styles";
 import { useAuth } from "../../context/AuthContext";
-import { data } from "react-router-dom";
+import { data, useNavigate } from "react-router-dom";
 
 const PAGE_GROUP_SIZE = 3;
 
@@ -70,17 +79,54 @@ const MyPage = () => {
   const [userName, setUserName] = useState(0);
   const [email, setEmail] = useState("");
   const [userPwd, setUserPwd] = useState("");
+  const [rawPwd, setRawPwd] = useState("");
+  const [pwdModal, isPwdModal] = useState(false);
+  const navi = useNavigate();
+
+  //이메일 비밀번호 검증
+  const [emailError, setEmailError] = useState("");
+  const [passwordError, setPasswordError] = useState("");
+  const emailRegex = /^[0-9a-zA-Z]{4,20}@[0-9a-zA-Z]{4,10}\.(com|kr)$/;
+  const passwordRegex = /^[a-zA-Z0-9]{4,20}$/;
+  const isUpdateButtonDisabled =
+    !!emailError ||
+    !!passwordError ||
+    email.trim() === "" ||
+    userPwd.trim() === "";
+  const handleEmailChange = (e) => {
+    const value = e.target.value;
+    setEmail(value);
+
+    if (value === "") {
+      setEmailError("");
+    } else if (!emailRegex.test(value)) {
+      setEmailError("이메일 형식이 올바르지 않습니다.");
+    } else {
+      setEmailError("");
+    }
+  };
+
+  const handlePasswordChange = (e) => {
+    const value = e.target.value;
+    setUserPwd(value);
+
+    if (value === "") {
+      setPasswordError("");
+    } else if (!passwordRegex.test(value)) {
+      setPasswordError("비밀번호 형식이 올바르지 않습니다.");
+    } else {
+      setPasswordError("");
+    }
+  };
 
   useEffect(() => {
     api.get("/rasp/mypage").then((result) => {
-      console.log(result);
       setRaspData(result.data.data);
     });
 
     api
       .get(`/users/mypage?page=${page + 1}&size=${pages.size}`)
       .then((result) => {
-        console.log(result.data.data);
         setMileageHistory(result.data.data.mileages);
         setPages(result.data.data.pageInfo);
         setMileageSum(result.data.data.mileageSum);
@@ -94,13 +140,22 @@ const MyPage = () => {
   const groupEnd = Math.min(groupStart + PAGE_GROUP_SIZE, totalPages);
 
   const onSubmit = () => {
-    api.patch("/users", {
-      data: {
+    handlePasswordChange;
+    api
+      .patch("/users/mypage", {
+        rawPwd: rawPwd,
         userPwd: userPwd,
         email: email,
-      },
-    });
+      })
+      .then((result) => {
+        alert("회원 정보 수정에 성공했습니다.");
+        console.log(result);
+        isPwdModal(false);
+        navi("/");
+      })
+      .catch((e) => console.log(e.response));
   };
+
   return (
     <Main>
       <TitleSection>
@@ -118,25 +173,41 @@ const MyPage = () => {
             </FieldGroup>
             <FieldGroup>
               <FieldLabel>EMAIL</FieldLabel>
+
               <InputBox
                 type="email"
                 placeholder="이메일을 입력하세요"
-                onChange={(e) => setEmail(e.target.value)}
+                onChange={handleEmailChange}
               />
+              <FieldLabel>
+                <ErrorText $show={!!emailError}>{emailError || " "}</ErrorText>
+              </FieldLabel>
             </FieldGroup>
             <FieldGroup>
               <FieldLabel>이름</FieldLabel>
               <InputBox value={user.userName} readOnly />
             </FieldGroup>
             <FieldGroup>
-              <FieldLabel>비밀번호</FieldLabel>
+              <FieldLabel>변경 비밀번호</FieldLabel>
+
               <InputBox
                 type="password"
-                placeholder="비밀번호를 입력하세요"
-                onChange={(e) => setUserPwd(e.target.value)}
+                placeholder="변경하실 비밀번호를 입력하세요"
+                onChange={handlePasswordChange}
               />
+              <FieldLabel>
+                <ErrorText $show={!!passwordError}>
+                  {passwordError || " "}
+                </ErrorText>
+              </FieldLabel>
             </FieldGroup>
-            <UpdateButton onClick={onSubmit}>수정</UpdateButton>
+            <UpdateButton
+              type="button"
+              disabled={isUpdateButtonDisabled}
+              onClick={() => isPwdModal(true)}
+            >
+              수정
+            </UpdateButton>
             <BackButton>돌아가기</BackButton>
           </InsertForm>
         </AuthCard>
@@ -231,6 +302,38 @@ const MyPage = () => {
           </MileageSection>
         </RightSection>
       </Content>
+      {pwdModal && (
+        <ModalOverlay>
+          <ModalContainer>
+            <ModalTitle>비밀번호 확인</ModalTitle>
+
+            <ModalDescription>
+              회원 정보를 수정하려면 현재 비밀번호를 입력해주세요.
+            </ModalDescription>
+
+            <ModalInput
+              type="password"
+              placeholder="현재 비밀번호"
+              value={rawPwd}
+              onChange={(e) => setRawPwd(e.target.value)}
+            />
+
+            <ModalButtonGroup>
+              <ModalCancelButton
+                onClick={() => {
+                  console.log(pwdModal);
+                  isPwdModal(false);
+                  setRawPwd("");
+                }}
+              >
+                취소
+              </ModalCancelButton>
+
+              <ModalConfirmButton onClick={onSubmit}>확인</ModalConfirmButton>
+            </ModalButtonGroup>
+          </ModalContainer>
+        </ModalOverlay>
+      )}
     </Main>
   );
 };

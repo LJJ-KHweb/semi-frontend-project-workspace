@@ -171,7 +171,7 @@ const StationForm = () => {
             <Input
               value={stationName}
               onChange={(e) => setStationName(e.target.value)}
-              placeholder="충전소명을 입력해주세요."
+              placeholder="서울시청 충전소"
             />
           </FormRow>
           <SplitRow>

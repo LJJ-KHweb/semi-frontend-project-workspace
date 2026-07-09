@@ -66,6 +66,19 @@ const MapApi = ({
         lng: mouseEvent.latLng.getLng(),
       });
     });
+
+    // 컨테이너 크기가 초기화 이후에 바뀌면(예: 비동기로 받아온 데이터가 채워지며
+    // flex 레이아웃이 재계산되는 경우) 카카오맵이 스스로 다시 그리지 않아서
+    // 지도가 빈 화면으로 보이는 문제가 있음 -> 크기 변화를 감지해 relayout() 호출.
+    const resizeObserver = new ResizeObserver(() => {
+      map.relayout();
+      map.setCenter(new window.kakao.maps.LatLng(center.lat, center.lng));
+    });
+    resizeObserver.observe(containerRef.current);
+
+    return () => {
+      resizeObserver.disconnect();
+    };
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 

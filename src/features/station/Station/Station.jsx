@@ -62,6 +62,7 @@ const Map = () => {
         setError(null);
         // console.log(res.data.data.stations);
       } catch (e) {
+        setStations([]);
         setError("충전소 정보를 불러오지 못했습니다.");
       }
     };

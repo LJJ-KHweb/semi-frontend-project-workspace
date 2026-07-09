@@ -24,6 +24,7 @@ import RequireForm from "./features/boards/require/RequireFrom";
 import RequireDetail from "./features/boards/require/RequireDetail";
 import AdminRequire from "./features/admin/require/AdminRequire";
 import AdminRequireDetail from "./features/admin/require/AdminRequireDetail";
+import AdminStationDetail from "./features/admin/AdminStations/AdminStationDetail";
 
 const App = () => {
   return (
@@ -57,6 +58,10 @@ const App = () => {
         <Route path="/admin/users" element={<Spacer />} />
         <Route path="/admin/stations" element={<AdminStations />} />
         <Route path="/admin/stations/form" element={<StationForm />} />
+        <Route
+          path="/admin/stations/:stationNo"
+          element={<AdminStationDetail />}
+        />
         <Route path="/admin/chargers" element={<Spacer />} />
         <Route path="/admin/requires" element={<AdminRequire />} />
         <Route

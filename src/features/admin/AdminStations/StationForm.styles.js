@@ -122,10 +122,65 @@ export const MapContainer = styled.div`
   border-radius: ${Theme.radius.md};
 `;
 
+export const StatusToggleGroup = styled.div`
+  display: flex;
+  gap: 8px;
+`;
+
+export const StatusToggleBtn = styled.button`
+  flex: 1;
+  padding: 10px 0;
+  border: 1px solid ${Theme.color.inputBorder};
+  border-radius: ${Theme.radius.sm};
+  background: #fff;
+  color: ${Theme.color.sub};
+  font-size: 13px;
+  font-weight: 600;
+  cursor: pointer;
+
+  &:hover {
+    border-color: ${Theme.color.point};
+  }
+
+  &[data-active="true"][data-status="Y"] {
+    background: ${Theme.color.successSoft};
+    border-color: ${Theme.color.success};
+    color: ${Theme.color.success};
+  }
+
+  &[data-active="true"][data-status="N"] {
+    background: ${Theme.color.dangerSoft};
+    border-color: ${Theme.color.danger};
+    color: ${Theme.color.danger};
+  }
+`;
+
+export const ButtonGroup = styled.div`
+  display: flex;
+  gap: 12px;
+`;
+
+export const BackButton = styled.button`
+  align-self: flex-start;
+  padding: 10px 24px;
+  border: 1px solid ${Theme.color.inputBorder};
+  border-radius: ${Theme.radius.sm};
+  background: #fff;
+  color: ${Theme.color.text};
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+
+  &:hover {
+    border-color: ${Theme.color.point};
+    color: ${Theme.color.point};
+  }
+`;
+
 export const SubmitBtn = styled.button`
   align-self: flex-start;
   padding: 10px 24px;
-  border: none;
+  border: 1px solid transparent;
   border-radius: ${Theme.radius.sm};
   background: ${Theme.color.point};
   color: #fff;

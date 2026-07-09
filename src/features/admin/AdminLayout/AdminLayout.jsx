@@ -14,6 +14,7 @@ const pageTitles = {
   "/admin/users": "회원 관리",
   "/admin/stations": "충전소 관리",
   "/admin/stations/form": "충전소 작성",
+  "/admin/stations/:stationNo": "충전소 상세보기",
   "/admin/chargers": "충전기 관리",
   "/admin/requires": "문의사항 관리",
   "/admin/notices": "공지사항 관리",

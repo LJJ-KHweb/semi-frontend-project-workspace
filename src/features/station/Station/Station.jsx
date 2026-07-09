@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useRef, useState } from "react";
+import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import axios from "axios";
 import { Spacer } from "../../../App.styles";
 import {
@@ -31,6 +31,7 @@ const Map = () => {
   const [pages, setPages] = useState({ size: 3, boardCounts: 0 });
   const [focus, setFocus] = useState(null);
   const [error, setError] = useState(null);
+  const [pinned, setPinned] = useState(false); // 사용자가 지도를 클릭해서 위치를 직접 찍었는지
 
   useEffect(() => {
     // 브라우저에서 제공하는 API 사용자의 현재 위치를 1회성으로 조회하는 함수
@@ -58,6 +59,7 @@ const Map = () => {
         });
         setStations(res.data.data.stations);
         setPages(res.data.data.pageInfo);
+        setError(null);
         // console.log(res.data.data.stations);
       } catch (e) {
         setError("충전소 정보를 불러오지 못했습니다.");
@@ -76,6 +78,13 @@ const Map = () => {
   // 현재 그룹의 마지막 페이지 인덱스( ex) 0그룹 총 8페이지 -> min(0+3, 8) = 3/ 1그룹 총 8페이지 -> min(3+3, 8) = 6)
   // Math.min == 둘 중 더 작은 값을 반환하는 메서드( ex)10, 8 == 8)
   const groupEnd = Math.min(groupStart + PAGE_GROUP_SIZE, totalPages);
+
+  // 지도를 클릭하면 그 위치를 조회 기준으로 삼아 다시 조회
+  const handleMapClick = useCallback((clicked) => {
+    setCoords(clicked);
+    setPinned(true);
+    setPage(0);
+  }, []);
 
   const positions = useMemo(
     () =>
@@ -184,7 +193,13 @@ const Map = () => {
             {/* 페이지 버튼 */}
           </StationListCard>
           <MapCard>
-            <MapApi center={coords} focus={focus} positions={positions} />
+            <MapApi
+              center={coords}
+              focus={focus}
+              positions={positions}
+              onMapClick={handleMapClick}
+              pinned={pinned}
+            />
           </MapCard>
         </StationWarp>
       </Wrap>

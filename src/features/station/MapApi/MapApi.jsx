@@ -16,7 +16,22 @@ const USER_MARKER_IMAGE_SRC =
     '<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24"><circle cx="12" cy="12" r="8" fill="#2563EB" stroke="#fff" stroke-width="3"/></svg>',
   );
 
-const MapApi = ({ positions, center, level = 3, focus, interactive = true }) => {
+// 사용자가 지도를 클릭해서 직접 찍은 위치를 표시하는 핀 모양 마커
+const PIN_MARKER_IMAGE_SRC =
+  "data:image/svg+xml;utf8," +
+  encodeURIComponent(
+    '<svg xmlns="http://www.w3.org/2000/svg" width="28" height="36"><path d="M14 0C6.3 0 0 6.3 0 14c0 10.5 14 22 14 22s14-11.5 14-22C28 6.3 21.7 0 14 0z" fill="#DC2626" stroke="#fff" stroke-width="2"/><circle cx="14" cy="14" r="5" fill="#fff"/></svg>',
+  );
+
+const MapApi = ({
+  positions,
+  center,
+  level = 3,
+  focus,
+  interactive = true,
+  onMapClick,
+  pinned = false,
+}) => {
   // MapApi는 앱의 메인 트리(Router 컨텍스트) 안에 있어서 useNavigate 사용 가능.
   // MapOverlay는 별도의 createRoot로 렌더링되는 독립된 트리라 Router 컨텍스트가
   // 없으므로, 여기서 만든 navi 함수를 그대로 props로 내려서 써야 한다.
@@ -34,6 +49,16 @@ const MapApi = ({ positions, center, level = 3, focus, interactive = true }) => 
       level,
     });
     mapRef.current = map;
+
+    // 지도를 클릭하면 그 좌표를 조회 기준 위치로 쓸 수 있도록 부모에 전달
+    if (onMapClick) {
+      window.kakao.maps.event.addListener(map, "click", (mouseEvent) => {
+        onMapClick({
+          lat: mouseEvent.latLng.getLat(),
+          lng: mouseEvent.latLng.getLng(),
+        });
+      });
+    }
 
     const stationEntries = positions.map(
       ({ stationNo, name, region, address, chargers, lat, lng }) => {
@@ -83,15 +108,26 @@ const MapApi = ({ positions, center, level = 3, focus, interactive = true }) => 
       },
     );
 
-    const userMarker = new window.kakao.maps.Marker({
-      map,
-      position: new window.kakao.maps.LatLng(center.lat, center.lng),
-      name: "내 위치",
-      image: new window.kakao.maps.MarkerImage(
-        USER_MARKER_IMAGE_SRC,
-        new window.kakao.maps.Size(24, 24),
-      ),
-    });
+    const userMarker = pinned
+      ? new window.kakao.maps.Marker({
+          map,
+          position: new window.kakao.maps.LatLng(center.lat, center.lng),
+          name: "선택한 위치",
+          image: new window.kakao.maps.MarkerImage(
+            PIN_MARKER_IMAGE_SRC,
+            new window.kakao.maps.Size(28, 36),
+            { offset: new window.kakao.maps.Point(14, 36) },
+          ),
+        })
+      : new window.kakao.maps.Marker({
+          map,
+          position: new window.kakao.maps.LatLng(center.lat, center.lng),
+          name: "내 위치",
+          image: new window.kakao.maps.MarkerImage(
+            USER_MARKER_IMAGE_SRC,
+            new window.kakao.maps.Size(24, 24),
+          ),
+        });
 
     markersRef.current = [
       ...stationEntries.map(({ marker }) => marker),
@@ -117,7 +153,7 @@ const MapApi = ({ positions, center, level = 3, focus, interactive = true }) => 
         });
       });
     };
-  }, [positions, center, level]);
+  }, [positions, center, level, onMapClick, pinned]);
 
   // Station.jsx에서 카드 클릭 시 setFocus({ lat, lng })가 호출됨
   // focus가 바뀌면 이 useEffect가 실행되어 지도 중심을 해당 좌표로 이동

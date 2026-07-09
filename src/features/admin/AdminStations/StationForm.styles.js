@@ -72,6 +72,22 @@ export const TextArea = styled.textarea`
   }
 `;
 
+export const SplitRow = styled.div`
+  display: flex;
+  gap: 16px;
+
+  & > div {
+    flex: 1;
+  }
+`;
+
+export const DangerText = styled.p`
+  margin: 0;
+  font-size: 12px;
+  line-height: 1.4;
+  color: ${Theme.color.danger};
+`;
+
 export const AddressRow = styled.div`
   display: flex;
   gap: 8px;

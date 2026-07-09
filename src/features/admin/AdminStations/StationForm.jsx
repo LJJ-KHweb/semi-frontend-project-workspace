@@ -11,6 +11,8 @@ import {
   TextArea,
   AddressRow,
   SearchBtn,
+  SplitRow,
+  DangerText,
   MapContainer,
   SubmitBtn,
 } from "./StationForm.styles";
@@ -137,6 +139,11 @@ const StationForm = () => {
       return;
     }
 
+    if (chargerCount === "" || Number(chargerCount) <= 0) {
+      alert("충전기 수를 1대 이상 입력해주세요.");
+      return;
+    }
+
     try {
       await api.post("/admin/chargeStations", {
         stationName,
@@ -167,25 +174,38 @@ const StationForm = () => {
               placeholder="충전소명을 입력해주세요."
             />
           </FormRow>
-          <FormRow>
-            <Label>충전기 수</Label>
-            <Input
-              type="number"
-              min="0"
-              max="99"
-              placeholder="0"
-              value={chargerCount}
-              onChange={(e) => setChargerCount(e.target.value)}
-            />
-          </FormRow>
-          <FormRow>
-            <Label>지역</Label>
-            <Input
-              value={region}
-              onChange={(e) => setRegion(e.target.value)}
-              placeholder="지역을 입력해주세요. 예) 서울"
-            />
-          </FormRow>
+          <SplitRow>
+            <FormRow>
+              <Label>지역</Label>
+              <Input
+                value={region}
+                onChange={(e) => setRegion(e.target.value)}
+                placeholder="서울"
+              />
+            </FormRow>
+            <FormRow>
+              <Label>충전기 수</Label>
+              <Input
+                type="number"
+                min="0"
+                max="99"
+                placeholder="0"
+                value={chargerCount}
+                onChange={(e) => setChargerCount(e.target.value)}
+              />
+            </FormRow>
+          </SplitRow>
+          {/* 
+                chargerCount가 없으면 공백문자
+                음수거나, 99 보다 크면 밑에 조건식에서 메시지 설정 
+            */}
+          <DangerText>
+            {chargerCount !== "" && Number(chargerCount) < 0
+              ? "충전기 수는 음수 일수 없습니다."
+              : chargerCount !== "" && Number(chargerCount) > 99
+                ? "충전기 수는 99 이하만 등록 가능 합니다."
+                : " "}
+          </DangerText>
           <FormRow>
             <Label>주소</Label>
             <AddressRow>
@@ -193,6 +213,7 @@ const StationForm = () => {
                 value={address}
                 onChange={(e) => setAddress(e.target.value)}
                 onKeyDown={handleEnter}
+                placeholder="서울특별시 중구 세종대로 110"
               />
               <SearchBtn type="button" onClick={handleAddressSearch}>
                 검색
@@ -204,6 +225,7 @@ const StationForm = () => {
             <TextArea
               value={stationDesc}
               onChange={(e) => setStationDesc(e.target.value)}
+              placeholder="서울시청입니다."
             />
           </FormRow>
         </FieldSection>

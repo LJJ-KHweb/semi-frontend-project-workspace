@@ -35,6 +35,7 @@ import {
   DatePickerGlobalStyle,
 } from "./Verify.styles";
 import axios from "axios";
+import api from "../../../api/axios";
 import { useEffect, useState } from "react";
 import DatePicker, { registerLocale } from "react-datepicker";
 import { ko } from "date-fns/locale";
@@ -73,8 +74,13 @@ const Main = () => {
       return;
     }
 
-    console.log(selectedCarNo, startTime, finishTime);
+    console.log(
+      selectedCarNo,
+      format(startTime, "yyyy-MM-dd'T'HH:mm"),
+      format(finishTime, "yyyy-MM-dd'T'HH:mm"),
+    );
     setIsVerifyOpen(false);
+    onSubmit();
   };
 
   useEffect(() => {
@@ -91,6 +97,18 @@ const Main = () => {
     const interval = setInterval(fetchData, 5000);
     return () => clearInterval(interval);
   }, []);
+
+  const onSubmit = async () => {
+    try {
+      await api.post("/users/drivingHistory", {
+        carNo: selectedCarNo,
+        startTime,
+        finishTime,
+      });
+    } catch (e) {
+      console.log(e.response);
+    }
+  };
 
   return (
     <Spacer>
@@ -204,7 +222,7 @@ const Main = () => {
                     onChange={(date) => setFinishTimeTime(date)}
                     minDate={startTime} // 타임머신 불가
                     filterTime={(time) => !startTime || time >= startTime} // 같은 날짜여도 빌린 시간 이전은 목록에서 제외
-                    disabled={!startTime}
+                    disabled={!startTime} // startTime이 없으면 설정 못 바꿈
                     showTimeSelect
                     timeIntervals={15}
                     dateFormat="yyyy-MM-dd HH:mm"

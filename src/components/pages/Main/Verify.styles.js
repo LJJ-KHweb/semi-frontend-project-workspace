@@ -245,6 +245,15 @@ export const DatePickerGlobalStyle = createGlobalStyle`
     background: ${Theme.color.pointHover};
   }
 
+  .react-datepicker__day--disabled {
+    color: ${Theme.color.disabled};
+    cursor: not-allowed;
+  }
+
+  .react-datepicker__day--disabled:hover {
+    background: none;
+  }
+
   .react-datepicker__time-list-item--selected {
     background: ${Theme.color.point} !important;
   }

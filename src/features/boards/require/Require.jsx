@@ -17,6 +17,8 @@ import { Spacer } from "../../../App.styles";
 import api from "../../../api/axios";
 import { useNavigate } from "react-router-dom";
 
+const PAGE_GROUP_SIZE = 5;
+
 const Require = () => {
   const [page, setPage] = useState(0);
   const [pages, setPages] = useState({ size: 10, boardCounts: 0 });

@@ -21,6 +21,8 @@ import NoticeDetail from "./features/boards/Notice/NoticeDetail";
 import Require from "./features/boards/require/Require";
 import RequireForm from "./features/boards/require/RequireFrom";
 import RequireDetail from "./features/boards/require/RequireDetail";
+import AdminRequire from "./features/admin/require/AdminRequire";
+import AdminRequireDetail from "./features/admin/require/AdminRequireDetail";
 
 const App = () => {
   return (
@@ -54,7 +56,11 @@ const App = () => {
         <Route path="/admin/stations" element={<AdminStations />} />
         <Route path="/admin/stations/form" element={<StationForm />} />
         <Route path="/admin/chargers" element={<Spacer />} />
-        <Route path="/admin/requires" element={<Spacer />} />
+        <Route path="/admin/requires" element={<AdminRequire />} />
+        <Route
+          path="/admin/requires/:requireNo"
+          element={<AdminRequireDetail />}
+        />
         <Route path="/admin/notices" element={<Spacer />} />
         <Route path="/admin/boards" element={<Spacer />} />
       </Route>

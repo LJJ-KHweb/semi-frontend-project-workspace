@@ -25,6 +25,7 @@ import RequireDetail from "./features/boards/require/RequireDetail";
 import AdminRequire from "./features/admin/require/AdminRequire";
 import AdminRequireDetail from "./features/admin/require/AdminRequireDetail";
 import AdminBoard from "./features/admin/board/AdminBoard";
+import AdminBoardDetail from "./features/admin/board/AdminBoardDetail";
 
 const App = () => {
   return (
@@ -66,6 +67,7 @@ const App = () => {
         />
         <Route path="/admin/notices" element={<Spacer />} />
         <Route path="/admin/boards" element={<AdminBoard />} />
+        <Route path="/admin/boards/:boardNo" element={<AdminBoardDetail />} />
       </Route>
     </Routes>
   );

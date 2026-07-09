@@ -1,4 +1,5 @@
 import { useEffect, useState } from "react";
+import { AdminCell } from "./styles/AdminBoard.styles";
 import {
   Wrap,
   Header,
@@ -29,8 +30,6 @@ const AdminBoard = () => {
     api
       .get(`/admin/boards?page=${page + 1}&size=${pages.size}`)
       .then((result) => {
-        console.log(result.data.data);
-
         setBoards(result.data.data.boards);
         setPages(result.data.data.pageInfo);
       })
@@ -38,8 +37,7 @@ const AdminBoard = () => {
         console.log(err);
         alert("관리자 게시글 목록 조회 실패");
       });
-    console.log(localStorage.getItem("token"));
-    console.log(localStorage.getItem("role"));
+    console.log(boards);
   }, [page]);
 
   const totalPages = Math.ceil(pages.boardCounts / pages.size);
@@ -57,37 +55,24 @@ const AdminBoard = () => {
         <Table>
           <HeadRow>
             <Cell>번호</Cell>
-            <Cell>유형</Cell>
-            <Cell>제목</Cell>
             <Cell>작성자</Cell>
+            <Cell>제목</Cell>
             <Cell>작성일</Cell>
             <Cell>조회수</Cell>
             <Cell>상태</Cell>
-            <Cell>관리</Cell>
           </HeadRow>
 
           {boards.map((board) => (
-            <Row key={board.boardNo}>
+            <Row
+              key={board.boardNo}
+              onClick={() => navi(`/admin/boards/${board.boardNo}`)}
+            >
               <Cell>{board.boardNo}</Cell>
-
-              <Cell>
-                <TypeBadge data-notice={false}>일반</TypeBadge>
-              </Cell>
-
+              <Cell>{board.userId}</Cell>
               <Cell>{board.boardTitle}</Cell>
-              <Cell>{board.userName}</Cell>
               <Cell>{board.createDate}</Cell>
               <Cell>{board.views}</Cell>
-
               <Cell>{board.status === "Y" ? "정상" : "삭제됨"}</Cell>
-
-              <Cell>
-                <button
-                  onClick={() => navi(`/admin/boards/detail/${board.boardNo}`)}
-                >
-                  상세
-                </button>
-              </Cell>
             </Row>
           ))}
         </Table>

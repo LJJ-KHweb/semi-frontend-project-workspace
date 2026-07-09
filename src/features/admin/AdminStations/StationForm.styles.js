@@ -10,6 +10,26 @@ export const FormWrap = styled.form`
   width: 80%;
 `;
 
+export const FormLayout = styled.div`
+  display: flex;
+  gap: 24px;
+`;
+
+export const FieldSection = styled.div`
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  flex: 3;
+`;
+
+export const MapSection = styled.div`
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  flex: 7;
+  height: 100%;
+`;
+
 export const FormRow = styled.div`
   display: flex;
   flex-direction: column;
@@ -38,7 +58,7 @@ export const Input = styled.input`
 
 export const TextArea = styled.textarea`
   padding: 10px 12px;
-  min-height: 100px;
+  min-height: 250px;
   border: 1px solid ${Theme.color.inputBorder};
   border-radius: ${Theme.radius.sm};
   background: ${Theme.color.inputBg};
@@ -52,14 +72,36 @@ export const TextArea = styled.textarea`
   }
 `;
 
-export const MapHint = styled.p`
+export const AddressRow = styled.div`
+  display: flex;
+  gap: 8px;
+
+  & > input {
+    flex: 1;
+    min-width: 0;
+  }
+`;
+
+export const SearchBtn = styled.button`
+  flex-shrink: 0;
+  padding: 0 16px;
+  border: 1px solid ${Theme.color.inputBorder};
+  border-radius: ${Theme.radius.sm};
+  background: #fff;
+  color: ${Theme.color.text};
   font-size: 13px;
-  color: ${Theme.color.sub};
+  font-weight: 600;
+  cursor: pointer;
+
+  &:hover {
+    border-color: ${Theme.color.point};
+    color: ${Theme.color.point};
+  }
 `;
 
 export const MapContainer = styled.div`
   width: 100%;
-  height: 320px;
+  height: 100%;
   border: 1px solid ${Theme.color.border};
   border-radius: ${Theme.radius.md};
 `;

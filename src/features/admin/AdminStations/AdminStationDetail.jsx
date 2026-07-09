@@ -1,5 +1,6 @@
 import { useEffect, useRef, useState } from "react";
-import axios from "axios";
+import { useNavigate, useParams } from "react-router-dom";
+import api from "../../../api/axios";
 import {
   FormWrap,
   FormLayout,
@@ -14,10 +15,12 @@ import {
   SplitRow,
   DangerText,
   MapContainer,
+  StatusToggleGroup,
+  StatusToggleBtn,
+  ButtonGroup,
   SubmitBtn,
+  BackButton,
 } from "./StationForm.styles";
-import api from "../../../api/axios";
-import { useNavigate } from "react-router-dom";
 
 const DEFAULT_CENTER = { lat: 37.5665, lng: 126.978 };
 
@@ -30,12 +33,12 @@ const parseGeocodeResult = (item) => {
   };
 };
 
-const StationForm = () => {
+const AdminStationDetail = () => {
+  const { stationNo } = useParams();
   const navi = useNavigate();
 
   const mapContainerRef = useRef(null);
   const markerRef = useRef(null);
-
   const geocoderRef = useRef(null);
   const mapRef = useRef(null);
 
@@ -44,8 +47,31 @@ const StationForm = () => {
   const [address, setAddress] = useState("");
   const [chargerCount, setChargerCount] = useState("");
   const [stationDesc, setStationDesc] = useState("");
-  const [position, setPosition] = useState(null); // 지도에서 클릭해서 찍은 { lat, lng }
+  const [status, setStatus] = useState("Y");
+  const [position, setPosition] = useState(null);
 
+  // 상세 정보를 불러와서 폼 state에 채워넣는다
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const res = await api.get(`/admin/chargeStations/${stationNo}`);
+        const s = res.data.data;
+        setStationName(s.stationName ?? "");
+        setRegion(s.region ?? "");
+        setAddress(s.address ?? "");
+        setChargerCount(s.chargerCount != null ? String(s.chargerCount) : "");
+        setStationDesc(s.stationDesc ?? "");
+        setStatus(s.status ?? "Y");
+        if (s.lat && s.lng) setPosition({ lat: s.lat, lng: s.lng });
+      } catch (e) {
+        console.log("상세 정보를 불러오지 못했습니다.", e);
+      }
+    };
+
+    fetchData();
+  }, [stationNo]);
+
+  // 지도는 최초 1번만 생성한다
   useEffect(() => {
     if (!window.kakao?.maps || !mapContainerRef.current) return;
 
@@ -60,19 +86,9 @@ const StationForm = () => {
     mapRef.current = map;
     geocoderRef.current = new window.kakao.maps.services.Geocoder();
 
-    // 지도를 클릭한 위치에 마커를 찍고, 그 좌표를 폼 state(position)에 저장
+    // 지도를 클릭한 위치를 폼 state(position)에 저장
     window.kakao.maps.event.addListener(map, "click", (mouseEvent) => {
       const latlng = mouseEvent.latLng;
-
-      if (markerRef.current) {
-        markerRef.current.setPosition(latlng);
-      } else {
-        markerRef.current = new window.kakao.maps.Marker({
-          map,
-          position: latlng,
-        });
-      }
-
       setPosition({ lat: latlng.getLat(), lng: latlng.getLng() });
 
       geocoderRef.current?.coord2Address(
@@ -94,6 +110,25 @@ const StationForm = () => {
     };
   }, []);
 
+  // position이 바뀔 때마다(지도 클릭, 주소 검색, 최초 데이터 로드) 마커와
+  // 지도 중심을 그 위치로 맞춘다
+  useEffect(() => {
+    if (!mapRef.current || !position) return;
+
+    const latlng = new window.kakao.maps.LatLng(position.lat, position.lng);
+
+    if (markerRef.current) {
+      markerRef.current.setPosition(latlng);
+    } else {
+      markerRef.current = new window.kakao.maps.Marker({
+        map: mapRef.current,
+        position: latlng,
+      });
+    }
+
+    mapRef.current.setCenter(latlng);
+  }, [position]);
+
   const handleAddressSearch = () => {
     if (!address.trim()) {
       alert("주소를 입력해주세요.");
@@ -107,19 +142,7 @@ const StationForm = () => {
         return;
       }
 
-      const latlng = new window.kakao.maps.LatLng(result[0].y, result[0].x);
-
-      if (markerRef.current) {
-        markerRef.current.setPosition(latlng);
-      } else {
-        markerRef.current = new window.kakao.maps.Marker({
-          map: mapRef.current,
-          position: latlng,
-        });
-      }
-
-      mapRef.current.setCenter(latlng);
-      setPosition({ lat: latlng.getLat(), lng: latlng.getLng() });
+      setPosition({ lat: Number(result[0].y), lng: Number(result[0].x) });
       setRegion(parseGeocodeResult(result[0]).region);
     });
   };
@@ -145,20 +168,21 @@ const StationForm = () => {
     }
 
     try {
-      await api.post("/admin/chargeStations", {
+      await api.patch(`/admin/chargeStations/${stationNo}`, {
         stationName,
         region,
         address,
         chargerCount: Number(chargerCount),
         stationDesc,
+        status,
         lat: position.lat,
         lng: position.lng,
       });
-      alert("충전소가 등록되었습니다.");
+      alert("충전소 정보가 수정되었습니다.");
       navi("/admin/stations");
     } catch (err) {
       console.log(err.response);
-      alert("등록에 실패했습니다.");
+      alert("수정에 실패했습니다.");
     }
   };
 
@@ -174,6 +198,29 @@ const StationForm = () => {
               placeholder="서울시청 충전소"
             />
           </FormRow>
+
+          <FormRow>
+            <Label>상태</Label>
+            <StatusToggleGroup>
+              <StatusToggleBtn
+                type="button"
+                data-status="Y"
+                data-active={status === "Y"}
+                onClick={() => setStatus("Y")}
+              >
+                정상 운영
+              </StatusToggleBtn>
+              <StatusToggleBtn
+                type="button"
+                data-status="N"
+                data-active={status === "N"}
+                onClick={() => setStatus("N")}
+              >
+                운영 중지
+              </StatusToggleBtn>
+            </StatusToggleGroup>
+          </FormRow>
+
           <SplitRow>
             <FormRow>
               <Label>지역</Label>
@@ -193,20 +240,18 @@ const StationForm = () => {
                 placeholder="0"
                 value={chargerCount}
                 onChange={(e) => setChargerCount(e.target.value)}
+                disabled
               />
             </FormRow>
           </SplitRow>
-          {/* 
-                chargerCount가 없으면 공백문자
-                음수거나, 99 보다 크면 밑에 조건식에서 메시지 설정 
-            */}
           <DangerText>
             {chargerCount !== "" && Number(chargerCount) < 0
               ? "충전기 수는 음수 일수 없습니다."
               : chargerCount !== "" && Number(chargerCount) > 99
                 ? "충전기 수는 99 이하만 등록 가능 합니다."
-                : " "}
+                : " "}
           </DangerText>
+
           <FormRow>
             <Label>주소</Label>
             <AddressRow>
@@ -221,6 +266,7 @@ const StationForm = () => {
               </SearchBtn>
             </AddressRow>
           </FormRow>
+
           <FormRow>
             <Label>충전소 설명</Label>
             <TextArea
@@ -237,9 +283,14 @@ const StationForm = () => {
         </MapSection>
       </FormLayout>
 
-      <SubmitBtn type="submit">등록</SubmitBtn>
+      <ButtonGroup>
+        <SubmitBtn type="submit">수정하기</SubmitBtn>
+        <BackButton type="button" onClick={() => navi("/admin/stations")}>
+          뒤로가기
+        </BackButton>
+      </ButtonGroup>
     </FormWrap>
   );
 };
 
-export default StationForm;
+export default AdminStationDetail;

@@ -87,7 +87,10 @@ const AdminStations = () => {
               </TableHead>
               <tbody>
                 {stations.map((s) => (
-                  <TableRow key={s.stationNo}>
+                  <TableRow
+                    key={s.stationNo}
+                    onClick={() => navi(`/admin/stations/${s.stationNo}`)}
+                  >
                     <TableCell>{s.stationNo}</TableCell>
                     <TableCell>{s.stationName}</TableCell>
                     <TableCell>{s.region}</TableCell>

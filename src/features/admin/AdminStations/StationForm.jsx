@@ -14,10 +14,23 @@ import {
   MapContainer,
   SubmitBtn,
 } from "./StationForm.styles";
+import api from "../../../api/axios";
+import { useNavigate } from "react-router-dom";
 
 const DEFAULT_CENTER = { lat: 37.5665, lng: 126.978 };
 
+// geocoder 결과(result[0])에서 주소 문자열과 지역(시/도)을 뽑아낸다
+const parseGeocodeResult = (item) => {
+  const { road_address, address } = item;
+  return {
+    address: road_address ? road_address.address_name : address.address_name,
+    region: address.region_1depth_name,
+  };
+};
+
 const StationForm = () => {
+  const navi = useNavigate();
+
   const mapContainerRef = useRef(null);
   const markerRef = useRef(null);
 
@@ -66,10 +79,9 @@ const StationForm = () => {
         (result, status) => {
           if (status !== window.kakao.maps.services.Status.OK) return;
 
-          const { road_address, address } = result[0];
-          setAddress(
-            road_address ? road_address.address_name : address.address_name,
-          );
+          const { address, region } = parseGeocodeResult(result[0]);
+          setAddress(address);
+          setRegion(region);
         },
       );
     });
@@ -106,6 +118,7 @@ const StationForm = () => {
 
       mapRef.current.setCenter(latlng);
       setPosition({ lat: latlng.getLat(), lng: latlng.getLng() });
+      setRegion(parseGeocodeResult(result[0]).region);
     });
   };
 
@@ -125,8 +138,7 @@ const StationForm = () => {
     }
 
     try {
-      // RequestBody로 전체 필드를 한 번에 전송 (백엔드에서 VO 하나로 받음)
-      await axios.post("http://localhost/api/chargeStations", {
+      await api.post("/admin/chargeStations", {
         stationName,
         region,
         address,
@@ -136,8 +148,9 @@ const StationForm = () => {
         lng: position.lng,
       });
       alert("충전소가 등록되었습니다.");
+      navi("/admin/stations");
     } catch (err) {
-      console.log("충전소 등록 실패", err);
+      console.log(err.response);
       alert("등록에 실패했습니다.");
     }
   };
@@ -155,21 +168,22 @@ const StationForm = () => {
             />
           </FormRow>
           <FormRow>
-            <Label>지역</Label>
-            <Input
-              value={region}
-              onChange={(e) => setRegion(e.target.value)}
-              placeholder="지역을 입력해주세요. 예) 서울"
-            />
-          </FormRow>
-          <FormRow>
             <Label>충전기 수</Label>
             <Input
               type="number"
               min="0"
               max="99"
+              placeholder="0"
               value={chargerCount}
               onChange={(e) => setChargerCount(e.target.value)}
+            />
+          </FormRow>
+          <FormRow>
+            <Label>지역</Label>
+            <Input
+              value={region}
+              onChange={(e) => setRegion(e.target.value)}
+              placeholder="지역을 입력해주세요. 예) 서울"
             />
           </FormRow>
           <FormRow>

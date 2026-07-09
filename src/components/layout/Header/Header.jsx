@@ -29,6 +29,11 @@ const Header = () => {
   const userNavs = isLogin ? [...navs, ...authNavs] : navs;
   const isAdmin = isLogin && user?.role === "[ROLE_ADMIN]";
 
+  const Logout = () => {
+    logout();
+    navi("/");
+  };
+
   return (
     <HeaderWrap>
       <Logo onClick={() => navi("/")}>EV:RE</Logo>
@@ -52,7 +57,7 @@ const Header = () => {
                 관리자 페이지
               </LoginBtn>
             )}
-            <SignupBtn type="button" onClick={logout}>
+            <SignupBtn type="button" onClick={Logout}>
               로그아웃
             </SignupBtn>
           </>

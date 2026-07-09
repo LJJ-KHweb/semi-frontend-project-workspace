@@ -12,7 +12,9 @@ import {
   MetaItem,
   Content,
   ButtonRow,
+  ButtonGroup,
   ListButton,
+  ActionButton,
   Img,
   ImgWrap,
 } from "../../boards/styles/BoardDetail.styles";
@@ -23,6 +25,25 @@ const AdminBoardDetail = () => {
   const [files, setFiles] = useState([]);
 
   const navi = useNavigate();
+
+  const handleDelete = async () => {
+    if (board?.status !== "Y") {
+      alert("이미 삭제된 게시글입니다.");
+      return;
+    }
+
+    if (!window.confirm("이 게시글을 삭제하시겠습니까?")) return;
+
+    try {
+      await api.delete(`/admin/boards/${boardNo}`);
+
+      alert("게시글 삭제 성공");
+      navi("/admin/boards");
+    } catch (e) {
+      console.log(e.response);
+      alert("게시글 삭제 실패");
+    }
+  };
 
   useEffect(() => {
     api
@@ -36,6 +57,7 @@ const AdminBoardDetail = () => {
         console.log(e.response);
         alert("관리자 게시글 상세 조회 실패");
       });
+    console.log(board);
   }, [boardNo]);
 
   return (
@@ -65,6 +87,18 @@ const AdminBoardDetail = () => {
 
           <ButtonRow>
             <ListButton onClick={() => navi("/admin/boards")}>목록</ListButton>
+
+            <ButtonGroup>
+              <ButtonGroup>
+                {board?.status === "Y" ? (
+                  <ActionButton data-danger={true} onClick={handleDelete}>
+                    삭제
+                  </ActionButton>
+                ) : (
+                  <ActionButton disabled>삭제 완료</ActionButton>
+                )}
+              </ButtonGroup>
+            </ButtonGroup>
           </ButtonRow>
         </Card>
       </Wrap>

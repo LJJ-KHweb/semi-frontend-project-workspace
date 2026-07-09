@@ -18,6 +18,7 @@ import BoardDetail from "./features/boards/board/BoardDetail";
 import BoardForm from "./features/boards/board/BoardForm";
 import NoticeForm from "./features/boards/Notice/NoticeForm";
 import NoticeDetail from "./features/boards/Notice/NoticeDetail";
+import Require from "./features/boards/require/require";
 
 const App = () => {
   return (
@@ -39,6 +40,7 @@ const App = () => {
         <Route path="/login" element={<Login />} />
         <Route path="/signup" element={<SignUp />} />
         <Route path="/mypage" element={<MyPage />} />
+        <Route path="/requires" element={<Require />} />
         <Route path="/*" element={<ErrPage />} />
       </Route>
 

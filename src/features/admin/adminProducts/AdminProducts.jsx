@@ -68,7 +68,43 @@ const AdminProducts = () => {
   const currentGroup = Math.floor(page / PAGE_GROUP_SIZE);
   const groupStart = currentGroup * PAGE_GROUP_SIZE;
   const groupEnd = Math.min(groupStart + PAGE_GROUP_SIZE, totalPages);
+  const [insertModal, setInsertModal] = useState(false);
 
+  const [newProduct, setNewProduct] = useState({
+    productName: "",
+    price: "",
+    amount: "",
+    imageFile: null,
+  });
+  const onInsert = () => {
+    const formData = new FormData();
+
+    formData.append("productName", newProduct.productName);
+    formData.append("price", -Number(newProduct.price));
+    formData.append("amount", Number(newProduct.amount));
+
+    if (newProduct.imageFile) {
+      formData.append("file", newProduct.imageFile);
+    }
+
+    api
+      .post("/admin/products", formData, {
+        headers: {
+          "Content-Type": "multipart/form-data",
+        },
+      })
+      .then(() => {
+        alert("상품이 등록되었습니다.");
+
+        setInsertModal(false);
+
+        getProduts();
+      })
+      .catch((e) => {
+        console.log(e.response);
+        alert("상품 등록에 실패했습니다.");
+      });
+  };
   const onUpdate = () => {
     const formData = new FormData();
 
@@ -115,18 +151,32 @@ const AdminProducts = () => {
         alert("삭제에 실패했습니다.");
       });
   };
-  const onRestore = () => {
+  const onRestore = (product) => {
+    console.log(selectedProduct);
     api
-      .patch(`/admin/products/${selectedProduct.productNo}/restore`)
+      .patch(`/admin/products/${product.productNo}/restore`)
       .then((result) => {
-        console.log(result);
+        getProduts();
       })
       .catch((e) => console.log(e.response));
   };
   return (
     <Main>
       <TopSection>
-        <AddButton>추가</AddButton>
+        <AddButton
+          onClick={() => {
+            setNewProduct({
+              productName: "",
+              price: "",
+              amount: "",
+              imageFile: null,
+            });
+
+            setInsertModal(true);
+          }}
+        >
+          추가
+        </AddButton>
       </TopSection>
 
       <Table>
@@ -178,8 +228,7 @@ const AdminProducts = () => {
               ) : (
                 <RestoreButton
                   onClick={() => {
-                    setSelectedProduct(product);
-                    onRestore();
+                    onRestore(product);
                   }}
                 >
                   복구
@@ -225,6 +274,84 @@ const AdminProducts = () => {
           </PageButton>
         )}
       </Pagination>
+      {insertModal && (
+        <ModalOverlay onClick={() => setInsertModal(false)}>
+          <ModalContainer onClick={(e) => e.stopPropagation()}>
+            <ModalTitle>상품 추가</ModalTitle>
+
+            <PreviewImage
+              src={
+                newProduct.imageFile
+                  ? URL.createObjectURL(newProduct.imageFile)
+                  : "/images/no-image.png"
+              }
+            />
+
+            <HiddenFileInput
+              id="insertImage"
+              type="file"
+              accept="image/*"
+              onChange={(e) =>
+                setNewProduct({
+                  ...newProduct,
+                  imageFile: e.target.files?.[0],
+                })
+              }
+            />
+
+            <FileButton htmlFor="insertImage">이미지 선택</FileButton>
+
+            <InputGroup>
+              <InputLabel>상품명</InputLabel>
+              <Input
+                value={newProduct.productName}
+                onChange={(e) =>
+                  setNewProduct({
+                    ...newProduct,
+                    productName: e.target.value,
+                  })
+                }
+              />
+            </InputGroup>
+
+            <InputGroup>
+              <InputLabel>상품 가격</InputLabel>
+              <Input
+                type="number"
+                value={newProduct.price}
+                onChange={(e) =>
+                  setNewProduct({
+                    ...newProduct,
+                    price: e.target.value,
+                  })
+                }
+              />
+            </InputGroup>
+
+            <InputGroup>
+              <InputLabel>재고 수량</InputLabel>
+              <Input
+                type="number"
+                value={newProduct.amount}
+                onChange={(e) =>
+                  setNewProduct({
+                    ...newProduct,
+                    amount: e.target.value,
+                  })
+                }
+              />
+            </InputGroup>
+
+            <ModalButtonGroup>
+              <CancelButton onClick={() => setInsertModal(false)}>
+                취소
+              </CancelButton>
+
+              <SaveButton onClick={onInsert}>추가</SaveButton>
+            </ModalButtonGroup>
+          </ModalContainer>
+        </ModalOverlay>
+      )}
       {updateModal && selectedProduct && (
         <ModalOverlay onClick={() => setUpdateModal(false)}>
           <ModalContainer onClick={(e) => e.stopPropagation()}>

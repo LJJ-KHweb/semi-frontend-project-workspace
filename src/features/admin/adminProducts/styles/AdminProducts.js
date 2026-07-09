@@ -358,7 +358,7 @@ export const RestoreButton = styled.button`
   border: none;
   border-radius: 8px;
 
-  background: #22c55e;
+  background: #20c997;
 
   color: white;
 
@@ -368,9 +368,8 @@ export const RestoreButton = styled.button`
   cursor: pointer;
 
   transition: 0.2s;
-
   &:hover {
-    background: #16a34a;
+    background: #22c55e;
   }
 
   &:active {

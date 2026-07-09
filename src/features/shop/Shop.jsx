@@ -16,6 +16,15 @@ import {
   MileageLabel,
   MileageValue,
   TitleBox,
+  ModalOverlay,
+  ModalContainer,
+  ModalImage,
+  ModalProductName,
+  ModalInfo,
+  RemainingMileage,
+  ModalButtonGroup,
+  CancelButton,
+  ExchangeButton,
 } from "./styles/Shop";
 import api from "../../api/axios";
 import {
@@ -23,6 +32,7 @@ import {
   PageButton,
   Pagination,
 } from "../boards/styles/Board.styles";
+import { useNavigate } from "react-router-dom";
 
 const PAGE_GROUP_SIZE = 5;
 
@@ -30,7 +40,10 @@ const Shop = () => {
   const [page, setPage] = useState(0);
   const [pages, setPages] = useState({ size: 8, boardCounts: 0 });
   const [products, setProducts] = useState([]);
-  const [myMileage, setMyMileage] = useState(12850);
+  const [myMileage, setMyMileage] = useState(0);
+  const [selectedProduct, setSelectedProduct] = useState(null);
+  const [open, isOpen] = useState(false);
+  const navi = useNavigate();
   useEffect(() => {
     api
       .get(`/shop?page=${page + 1}&size=${pages.size}`)
@@ -40,11 +53,31 @@ const Shop = () => {
         setProducts(result.data.data.productList);
       })
       .catch((e) => console.log(e.response));
+    getMyMileage();
   }, [page]);
   const totalPages = Math.ceil(pages.boardCounts / pages.size);
   const currentGroup = Math.floor(page / PAGE_GROUP_SIZE);
   const groupStart = currentGroup * PAGE_GROUP_SIZE;
   const groupEnd = Math.min(groupStart + PAGE_GROUP_SIZE, totalPages);
+  const isNotEnoughMileage =
+    selectedProduct && myMileage + selectedProduct.price < 0;
+  const getMyMileage = () => {
+    api
+      .get(`/users/mypage?page=${page + 1}&size=${pages.size}`)
+      .then((result) => {
+        setMyMileage(result.data.data.mileageSum);
+      });
+  };
+  const onSunmit = () => {
+    console.log(selectedProduct.productNo);
+    api
+      .patch(`/shop/${selectedProduct.productNo}`)
+      .then(() => {
+        isOpen(false);
+        getMyMileage();
+      })
+      .catch((e) => console.log(e.response));
+  };
   return (
     <Main>
       <TitleSection>
@@ -63,7 +96,13 @@ const Shop = () => {
 
       <CardSection>
         {products.map((product) => (
-          <Card key={product.productNo}>
+          <Card
+            key={product.productNo}
+            onClick={() => {
+              setSelectedProduct(product);
+              isOpen(true);
+            }}
+          >
             <ImageBox>
               <ProductImage src={product.image} alt={product.productName} />
             </ImageBox>
@@ -113,6 +152,48 @@ const Shop = () => {
           </PageButton>
         )}
       </Pagination>
+      {open && selectedProduct && (
+        <ModalOverlay onClick={() => isOpen(false)}>
+          <ModalContainer onClick={(e) => e.stopPropagation()}>
+            <ModalImage
+              src={selectedProduct.image}
+              alt={selectedProduct.productName}
+            />
+
+            <ModalProductName>{selectedProduct.productName}</ModalProductName>
+
+            <ModalInfo>
+              <span>현재 마일리지</span>
+              <span>{myMileage.toLocaleString()} P</span>
+            </ModalInfo>
+
+            <ModalInfo>
+              <span>재고</span>
+              <span>{selectedProduct.amount}개</span>
+            </ModalInfo>
+
+            <ModalInfo>
+              <span>필요 마일리지</span>
+              <span>{(-selectedProduct.price).toLocaleString()} P</span>
+            </ModalInfo>
+
+            <RemainingMileage>
+              <span>구매 후 남은 마일리지</span>
+              <span>
+                {(myMileage + selectedProduct.price).toLocaleString()} P
+              </span>
+            </RemainingMileage>
+
+            <ModalButtonGroup>
+              <CancelButton onClick={() => isOpen(false)}>취소</CancelButton>
+
+              <ExchangeButton onClick={onSunmit} disabled={isNotEnoughMileage}>
+                교환하기
+              </ExchangeButton>
+            </ModalButtonGroup>
+          </ModalContainer>
+        </ModalOverlay>
+      )}
     </Main>
   );
 };

@@ -165,3 +165,143 @@ export const MileageValue = styled.span`
 
   color: ${Theme.color.point};
 `;
+export const ModalOverlay = styled.div`
+  position: fixed;
+  inset: 0;
+
+  background: rgba(0, 0, 0, 0.45);
+
+  display: flex;
+  justify-content: center;
+  align-items: center;
+
+  z-index: 1000;
+`;
+
+export const ModalContainer = styled.div`
+  width: 430px;
+
+  background: white;
+
+  border-radius: 18px;
+
+  padding: 30px;
+
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.15);
+`;
+
+export const ModalImage = styled.img`
+  width: 180px;
+  height: 180px;
+
+  object-fit: contain;
+
+  margin-bottom: 20px;
+`;
+
+export const ModalProductName = styled.h3`
+  margin-bottom: 24px;
+
+  font-size: 22px;
+  font-weight: 700;
+
+  color: ${Theme.color.text};
+`;
+
+export const ModalInfo = styled.div`
+  width: 100%;
+
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+
+  padding: 14px 0;
+
+  font-size: 15px;
+
+  border-bottom: 1px solid ${Theme.color.border};
+
+  span:last-child {
+    font-weight: 600;
+  }
+`;
+
+export const RemainingMileage = styled.div`
+  width: 100%;
+
+  margin-top: 20px;
+
+  padding: 16px;
+
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+
+  border-radius: 10px;
+
+  background: #eef8f1;
+
+  color: ${Theme.color.success};
+
+  font-weight: 700;
+`;
+
+export const ModalButtonGroup = styled.div`
+  width: 100%;
+
+  display: flex;
+  gap: 12px;
+
+  margin-top: 30px;
+`;
+
+export const CancelButton = styled.button`
+  flex: 1;
+
+  height: 46px;
+
+  border: 1px solid ${Theme.color.border};
+  border-radius: 10px;
+
+  background: white;
+
+  cursor: pointer;
+
+  transition: 0.2s;
+
+  &:hover {
+    background: #f5f5f5;
+  }
+`;
+
+export const ExchangeButton = styled.button`
+  flex: 1;
+
+  height: 46px;
+
+  border: none;
+  border-radius: 10px;
+
+  background: ${Theme.color.point};
+  color: white;
+
+  font-weight: 600;
+
+  cursor: pointer;
+
+  transition: 0.2s;
+
+  &:hover:not(:disabled) {
+    opacity: 0.9;
+  }
+
+  &:disabled {
+    background: #d1d5db;
+    color: #6b7280;
+    cursor: not-allowed;
+  }
+`;

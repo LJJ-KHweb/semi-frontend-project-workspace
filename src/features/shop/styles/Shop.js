@@ -9,8 +9,16 @@ export const Main = styled.main`
 `;
 
 export const TitleSection = styled.div`
-  text-align: center;
-  margin-bottom: 45px;
+  position: relative;
+
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+
+  margin-bottom: 40px;
+  padding-bottom: 18px;
+
+  border-bottom: 2px solid ${Theme.color.border};
 `;
 
 export const Title = styled.h2`
@@ -19,10 +27,17 @@ export const Title = styled.h2`
   color: ${Theme.color.text};
   margin-bottom: 10px;
 `;
+export const TitleBox = styled.div`
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+`;
 
 export const SubTitle = styled.p`
   font-size: 15px;
   color: ${Theme.color.sub};
+
+  text-align: center;
 `;
 
 export const CardSection = styled.div`
@@ -122,4 +137,31 @@ export const PaginationSection = styled.div`
   justify-content: center;
 
   margin-top: 45px;
+`;
+export const MileageBox = styled.div`
+  position: absolute;
+  right: 0;
+  top: 50%;
+  transform: translateY(-50%);
+
+  min-width: 180px;
+  padding: 16px 22px;
+
+  background: #f8fbff;
+
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+`;
+export const MileageLabel = styled.span`
+  font-size: 13px;
+  color: ${Theme.color.sub};
+`;
+export const MileageValue = styled.span`
+  margin-top: 6px;
+
+  font-size: 26px;
+  font-weight: 700;
+
+  color: ${Theme.color.point};
 `;

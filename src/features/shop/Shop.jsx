@@ -12,6 +12,10 @@ import {
   Stock,
   Mileage,
   PaginationSection,
+  MileageBox,
+  MileageLabel,
+  MileageValue,
+  TitleBox,
 } from "./styles/Shop";
 import api from "../../api/axios";
 import {
@@ -26,7 +30,7 @@ const Shop = () => {
   const [page, setPage] = useState(0);
   const [pages, setPages] = useState({ size: 8, boardCounts: 0 });
   const [products, setProducts] = useState([]);
-
+  const [myMileage, setMyMileage] = useState(12850);
   useEffect(() => {
     api
       .get(`/shop?page=${page + 1}&size=${pages.size}`)
@@ -44,10 +48,17 @@ const Shop = () => {
   return (
     <Main>
       <TitleSection>
-        <Title>마일리지 상점입니다.</Title>
-        <SubTitle>
-          지금까지 적립한 마일리지로 다양한 리워드를 받아보세요.
-        </SubTitle>
+        <TitleBox>
+          <Title>마일리지 상점입니다.</Title>
+          <SubTitle>
+            지금까지 적립한 마일리지로 다양한 리워드를 받아보세요.
+          </SubTitle>
+        </TitleBox>
+
+        <MileageBox>
+          <MileageLabel>보유 마일리지</MileageLabel>
+          <MileageValue>{myMileage.toLocaleString()} P</MileageValue>
+        </MileageBox>
       </TitleSection>
 
       <CardSection>

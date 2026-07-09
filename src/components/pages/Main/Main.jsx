@@ -6,6 +6,7 @@ import {
   ResponsiveContainer,
   Tooltip,
   XAxis,
+  YAxis,
 } from "recharts";
 import { Spacer } from "../../../App.styles";
 import { Theme } from "../../../styles/Theme";
@@ -139,7 +140,7 @@ const Main = () => {
           <ChartTitle>이번주 통계</ChartTitle>
           <ResponsiveContainer width="100%" height={240}>
             <LineChart data={raspData}>
-              <CartesianGrid vertical={false} stroke={Theme.color.border} />
+              <CartesianGrid vertical={true} stroke={Theme.color.border} />
               <XAxis
                 dataKey="dayDate"
                 axisLine={false}

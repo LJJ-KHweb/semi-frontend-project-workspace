@@ -180,7 +180,6 @@ export const ModalOverlay = styled.div`
 
 export const ModalContainer = styled.div`
   width: 430px;
-
   background: white;
 
   border-radius: 18px;

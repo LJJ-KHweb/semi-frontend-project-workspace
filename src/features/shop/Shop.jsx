@@ -45,14 +45,7 @@ const Shop = () => {
   const [open, isOpen] = useState(false);
   const navi = useNavigate();
   useEffect(() => {
-    api
-      .get(`/shop?page=${page + 1}&size=${pages.size}`)
-      .then((result) => {
-        console.log(result.data.data);
-        setPages(result.data.data.pageInfo);
-        setProducts(result.data.data.productList);
-      })
-      .catch((e) => console.log(e.response));
+    getProducts();
     getMyMileage();
   }, [page]);
   const totalPages = Math.ceil(pages.boardCounts / pages.size);
@@ -61,6 +54,17 @@ const Shop = () => {
   const groupEnd = Math.min(groupStart + PAGE_GROUP_SIZE, totalPages);
   const isNotEnoughMileage =
     selectedProduct && myMileage + selectedProduct.price < 0;
+  const getProducts = () => {
+    api
+      .get(`/shop?page=${page + 1}&size=${pages.size}`)
+      .then((result) => {
+        console.log(result.data.data);
+        setPages(result.data.data.pageInfo);
+        setProducts(result.data.data.productList);
+      })
+      .catch((e) => console.log(e.response));
+  };
+
   const getMyMileage = () => {
     api
       .get(`/users/mypage?page=${page + 1}&size=${pages.size}`)
@@ -74,6 +78,7 @@ const Shop = () => {
       .patch(`/shop/${selectedProduct.productNo}`)
       .then(() => {
         isOpen(false);
+        getProducts();
         getMyMileage();
       })
       .catch((e) => console.log(e.response));

@@ -18,6 +18,7 @@ import BoardDetail from "./features/boards/board/BoardDetail";
 import BoardForm from "./features/boards/board/BoardForm";
 import NoticeForm from "./features/boards/Notice/NoticeForm";
 import NoticeDetail from "./features/boards/Notice/NoticeDetail";
+import Shop from "./features/shop/Shop";
 
 const App = () => {
   return (
@@ -35,6 +36,7 @@ const App = () => {
         <Route path="/boards/form" element={<BoardForm />} />
         <Route path="/boards/:boardNo/edit" element={<BoardForm />} />
         <Route path="/boards/detail/:boardNo" element={<BoardDetail />} />
+        <Route path="/shop" element={<Shop />} />
         <Route path="/ranks" element={<Spacer />} />
         <Route path="/login" element={<Login />} />
         <Route path="/signup" element={<SignUp />} />

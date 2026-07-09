@@ -25,6 +25,8 @@ import RequireDetail from "./features/boards/require/RequireDetail";
 import AdminRequire from "./features/admin/require/AdminRequire";
 import AdminRequireDetail from "./features/admin/require/AdminRequireDetail";
 import AdminProducts from "./features/admin/adminProducts/AdminProducts";
+import AdminBoard from "./features/admin/board/AdminBoard";
+import AdminBoardDetail from "./features/admin/board/AdminBoardDetail";
 import AdminStationDetail from "./features/admin/AdminStations/AdminStationDetail";
 import RequireAdmin from "./features/admin/RequireAdmin/RequireAdmin";
 
@@ -59,21 +61,27 @@ const App = () => {
         <Route element={<AdminLayout />}>
           <Route path="/admin" element={<Admin />} />
           <Route path="/admin/users" element={<Spacer />} />
+
           <Route path="/admin/stations" element={<AdminStations />} />
           <Route path="/admin/stations/form" element={<StationForm />} />
           <Route
             path="/admin/stations/:stationNo"
             element={<AdminStationDetail />}
           />
+
           <Route path="/admin/chargers" element={<Spacer />} />
+
           <Route path="/admin/requires" element={<AdminRequire />} />
           <Route
             path="/admin/requires/:requireNo"
             element={<AdminRequireDetail />}
           />
           <Route path="/admin/products" element={<AdminProducts />} />
+
           <Route path="/admin/notices" element={<Spacer />} />
-          <Route path="/admin/boards" element={<Spacer />} />
+
+          <Route path="/admin/boards" element={<AdminBoard />} />
+          <Route path="/admin/boards/:boardNo" element={<AdminBoardDetail />} />
         </Route>
       </Route>
     </Routes>

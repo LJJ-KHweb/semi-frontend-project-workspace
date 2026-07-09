@@ -168,7 +168,7 @@ const AdminStationDetail = () => {
     }
 
     try {
-      await api.put(`/admin/chargeStations/${stationNo}`, {
+      await api.patch(`/admin/chargeStations/${stationNo}`, {
         stationName,
         region,
         address,
@@ -228,6 +228,7 @@ const AdminStationDetail = () => {
                 value={region}
                 onChange={(e) => setRegion(e.target.value)}
                 placeholder="서울"
+                disabled
               />
             </FormRow>
             <FormRow>
@@ -239,6 +240,7 @@ const AdminStationDetail = () => {
                 placeholder="0"
                 value={chargerCount}
                 onChange={(e) => setChargerCount(e.target.value)}
+                disabled
               />
             </FormRow>
           </SplitRow>

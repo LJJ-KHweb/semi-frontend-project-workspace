@@ -54,6 +54,12 @@ export const Input = styled.input`
     outline: none;
     border-color: ${Theme.color.point};
   }
+
+  &:disabled {
+    background: ${Theme.color.bgDark};
+    color: ${Theme.color.sub};
+    cursor: not-allowed;
+  }
 `;
 
 export const TextArea = styled.textarea`

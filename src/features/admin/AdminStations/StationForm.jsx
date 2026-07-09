@@ -181,6 +181,7 @@ const StationForm = () => {
                 value={region}
                 onChange={(e) => setRegion(e.target.value)}
                 placeholder="서울"
+                disabled
               />
             </FormRow>
             <FormRow>

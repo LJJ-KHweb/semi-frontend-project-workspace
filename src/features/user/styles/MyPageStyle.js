@@ -194,7 +194,7 @@ export const ModalDescription = styled.p`
 `;
 
 export const ModalInput = styled.input`
-  width: 100%;
+  width: 93%;
   height: 46px;
   padding: 0 14px;
   border: 1px solid ${Theme.color.inputBorder};
@@ -238,4 +238,10 @@ export const ModalConfirmButton = styled.button`
   &:hover {
     opacity: 0.9;
   }
+`;
+
+export const ErrorText = styled.span`
+  font-family: ${Theme.font};
+  font-size: 13px;
+  color: ${Theme.color.danger};
 `;

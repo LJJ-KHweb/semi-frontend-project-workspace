@@ -73,14 +73,12 @@ const MyPage = () => {
 
   useEffect(() => {
     api.get("/rasp/mypage").then((result) => {
-      console.log(result);
       setRaspData(result.data.data);
     });
 
     api
       .get(`/users/mypage?page=${page + 1}&size=${pages.size}`)
       .then((result) => {
-        console.log(result.data.data);
         setMileageHistory(result.data.data.mileages);
         setPages(result.data.data.pageInfo);
         setMileageSum(result.data.data.mileageSum);
@@ -94,12 +92,15 @@ const MyPage = () => {
   const groupEnd = Math.min(groupStart + PAGE_GROUP_SIZE, totalPages);
 
   const onSubmit = () => {
-    api.patch("/users", {
-      data: {
-        userPwd: userPwd,
-        email: email,
-      },
-    });
+    api
+      .patch("/users/mypage", {
+        data: {
+          userPwd: userPwd,
+          email: email,
+        },
+      })
+      .then((result) => console.log(result))
+      .catch((e) => console.log(result));
   };
   return (
     <Main>

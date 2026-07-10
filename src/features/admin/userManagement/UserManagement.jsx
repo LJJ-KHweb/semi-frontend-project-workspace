@@ -56,7 +56,7 @@ const UserManagement = () => {
   const onUpdate = () => {
     api
       .patch("/admin/users", {
-        userId: selectUser.userId,
+        userId: selectUser.originalUserId,
         role: selectUser.role,
       })
       .then((result) => {
@@ -109,7 +109,7 @@ const UserManagement = () => {
         </HeaderRow>
 
         {users.map((user) => (
-          <Row key={user.userId}>
+          <Row key={user.originalUserId}>
             <Cell>{user.userName}</Cell>
 
             <Cell>{user.userId}</Cell>

@@ -17,7 +17,6 @@ const pageTitles = [
   { path: "/admin/stations", title: "충전소 관리" },
   { path: "/admin/stations/form", title: "충전소 작성" },
   { path: "/admin/stations/:stationNo", title: "충전소 상세보기" },
-  { path: "/admin/chargers", title: "충전기 관리" },
   { path: "/admin/requires", title: "문의사항 관리" },
   { path: "/admin/requires/:requireNo", title: "문의사항 상세보기" },
   { path: "/admin/notices", title: "공지사항 관리" },

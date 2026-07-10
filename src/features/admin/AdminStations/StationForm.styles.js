@@ -166,6 +166,19 @@ export const ButtonGroup = styled.div`
   gap: 12px;
 `;
 
+export const BottomRow = styled.div`
+  position: relative;
+  display: flex;
+  align-items: center;
+`;
+
+export const CenterOverlay = styled.div`
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  transform: translate(-50%, -50%);
+`;
+
 export const TabContent = styled.div`
   min-height: 600px;
 `;
@@ -238,5 +251,23 @@ export const SubmitBtn = styled.button`
 
   &:hover {
     background: ${Theme.color.pointHover};
+  }
+`;
+
+export const AddBtn = styled.button`
+  flex: 1;
+  padding: 5px 5px;
+  border: 1px solid ${Theme.color.inputBorder};
+  border-radius: ${Theme.radius.sm};
+  background: #fff;
+  color: ${Theme.color.sub};
+  font-size: 13px;
+  font-weight: 600;
+  cursor: pointer;
+
+  &:hover {
+    background: ${Theme.color.pointSoft};
+    border-color: ${Theme.color.point};
+    color: ${Theme.color.point};
   }
 `;

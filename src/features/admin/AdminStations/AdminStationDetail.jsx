@@ -18,6 +18,8 @@ import {
   StatusToggleGroup,
   StatusToggleBtn,
   ButtonGroup,
+  BottomRow,
+  CenterOverlay,
   SubmitBtn,
   BackButton,
   TabGroup,
@@ -25,6 +27,7 @@ import {
   TabContent,
   ChargerStatusToggleGroup,
   ChargerStatusToggleBtn,
+  AddBtn,
 } from "./StationForm.styles";
 import {
   StationTable,
@@ -33,9 +36,13 @@ import {
   TableRow,
   TableCell,
   EmptyMsg,
+  Pagination,
+  PageButton,
+  NextButton,
 } from "./AdminStations.styles";
 
 const DEFAULT_CENTER = { lat: 37.5665, lng: 126.978 };
+const PAGE_GROUP_SIZE = 5;
 
 // geocoder 결과(result[0])에서 주소 문자열과 지역(시/도)을 뽑아낸다
 const parseGeocodeResult = (item) => {
@@ -67,6 +74,11 @@ const AdminStationDetail = () => {
 
   // TODO: 충전기 목록/수정 API 연동
   const [chargers, setChargers] = useState([]);
+  const [page, setPage] = useState(0);
+  const [pages, setPages] = useState({
+    size: 10,
+    boardCounts: 0,
+  });
 
   // 상세 정보를 불러와서 폼 state에 채워넣는다
   useEffect(() => {
@@ -131,15 +143,21 @@ const AdminStationDetail = () => {
   useEffect(() => {
     const fetchChargers = async () => {
       try {
-        const res = await api.get(`/admin/chargers/${stationNo}`);
-        setChargers(res.data.data);
+        const res = await api.get(`/admin/chargers/${stationNo}`, {
+          params: {
+            page: page + 1,
+            size: pages.size,
+          },
+        });
+        setChargers(res.data.data.chargers);
+        setPages(res.data.data.pageInfo);
       } catch (e) {
         console.log("충전기 목록을 불러오지 못했습니다.", e);
       }
     };
 
     fetchChargers();
-  }, [stationNo]);
+  }, [stationNo, page]);
 
   // 충전기 상태 토글 - 로컬 state만 바꿔두고, 실제 저장은 onSubmit(수정하기)에서
   // chargers 배열을 순회하며 /admin/charger/{chargerNo} 로 한 번에 반영한다
@@ -266,6 +284,25 @@ const AdminStationDetail = () => {
     }
   };
 
+  const handleCreateCharger = async () => {
+    try {
+      await api.post(`/admin/chargers?stationNo=${stationNo}`);
+
+      const res = await api.get(`/admin/chargers/${stationNo}`, {
+        params: { page: page + 1, size: pages.size },
+      });
+      setChargers(res.data.data.chargers);
+      setPages(res.data.data.pageInfo);
+    } catch (err) {
+      alert(err.response.data.msg);
+    }
+  };
+
+  const totalPages = Math.ceil(pages.boardCounts / pages.size);
+  const currentGroup = Math.floor(page / PAGE_GROUP_SIZE);
+  const groupStart = currentGroup * PAGE_GROUP_SIZE;
+  const groupEnd = Math.min(groupStart + PAGE_GROUP_SIZE, totalPages);
+
   return (
     <FormWrap onSubmit={onSubmit}>
       <TabGroup>
@@ -384,6 +421,11 @@ const AdminStationDetail = () => {
                   <TableRow>
                     <TableHeaderCell>충전기 번호</TableHeaderCell>
                     <TableHeaderCell>상태</TableHeaderCell>
+                    <TableHeaderCell>
+                      <AddBtn type="button" onClick={handleCreateCharger}>
+                        충전기 추가하기
+                      </AddBtn>
+                    </TableHeaderCell>
                   </TableRow>
                 </TableHead>
                 <tbody>
@@ -423,12 +465,64 @@ const AdminStationDetail = () => {
         )}
       </TabContent>
 
-      <ButtonGroup>
-        <SubmitBtn type="submit">수정하기</SubmitBtn>
-        <BackButton type="button" onClick={() => navi("/admin/stations")}>
-          뒤로가기
-        </BackButton>
-      </ButtonGroup>
+      <BottomRow>
+        <ButtonGroup>
+          <SubmitBtn type="submit">수정하기</SubmitBtn>
+          <BackButton type="button" onClick={() => navi("/admin/stations")}>
+            뒤로가기
+          </BackButton>
+        </ButtonGroup>
+
+        {tab === "chargers" && chargers.length > 0 && (
+          <CenterOverlay>
+            <Pagination>
+              {currentGroup > 0 && (
+                <PageButton
+                  type="button"
+                  onClick={() => setPage(groupStart - 1)}
+                  data-active={true}
+                >
+                  ··
+                </PageButton>
+              )}
+              {page > 0 && (
+                <NextButton type="button" onClick={() => setPage(page - 1)}>
+                  이전
+                </NextButton>
+              )}
+              {Array.from({
+                length: groupEnd - groupStart,
+              }).map((_, i) => {
+                const p = groupStart + i;
+                return (
+                  <PageButton
+                    key={p}
+                    type="button"
+                    data-active={p === page}
+                    onClick={() => setPage(p)}
+                  >
+                    {p + 1}
+                  </PageButton>
+                );
+              })}
+              {page < totalPages - 1 && (
+                <NextButton type="button" onClick={() => setPage(page + 1)}>
+                  다음
+                </NextButton>
+              )}
+              {groupStart + PAGE_GROUP_SIZE < totalPages && (
+                <PageButton
+                  type="button"
+                  onClick={() => setPage(groupStart + PAGE_GROUP_SIZE)}
+                  data-active={true}
+                >
+                  ··
+                </PageButton>
+              )}
+            </Pagination>
+          </CenterOverlay>
+        )}
+      </BottomRow>
     </FormWrap>
   );
 };

@@ -1,8 +1,8 @@
 import { useAuth } from "../../../context/AuthContext";
 import { useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
-import { Spacer } from "../../../App.styles";
 import api from "../../../api/axios";
+
 import {
   Wrap,
   Card,
@@ -21,36 +21,26 @@ import {
 } from "../../boards/styles/BoardDetail.styles";
 
 const AdminNoticeDetail = () => {
-  // URL에 들어 있는 noticeNo 가져오기
   const { noticeNo } = useParams();
-
-  // 조회한 공지사항 정보
-  const [notice, setNotice] = useState(null);
-
-  // 공지사항에 등록된 첨부파일
-  const [files, setFiles] = useState([]);
-
-  // 로딩 여부
-  const [loading, setLoading] = useState(true);
-
   const navigate = useNavigate();
   const { user } = useAuth();
 
-  // 프로젝트의 실제 role 저장 형태에 맞게 확인
+  const [notice, setNotice] = useState(null);
+  const [files, setFiles] = useState([]);
+  const [loading, setLoading] = useState(true);
+
   const isAdmin = user?.role === "ROLE_ADMIN" || user?.role === "[ROLE_ADMIN]";
 
   useEffect(() => {
-    const getNoticeDetail = async () => {
-      try {
-        setLoading(true);
+    setLoading(true);
 
-        const response = await api.get(`/notices/admin/${noticeNo}`);
-
-        const responseData = response.data?.data ?? response.data;
-
-        setNotice(responseData.notice ?? responseData);
-        setFiles(responseData.files ?? []);
-      } catch (error) {
+    api
+      .get(`/notices/admin/${noticeNo}`)
+      .then((response) => {
+        setNotice(response.data.data);
+        setFiles(response.data.data.files ?? []);
+      })
+      .catch((error) => {
         console.error("공지사항 상세조회 실패:", error);
 
         const status = error.response?.status;
@@ -62,32 +52,36 @@ const AdminNoticeDetail = () => {
         }
 
         navigate("/admin/notices");
-      } finally {
+      })
+      .finally(() => {
         setLoading(false);
-      }
-    };
-
-    getNoticeDetail();
+      });
   }, [noticeNo, navigate]);
 
-  // 공지사항 삭제
   const handleDelete = async () => {
     if (!isAdmin) {
       alert("관리자만 공지사항을 삭제할 수 있습니다.");
       return;
     }
 
-    const isConfirmed = window.confirm("정말 이 공지사항을 삭제하시겠습니까?");
-
-    if (!isConfirmed) {
+    if (notice?.status !== "Y") {
+      alert("이미 삭제된 공지사항입니다.");
       return;
     }
+
+    const isConfirmed = window.confirm("정말 이 공지사항을 삭제하시겠습니까?");
+
+    if (!isConfirmed) return;
 
     try {
       await api.delete(`/notices/${noticeNo}`);
 
       alert("공지사항이 삭제되었습니다.");
-      navigate("/admin/notices");
+
+      setNotice((prev) => ({
+        ...prev,
+        status: "N",
+      }));
     } catch (error) {
       console.error("공지사항 삭제 실패:", error);
 
@@ -99,10 +93,51 @@ const AdminNoticeDetail = () => {
     }
   };
 
-  // 수정 페이지 이동
+  const handleRestore = async () => {
+    if (!isAdmin) {
+      alert("관리자만 공지사항 삭제를 취소할 수 있습니다.");
+      return;
+    }
+
+    if (notice?.status !== "N") {
+      alert("삭제된 공지사항이 아닙니다.");
+      return;
+    }
+
+    const isConfirmed = window.confirm(
+      "이 공지사항의 삭제를 취소하시겠습니까?",
+    );
+
+    if (!isConfirmed) return;
+
+    try {
+      await api.patch(`/notices/restore/${noticeNo}`);
+
+      alert("공지사항 삭제가 취소되었습니다.");
+
+      setNotice((prev) => ({
+        ...prev,
+        status: "Y",
+      }));
+    } catch (error) {
+      console.error("공지사항 삭제 취소 실패:", error);
+
+      const message =
+        error.response?.data?.message ??
+        "공지사항 삭제 취소 중 오류가 발생했습니다.";
+
+      alert(message);
+    }
+  };
+
   const handleUpdate = () => {
     if (!isAdmin) {
       alert("관리자만 공지사항을 수정할 수 있습니다.");
+      return;
+    }
+
+    if (notice?.status !== "Y") {
+      alert("삭제된 공지사항은 수정할 수 없습니다.");
       return;
     }
 
@@ -143,7 +178,11 @@ const AdminNoticeDetail = () => {
             <MetaItem>조회수: {notice.views ?? 0}</MetaItem>
 
             <MetaItem>
-              공개 여부: {notice.publicYn === "Y" ? "공개" : "비공개"}
+              공개 여부: {notice.publicYN === "Y" ? "공개" : "비공개"}
+            </MetaItem>
+
+            <MetaItem>
+              상태: {notice.status === "Y" ? "정상" : "삭제됨"}
             </MetaItem>
           </MetaRow>
         </Header>
@@ -163,19 +202,27 @@ const AdminNoticeDetail = () => {
         )}
 
         <ButtonRow>
-          <ListButton onClick={() => navigate("/admin/notices")}>
+          <ListButton type="button" onClick={() => navigate("/admin/notices")}>
             목록
           </ListButton>
 
           {isAdmin && (
             <ButtonGroup>
-              <ActionButton type="button" onClick={handleUpdate}>
-                수정
-              </ActionButton>
+              {notice.status === "Y" && (
+                <ActionButton type="button" onClick={handleUpdate}>
+                  수정
+                </ActionButton>
+              )}
 
-              <ActionButton type="button" onClick={handleDelete}>
-                삭제
-              </ActionButton>
+              {notice.status === "Y" ? (
+                <ActionButton type="button" onClick={handleDelete}>
+                  삭제
+                </ActionButton>
+              ) : (
+                <ActionButton type="button" onClick={handleRestore}>
+                  삭제취소
+                </ActionButton>
+              )}
             </ButtonGroup>
           )}
         </ButtonRow>

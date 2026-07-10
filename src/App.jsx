@@ -29,9 +29,12 @@ import AdminBoard from "./features/admin/board/AdminBoard";
 import AdminBoardDetail from "./features/admin/board/AdminBoardDetail";
 import AdminStationDetail from "./features/admin/AdminStations/AdminStationDetail";
 import RequireAdmin from "./features/admin/RequireAdmin/RequireAdmin";
+
 import AdminNotice from "./features/admin/notice/AdminNotice";
 import AdminNoticeForm from "./features/admin/notice/AdminNoticeForm";
 import AdminNoticeDetail from "./features/admin/notice/AdminNoticeDetail";
+
+import UserManagement from "./features/admin/userManagement/UserManagement";
 
 const App = () => {
   return (
@@ -63,7 +66,7 @@ const App = () => {
       <Route element={<RequireAdmin />}>
         <Route element={<AdminLayout />}>
           <Route path="/admin" element={<Admin />} />
-          <Route path="/admin/users" element={<Spacer />} />
+          <Route path="/admin/users" element={<UserManagement />} />
 
           <Route path="/admin/stations" element={<AdminStations />} />
           <Route path="/admin/stations/form" element={<StationForm />} />

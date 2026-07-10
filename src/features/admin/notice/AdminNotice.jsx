@@ -15,6 +15,7 @@ import {
   Pagination,
   PageButton,
   NextButton,
+  WriteButton,
 } from "../../boards/styles/Board.styles";
 
 const PAGE_GROUP_SIZE = 5;
@@ -28,7 +29,7 @@ const AdminNotice = () => {
 
   useEffect(() => {
     api
-      .get(`/admin/notices?page=${page + 1}&size=${pages.size}`)
+      .get(`/notices/admin?page=${page + 1}&size=${pages.size}`)
       .then((result) => {
         console.log(result.data.data);
 
@@ -51,6 +52,10 @@ const AdminNotice = () => {
       <Wrap>
         <Header>
           <Title>공지사항 관리</Title>
+
+          <WriteButton onClick={() => navi("/admin/notices/form")}>
+            공지사항 작성하기
+          </WriteButton>
         </Header>
 
         <Table>

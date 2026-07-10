@@ -24,13 +24,14 @@ import RequireForm from "./features/boards/require/RequireFrom";
 import RequireDetail from "./features/boards/require/RequireDetail";
 import AdminRequire from "./features/admin/require/AdminRequire";
 import AdminRequireDetail from "./features/admin/require/AdminRequireDetail";
-
+import AdminProducts from "./features/admin/adminProducts/AdminProducts";
 import AdminBoard from "./features/admin/board/AdminBoard";
 import AdminBoardDetail from "./features/admin/board/AdminBoardDetail";
-
 import AdminStationDetail from "./features/admin/AdminStations/AdminStationDetail";
 import RequireAdmin from "./features/admin/RequireAdmin/RequireAdmin";
 import AdminNotice from "./features/admin/notice/AdminNotice";
+import AdminNoticeForm from "./features/admin/notice/AdminNoticeForm";
+import AdminNoticeDetail from "./features/admin/notice/AdminNoticeDetail";
 
 const App = () => {
   return (
@@ -77,7 +78,20 @@ const App = () => {
             path="/admin/requires/:requireNo"
             element={<AdminRequireDetail />}
           />
+
           <Route path="/admin/notices" element={<AdminNotice />} />
+
+          <Route path="/admin/notices/form" element={<AdminNoticeForm />} />
+          <Route
+            path="/admin/notices/:noticeNo/edit"
+            element={<AdminNoticeForm />}
+          />
+
+          <Route
+            path="/admin/notices/:noticeNo"
+            element={<AdminNoticeDetail />}
+          />
+
           <Route path="/admin/boards" element={<AdminBoard />} />
           <Route path="/admin/boards/:boardNo" element={<AdminBoardDetail />} />
         </Route>

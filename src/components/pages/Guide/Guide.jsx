@@ -48,12 +48,12 @@ const steps = [
     no: 4,
     icon: "🎁",
     title: "마일리지 적립",
-    desc: "인증된 주행거리 기준으로\n1km당 1P가 자동 적립됩니다.",
+    desc: "인증된 주행거리 기준으로\n1km당 2P가 자동 적립됩니다.",
   },
 ];
 
 const mileageRows = [
-  { desc: "전기차 1km이용시", point: "1P" },
+  { desc: "전기차 1km이용시", point: "2P" },
   { desc: "랭킹 1등", point: "2000P" },
   { desc: "랭킹 2~5등", point: "1000P" },
   { desc: "랭킹 6~10등", point: "500P" },

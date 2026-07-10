@@ -24,74 +24,93 @@ export const SubTitle = styled.p`
 `;
 
 export const MyRankCard = styled.div`
-  width: 260px;
-  margin: 0 auto 35px;
+  width: 360px;
+  margin: 0 auto 36px;
 
-  padding: 22px;
+  padding: 24px 28px;
 
-  border-radius: 16px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
 
-  background: #f8fbff;
+  background: linear-gradient(135deg, #f8fbff 0%, #eef6ff 100%);
 
   border: 1px solid ${Theme.color.border};
+  border-radius: 18px;
 
-  text-align: center;
+  box-shadow: 0 8px 18px rgba(0, 0, 0, 0.06);
 `;
 
 export const MyRankTitle = styled.div`
-  font-size: 14px;
+  font-size: 15px;
+  font-weight: 600;
+
   color: ${Theme.color.sub};
 `;
 
 export const MyRankValue = styled.div`
-  margin-top: 10px;
-
   font-size: 34px;
   font-weight: 700;
 
   color: ${Theme.color.point};
+
+  span {
+    margin-left: 4px;
+
+    font-size: 18px;
+    font-weight: 600;
+
+    color: ${Theme.color.sub};
+  }
 `;
 
 export const Table = styled.div`
-  border: 1px solid ${Theme.color.border};
+  background: white;
 
+  border: 1px solid ${Theme.color.border};
   border-radius: 16px;
 
   overflow: hidden;
-
-  background: white;
 `;
 
 export const HeaderRow = styled.div`
   display: grid;
 
   grid-template-columns:
-    120px
-    1fr
-    220px
-    220px;
+    110px /* 순위 */
+    160px /* 회원 */
+    220px /* 아이디 */
+    220px /* 주행거리 */
+    220px; /* 탄소절감량 */
 
-  padding: 18px;
+  align-items: center;
+
+  padding: 18px 20px;
 
   background: #fafafa;
 
   font-weight: 700;
+
+  border-bottom: 1px solid ${Theme.color.border};
 `;
 
 export const Row = styled.div`
   display: grid;
 
   grid-template-columns:
-    120px
-    1fr
+    110px
+    160px
+    220px
     220px
     220px;
 
-  padding: 18px;
+  align-items: center;
+
+  padding: 18px 20px;
 
   border-top: 1px solid ${Theme.color.border};
 
-  align-items: center;
+  transition: 0.2s;
 
   &:hover {
     background: #fafcff;
@@ -100,20 +119,24 @@ export const Row = styled.div`
 
 export const Cell = styled.div`
   display: flex;
-
   justify-content: center;
+  align-items: center;
+
+  font-size: 14px;
+  color: ${Theme.color.text};
 `;
 
 export const RankBadge = styled.div`
   width: 42px;
   height: 42px;
 
-  border-radius: 50%;
-
   display: flex;
   justify-content: center;
   align-items: center;
 
+  border-radius: 50%;
+
+  font-size: 15px;
   font-weight: 700;
 
   color: white;
@@ -124,4 +147,20 @@ export const RankBadge = styled.div`
     if (rank === 3) return "#b45309";
     return Theme.color.point;
   }};
+`;
+export const MyRankRow = styled(Row)`
+  margin-bottom: 20px;
+
+  background: linear-gradient(90deg, #eef7ff 0%, #f8fbff 100%);
+
+  border: 2px solid ${Theme.color.point};
+  border-radius: 14px;
+
+  box-shadow: 0 6px 16px rgba(59, 130, 246, 0.12);
+
+  font-weight: 600;
+
+  &:hover {
+    background: linear-gradient(90deg, #eef7ff 0%, #f8fbff 100%);
+  }
 `;

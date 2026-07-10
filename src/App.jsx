@@ -81,7 +81,7 @@ const App = () => {
             path="/admin/requires/:requireNo"
             element={<AdminRequireDetail />}
           />
-
+          <Route path="/admin/products" element={<AdminProducts />} />
           <Route path="/admin/notices" element={<AdminNotice />} />
 
           <Route path="/admin/notices/form" element={<AdminNoticeForm />} />

@@ -19,6 +19,7 @@ import {
   Row,
   Cell,
   RankBadge,
+  MyRankRow,
 } from "./styles/ranking";
 
 const PAGE_GROUP_SIZE = 5;
@@ -26,7 +27,7 @@ const PAGE_GROUP_SIZE = 5;
 const Ranking = () => {
   const [page, setPage] = useState(0);
   const [pages, setPages] = useState({
-    size: 10,
+    size: 5,
     boardCounts: 0,
   });
 
@@ -34,11 +35,18 @@ const Ranking = () => {
   const [myRank, setMyRank] = useState(null);
 
   useEffect(() => {
-    api.get(`/ranks?page=${page + 1}&size=${pages.size}`).then((result) => {
-      setRanks(result.data.data.rankList);
-      setPages(result.data.data.pageInfo);
-      setMyRank(result.data.data.myRank);
-    });
+    console.log(localStorage.getItem("userId"));
+    api
+      .get(
+        `/ranks/ranking?page=${page + 1}&size=${pages.size}&userId=${localStorage.getItem("userId")}`,
+      )
+      .then((result) => {
+        console.log(result);
+        setRanks(result.data.data.ranks);
+        setPages(result.data.data.pageInfo);
+        setMyRank(result.data.data.myRank);
+      })
+      .catch((e) => console.log(e.response));
   }, [page]);
 
   const totalPages = Math.ceil(pages.boardCounts / pages.size);
@@ -59,36 +67,45 @@ const Ranking = () => {
         </SubTitle>
       </TitleSection>
 
-      {myRank && (
-        <MyRankCard>
-          <MyRankTitle>내 현재 순위</MyRankTitle>
-
-          <MyRankValue>{myRank.rank}위</MyRankValue>
-        </MyRankCard>
-      )}
-
       <Table>
         <HeaderRow>
           <Cell>순위</Cell>
+          <Cell>아이디</Cell>
           <Cell>회원</Cell>
           <Cell>주행거리</Cell>
           <Cell>탄소절감량</Cell>
         </HeaderRow>
 
-        {ranks.map((rank) => (
+        {ranks.map((rank, index) => (
           <Row key={rank.userId}>
             <Cell>
-              <RankBadge rank={rank.rank}>{rank.rank}</RankBadge>
+              <RankBadge rank={rank.ranking}>{rank.ranking}</RankBadge>
             </Cell>
 
+            <Cell>{rank.userId}</Cell>
             <Cell>{rank.userName}</Cell>
 
             <Cell>{rank.distanceSum.toLocaleString()} km</Cell>
 
-            <Cell>{rank.carbonReduction.toLocaleString()} kg</Cell>
+            <Cell>{rank.carbonSum.toLocaleString()} kg</Cell>
           </Row>
         ))}
       </Table>
+      {myRank && (
+        <MyRankRow>
+          <Cell>
+            <RankBadge rank={myRank.ranking}>{myRank.ranking}</RankBadge>
+          </Cell>
+
+          <Cell>{myRank.userId}</Cell>
+
+          <Cell>{myRank.userName}</Cell>
+
+          <Cell>{myRank.distanceSum.toLocaleString()} km</Cell>
+
+          <Cell>{myRank.carbonSum.toLocaleString()} kg</Cell>
+        </MyRankRow>
+      )}
 
       <Pagination>
         {currentGroup > 0 && (

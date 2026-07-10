@@ -169,6 +169,8 @@ export const BackButton = styled.button`
 export const TimeFormRow = styled.div`
   display: flex;
   flex-direction: column;
+  flex: 1;
+  min-width: 0;
   gap: 6px;
   margin-bottom: 16px;
 `;
@@ -180,7 +182,8 @@ export const TimeLabel = styled.label`
 `;
 
 export const TimeInput = styled.input`
-  width: 400px;
+  width: 100%;
+  box-sizing: border-box;
   padding: 10px 12px;
   border: 1px solid ${Theme.color.inputBorder};
   border-radius: ${Theme.radius.sm};

@@ -3,11 +3,18 @@ import { createRoot } from "react-dom/client";
 import axios from "axios";
 import {
   ExitButton,
+  OverlayAddress,
   OverlayBtnGroup,
   OverlayButton,
   OverlayCard,
+  OverlayHeader,
+  OverlayTitle,
 } from "../styles/MapOverlay.styles";
-import { StationContnet } from "../styles/Station.styles";
+import {
+  ChargerInfo,
+  ChargerInfoRow,
+  RegionBadge,
+} from "../styles/Station.styles";
 import { useNavigate } from "react-router-dom";
 
 const USER_MARKER_IMAGE_SRC =
@@ -26,10 +33,12 @@ const PIN_MARKER_IMAGE_SRC =
 const MapApi = ({
   positions,
   center,
+  myLocation,
   level = 3,
   focus,
   interactive = true,
   onMapClick,
+  onMarkerClick,
   pinned = false,
 }) => {
   // MapApi는 앱의 메인 트리(Router 컨텍스트) 안에 있어서 useNavigate 사용 가능.
@@ -47,12 +56,32 @@ const MapApi = ({
   const onMapClickRef = useRef(onMapClick);
   onMapClickRef.current = onMapClick;
 
+  const onMarkerClickRef = useRef(onMarkerClick);
+  onMarkerClickRef.current = onMarkerClick;
+
   // 지도는 컨테이너당 최초 1번만 생성한다.
   // (center/positions가 바뀔 때마다 new kakao.maps.Map()을 다시 만들면
   //  같은 컨테이너 위에 지도가 계속 새로 그려지면서 이전 마커/핀이 정리 안 되고
   //  남아있는 문제가 있었음 → 지도는 재사용하고 마커만 갈아끼우는 방식으로 변경)
   useEffect(() => {
     if (!window.kakao?.maps || !containerRef.current) return;
+
+    // 카카오맵은 click이 아니라 mousedown/mouseup 단계에서 자체적으로 클릭을
+    // 감지해버려서, click 이벤트에서 stopPropagation을 걸어도 이미 늦음
+    // (실측 확인함: stopPropagation, kakao.maps.event.preventMap 둘 다 안 먹혔음).
+    // 오버레이 카드 안쪽 클릭이면 지도 컨테이너까지 못 올라가게 버블 단계에서
+    // 끊는다. 단, 캡처 단계에서 끊으면 오버레이 안의 버튼(닫기/상세보기) 쪽으로
+    // 이벤트가 아예 도달을 못해서 버튼 클릭도 같이 막혀버림 -> 버블 단계에서,
+    // 그리고 카카오가 컨테이너에 리스너를 붙이기 전(new kakao.maps.Map 호출 전)에
+    // 먼저 등록해서 카카오보다 먼저 실행되게 한다(같은 노드/같은 단계에서는
+    // 등록 순서대로 실행됨).
+    const blockOverlayClicks = (e) => {
+      if (e.target.closest("[data-map-overlay]")) {
+        e.stopPropagation();
+      }
+    };
+    containerRef.current.addEventListener("mousedown", blockOverlayClicks);
+    containerRef.current.addEventListener("mouseup", blockOverlayClicks);
 
     const map = new window.kakao.maps.Map(containerRef.current, {
       center: new window.kakao.maps.LatLng(center.lat, center.lng),
@@ -67,6 +96,26 @@ const MapApi = ({
       });
     });
 
+    // 오버레이 카드를 누르고 있는 동안 손이 아주 살짝만 움직여도 카카오맵이
+    // 그걸 "지도 드래그"로 인식해서 화면이 같이 끌려다니는 문제가 있었음.
+    // mousedown 자체를 막아도 카카오맵의 드래그 판정은 (mousedown 수신 여부와
+    // 무관하게) "현재 마우스가 눌린 채로 움직였는지"만 보는 것으로 보여서,
+    // 오버레이 위에서 누르는 동안은 지도 draggable 자체를 꺼버리고 손을 떼면
+    // 되돌린다.
+    const handleOverlayMouseDown = (e) => {
+      if (!e.target.closest("[data-map-overlay]")) return;
+      map.setDraggable(false);
+      // 캡처 단계로 등록: blockOverlayClicks가 mouseup에서 stopPropagation을
+      // 걸어버리면(오버레이 안에서 뗄 때) 버블 단계 리스너는 document까지
+      // 못 올라와서 복구가 안 됨 -> 캡처 단계는 그보다 먼저 실행되므로 항상 복구됨.
+      const restoreDraggable = () => {
+        map.setDraggable(true);
+        document.removeEventListener("mouseup", restoreDraggable, true);
+      };
+      document.addEventListener("mouseup", restoreDraggable, true);
+    };
+    containerRef.current.addEventListener("mousedown", handleOverlayMouseDown);
+
     // 컨테이너 크기가 초기화 이후에 바뀌면(예: 비동기로 받아온 데이터가 채워지며
     // flex 레이아웃이 재계산되는 경우) 카카오맵이 스스로 다시 그리지 않아서
     // 지도가 빈 화면으로 보이는 문제가 있음 -> 크기 변화를 감지해 relayout() 호출.
@@ -78,6 +127,15 @@ const MapApi = ({
 
     return () => {
       resizeObserver.disconnect();
+      containerRef.current?.removeEventListener(
+        "mousedown",
+        blockOverlayClicks,
+      );
+      containerRef.current?.removeEventListener("mouseup", blockOverlayClicks);
+      containerRef.current?.removeEventListener(
+        "mousedown",
+        handleOverlayMouseDown,
+      );
     };
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
@@ -102,7 +160,16 @@ const MapApi = ({
     centerMarkerRef.current?.setMap(null);
 
     const stationEntries = positions.map(
-      ({ stationNo, name, region, address, chargers, lat, lng }) => {
+      ({
+        stationNo,
+        name,
+        region,
+        address,
+        chargers,
+        unableChargers,
+        lat,
+        lng,
+      }) => {
         const position = new window.kakao.maps.LatLng(lat, lng);
         const marker = new window.kakao.maps.Marker({ map, position, name });
 
@@ -127,6 +194,7 @@ const MapApi = ({
 
         const rootRef = { current: null };
         window.kakao.maps.event.addListener(marker, "click", () => {
+          onMarkerClickRef.current?.({ lat, lng });
           overlay.setMap(map);
           if (!rootRef.current) {
             const container = document.getElementById(containerId);
@@ -138,6 +206,7 @@ const MapApi = ({
                 region={region}
                 address={address}
                 chargers={chargers}
+                unableChargers={unableChargers}
                 navi={navi}
                 onClose={() => overlay.setMap(null)}
               />,
@@ -149,6 +218,10 @@ const MapApi = ({
       },
     );
 
+    // pinned일 땐 사용자가 직접 찍은/검색한 위치(center)에 핀을,
+    // 아닐 땐 실제 내 위치(myLocation)에 파란 점을 그린다.
+    // (myLocation이 아직 없으면 center로 대체)
+    const myLoc = myLocation ?? center;
     const centerMarker = pinned
       ? new window.kakao.maps.Marker({
           map,
@@ -162,7 +235,7 @@ const MapApi = ({
         })
       : new window.kakao.maps.Marker({
           map,
-          position: new window.kakao.maps.LatLng(center.lat, center.lng),
+          position: new window.kakao.maps.LatLng(myLoc.lat, myLoc.lng),
           name: "내 위치",
           image: new window.kakao.maps.MarkerImage(
             USER_MARKER_IMAGE_SRC,
@@ -193,7 +266,15 @@ const MapApi = ({
         });
       });
     };
-  }, [positions, center.lat, center.lng, pinned, interactive]);
+  }, [
+    positions,
+    center.lat,
+    center.lng,
+    myLocation?.lat,
+    myLocation?.lng,
+    pinned,
+    interactive,
+  ]);
 
   // Station.jsx에서 카드 클릭 시 setFocus({ lat, lng })가 호출됨
   // focus가 바뀌면 이 useEffect가 실행되어 지도 중심을 해당 좌표로 이동
@@ -214,6 +295,7 @@ const MapOverlay = ({
   region,
   address,
   chargers,
+  unableChargers,
   navi,
   onClose,
 }) => {
@@ -231,13 +313,20 @@ const MapOverlay = ({
   };
 
   return (
-    <OverlayCard>
-      <StationContnet data-type="title">{name}</StationContnet>
-      <StationContnet data-type="point">지역 : {region}</StationContnet>
-      <StationContnet>주소 : {address}</StationContnet>
-      <StationContnet data-type="charger">
-        충전기 {chargers}대 이용가능
-      </StationContnet>
+    <OverlayCard data-map-overlay onClick={(e) => e.stopPropagation()}>
+      <OverlayHeader>
+        <OverlayTitle>{name}</OverlayTitle>
+        <RegionBadge>{region}</RegionBadge>
+      </OverlayHeader>
+      <OverlayAddress>{address}</OverlayAddress>
+      <ChargerInfoRow>
+        <ChargerInfo data-type="available">
+          이용가능 {chargers}대
+        </ChargerInfo>
+        <ChargerInfo data-type="unable" data-has={unableChargers > 0}>
+          고장 {unableChargers}대
+        </ChargerInfo>
+      </ChargerInfoRow>
       <OverlayBtnGroup>
         <ExitButton onClick={onClose}>닫기</ExitButton>
         <OverlayButton onClick={toDetail}>상세보기</OverlayButton>

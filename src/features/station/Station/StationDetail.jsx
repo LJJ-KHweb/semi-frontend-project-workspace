@@ -1,36 +1,55 @@
 import { useEffect, useMemo, useState } from "react";
-import { useParams } from "react-router-dom";
-import axios from "axios";
+import { useNavigate, useParams } from "react-router-dom";
+import styled from "styled-components";
 import { Spacer } from "../../../App.styles";
+import api from "../../../api/axios";
 import MapApi from "../MapApi/MapApi";
 import {
-  DetailAddress,
-  DetailCard,
-  DetailContent,
-  DetailContentWrap,
-  DetailDesc,
-  DetailField,
-  DetailGap,
-  DetailMap,
-  DetailTitle,
-  DetailWrap,
-  StationContnet,
-  Wrap,
-  DetailTitleGap,
-} from "../styles/Station.styles";
+  FormWrap,
+  FormLayout,
+  FieldSection,
+  MapSection,
+  FormRow,
+  Label,
+  Input,
+  TextArea,
+  SplitRow,
+  MapContainer,
+  StatusToggleGroup,
+  StatusToggleBtn,
+  ButtonGroup,
+  BottomRow,
+  BackButton,
+} from "../../admin/AdminStations/StationForm.styles";
+
+const DEFAULT_CENTER = { lat: 37.5665, lng: 126.978 };
+
+// 조회 전용 페이지라 관리자 폼과 다르게 지도 비중을 더 크게 잡는다
+const ReadOnlyFieldSection = styled(FieldSection)`
+  flex: 2;
+`;
+
+const WideMapSection = styled(MapSection)`
+  flex: 8;
+`;
+
+const CenteredWrap = styled.div`
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+`;
 
 const StationDetail = () => {
+  const navi = useNavigate();
   const { stationNo } = useParams();
   const [station, setStation] = useState(null);
-  const [coords] = useState({ lat: 37.5665, lng: 126.978 });
   const [focus, setFocus] = useState(null);
 
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const res = await axios.get(
-          `http://localhost/api/chargeStations/${stationNo}`,
-        );
+        const res = await api.get(`/chargeStations/${stationNo}`);
         setStation(res.data.data);
       } catch (e) {
         console.log("상세 정보를 불러오지 못했습니다.", e);
@@ -63,39 +82,96 @@ const StationDetail = () => {
 
   return (
     <Spacer>
-      <Wrap>
-        <DetailCard>
-          <DetailTitle>{station?.stationName ?? "로딩 중"}</DetailTitle>
-          <DetailWrap>
-            <DetailContentWrap>
-              <DetailTitleGap>
-                <DetailContent>지역 : {station?.region}</DetailContent>
-                <DetailContent data-type="charger">
-                  충전기 {station?.chargerCount}대 이용가능
-                </DetailContent>
-              </DetailTitleGap>
-              <DetailGap>
-                <DetailField>
-                  <DetailContent data-type="sm">주소</DetailContent>
-                  <DetailAddress>{station?.address}</DetailAddress>
-                </DetailField>
-                <DetailField>
-                  <DetailContent data-type="sm">충전소 설명</DetailContent>
-                  <DetailDesc>{station?.stationDesc}</DetailDesc>
-                </DetailField>
-              </DetailGap>
-            </DetailContentWrap>
-            <DetailMap>
-              <MapApi
-                center={coords}
-                focus={focus}
-                positions={positions}
-                interactive={false}
-              />
-            </DetailMap>
-          </DetailWrap>
-        </DetailCard>
-      </Wrap>
+      <CenteredWrap>
+        <FormWrap as="div">
+          <FormLayout>
+            <ReadOnlyFieldSection>
+              <FormRow>
+                <Label>충전소명</Label>
+                <Input
+                  value={station?.stationName ?? ""}
+                  disabled
+                  readOnly
+                />
+              </FormRow>
+
+              <FormRow>
+                <Label>상태</Label>
+                <StatusToggleGroup>
+                  <StatusToggleBtn
+                    type="button"
+                    data-status={station?.status}
+                    data-active={true}
+                    disabled
+                  >
+                    {station?.status === "Y" ? "정상 운영" : "운영 중지"}
+                  </StatusToggleBtn>
+                </StatusToggleGroup>
+              </FormRow>
+
+              <SplitRow>
+                <FormRow>
+                  <Label>지역</Label>
+                  <Input value={station?.region ?? ""} disabled readOnly />
+                </FormRow>
+                <FormRow>
+                  <Label>이용가능 충전기</Label>
+                  <Input
+                    value={station?.chargerCount ?? 0}
+                    disabled
+                    readOnly
+                  />
+                </FormRow>
+                <FormRow>
+                  <Label>고장 충전기</Label>
+                  <Input
+                    value={station?.unableChargerCount ?? 0}
+                    disabled
+                    readOnly
+                  />
+                </FormRow>
+              </SplitRow>
+
+              <FormRow>
+                <Label>주소</Label>
+                <Input value={station?.address ?? ""} disabled readOnly />
+              </FormRow>
+
+              <FormRow>
+                <Label>충전소 설명</Label>
+                <TextArea
+                  value={station?.stationDesc ?? ""}
+                  disabled
+                  readOnly
+                />
+              </FormRow>
+            </ReadOnlyFieldSection>
+
+            <WideMapSection>
+              <Label>지도</Label>
+              <MapContainer>
+                <MapApi
+                  center={DEFAULT_CENTER}
+                  focus={focus}
+                  positions={positions}
+                  interactive={false}
+                />
+              </MapContainer>
+            </WideMapSection>
+          </FormLayout>
+
+          <BottomRow>
+            <ButtonGroup>
+              <BackButton
+                type="button"
+                onClick={() => navi("/chargeStations")}
+              >
+                충전소 목록
+              </BackButton>
+            </ButtonGroup>
+          </BottomRow>
+        </FormWrap>
+      </CenteredWrap>
     </Spacer>
   );
 };

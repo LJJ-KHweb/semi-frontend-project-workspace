@@ -15,6 +15,8 @@ import {
   DangerText,
   MapContainer,
   SubmitBtn,
+  BackButton,
+  ButtonGroup,
 } from "./StationForm.styles";
 import api from "../../../api/axios";
 import { useNavigate } from "react-router-dom";
@@ -139,8 +141,8 @@ const StationForm = () => {
       return;
     }
 
-    if (chargerCount === "" || Number(chargerCount) <= 0) {
-      alert("충전기 수를 1대 이상 입력해주세요.");
+    if (chargerCount === "" || Number(chargerCount) < 0) {
+      alert("충전기 수를 0대 이상 입력해주세요.");
       return;
     }
 
@@ -157,8 +159,7 @@ const StationForm = () => {
       alert("충전소가 등록되었습니다.");
       navi("/admin/stations");
     } catch (err) {
-      console.log(err.response);
-      alert("등록에 실패했습니다.");
+      alert(err.response.data.msg);
     }
   };
 
@@ -237,7 +238,12 @@ const StationForm = () => {
         </MapSection>
       </FormLayout>
 
-      <SubmitBtn type="submit">등록</SubmitBtn>
+      <ButtonGroup>
+        <SubmitBtn type="submit">등록</SubmitBtn>
+        <BackButton type="button" onClick={() => navi("/admin/stations")}>
+          뒤로가기
+        </BackButton>
+      </ButtonGroup>
     </FormWrap>
   );
 };

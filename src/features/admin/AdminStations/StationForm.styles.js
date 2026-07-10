@@ -27,7 +27,7 @@ export const MapSection = styled.div`
   flex-direction: column;
   gap: 6px;
   flex: 7;
-  height: 100%;
+  height: 100hv;
 `;
 
 export const FormRow = styled.div`
@@ -164,6 +164,48 @@ export const StatusToggleBtn = styled.button`
 export const ButtonGroup = styled.div`
   display: flex;
   gap: 12px;
+`;
+
+export const TabContent = styled.div`
+  min-height: 600px;
+`;
+
+export const ChargerStatusToggleGroup = styled(StatusToggleGroup)`
+  gap: 6px;
+`;
+
+export const ChargerStatusToggleBtn = styled(StatusToggleBtn)`
+  flex: none;
+  padding: 6px 14px;
+  font-size: 12px;
+`;
+
+export const TabGroup = styled.div`
+  display: flex;
+  gap: 4px;
+  border-bottom: 1px solid ${Theme.color.border};
+  margin-bottom: 8px;
+`;
+
+export const TabButton = styled.button`
+  padding: 10px 20px;
+  border: none;
+  border-bottom: 2px solid transparent;
+  background: none;
+  color: ${Theme.color.sub};
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+  margin-bottom: -1px;
+
+  &:hover {
+    color: ${Theme.color.text};
+  }
+
+  &[data-active="true"] {
+    color: ${Theme.color.point};
+    border-bottom-color: ${Theme.color.point};
+  }
 `;
 
 export const BackButton = styled.button`

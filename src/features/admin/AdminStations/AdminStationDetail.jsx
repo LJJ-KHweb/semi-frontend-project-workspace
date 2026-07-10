@@ -20,7 +20,20 @@ import {
   ButtonGroup,
   SubmitBtn,
   BackButton,
+  TabGroup,
+  TabButton,
+  TabContent,
+  ChargerStatusToggleGroup,
+  ChargerStatusToggleBtn,
 } from "./StationForm.styles";
+import {
+  StationTable,
+  TableHead,
+  TableHeaderCell,
+  TableRow,
+  TableCell,
+  EmptyMsg,
+} from "./AdminStations.styles";
 
 const DEFAULT_CENTER = { lat: 37.5665, lng: 126.978 };
 
@@ -42,6 +55,8 @@ const AdminStationDetail = () => {
   const geocoderRef = useRef(null);
   const mapRef = useRef(null);
 
+  const [tab, setTab] = useState("info"); // "info" | "chargers"
+
   const [stationName, setStationName] = useState("");
   const [region, setRegion] = useState("");
   const [address, setAddress] = useState("");
@@ -49,6 +64,9 @@ const AdminStationDetail = () => {
   const [stationDesc, setStationDesc] = useState("");
   const [status, setStatus] = useState("Y");
   const [position, setPosition] = useState(null);
+
+  // TODO: 충전기 목록/수정 API 연동
+  const [chargers, setChargers] = useState([]);
 
   // 상세 정보를 불러와서 폼 state에 채워넣는다
   useEffect(() => {
@@ -109,6 +127,29 @@ const AdminStationDetail = () => {
       markerRef.current = null;
     };
   }, []);
+
+  useEffect(() => {
+    const fetchChargers = async () => {
+      try {
+        const res = await api.get(`/admin/chargers/${stationNo}`);
+        setChargers(res.data.data);
+      } catch (e) {
+        console.log("충전기 목록을 불러오지 못했습니다.", e);
+      }
+    };
+
+    fetchChargers();
+  }, [stationNo]);
+
+  // 충전기 상태 토글 - 로컬 state만 바꿔두고, 실제 저장은 onSubmit(수정하기)에서
+  // chargers 배열을 순회하며 /admin/charger/{chargerNo} 로 한 번에 반영한다
+  const handleChargerStatusChange = (chargerNo, nextStatus) => {
+    setChargers((prev) =>
+      prev.map((c) =>
+        c.chargerNo === chargerNo ? { ...c, status: nextStatus } : c,
+      ),
+    );
+  };
 
   // position이 바뀔 때마다(지도 클릭, 주소 검색, 최초 데이터 로드) 마커와
   // 지도 중심을 그 위치로 맞춘다
@@ -208,110 +249,179 @@ const AdminStationDetail = () => {
         lat: result.lat,
         lng: result.lng,
       });
+      // Promise.all 을 해서 충전기 수정이 다 끝날때 까지 대기하고
+      // 수정중에 하나라도 실패하면 에러 뜨게 함
+      await Promise.all(
+        chargers.map((c) =>
+          api.patch(`/admin/chargers/${c.chargerNo}`, {
+            status: c.status,
+            stationNo,
+          }),
+        ),
+      );
       alert("충전소 정보가 수정되었습니다.");
       navi("/admin/stations");
     } catch (err) {
-      console.log(err.response);
-      alert("수정에 실패했습니다.");
+      alert(err.response.data.msg);
     }
   };
 
   return (
     <FormWrap onSubmit={onSubmit}>
-      <FormLayout>
-        <FieldSection>
-          <FormRow>
-            <Label>충전소명</Label>
-            <Input
-              value={stationName}
-              onChange={(e) => setStationName(e.target.value)}
-              placeholder="서울시청 충전소"
-            />
-          </FormRow>
+      <TabGroup>
+        <TabButton
+          type="button"
+          data-active={tab === "info"}
+          onClick={() => setTab("info")}
+        >
+          충전소 정보
+        </TabButton>
+        <TabButton
+          type="button"
+          data-active={tab === "chargers"}
+          onClick={() => setTab("chargers")}
+        >
+          충전기 관리
+        </TabButton>
+      </TabGroup>
 
-          <FormRow>
-            <Label>상태</Label>
-            <StatusToggleGroup>
-              <StatusToggleBtn
-                type="button"
-                data-status="Y"
-                data-active={status === "Y"}
-                onClick={() => setStatus("Y")}
-              >
-                정상 운영
-              </StatusToggleBtn>
-              <StatusToggleBtn
-                type="button"
-                data-status="N"
-                data-active={status === "N"}
-                onClick={() => setStatus("N")}
-              >
-                운영 중지
-              </StatusToggleBtn>
-            </StatusToggleGroup>
-          </FormRow>
-
-          <SplitRow>
+      <TabContent>
+        <FormLayout style={{ display: tab === "info" ? "flex" : "none" }}>
+          <FieldSection>
             <FormRow>
-              <Label>지역</Label>
+              <Label>충전소명</Label>
               <Input
-                value={region}
-                onChange={(e) => setRegion(e.target.value)}
-                placeholder="서울"
-                disabled
+                value={stationName}
+                onChange={(e) => setStationName(e.target.value)}
+                placeholder="서울시청 충전소"
               />
             </FormRow>
+
             <FormRow>
-              <Label>충전기 수</Label>
-              <Input
-                type="number"
-                min="0"
-                max="99"
-                placeholder="0"
-                value={chargerCount}
-                onChange={(e) => setChargerCount(e.target.value)}
-                disabled
+              <Label>상태</Label>
+              <StatusToggleGroup>
+                <StatusToggleBtn
+                  type="button"
+                  data-status="Y"
+                  data-active={status === "Y"}
+                  onClick={() => setStatus("Y")}
+                >
+                  정상 운영
+                </StatusToggleBtn>
+                <StatusToggleBtn
+                  type="button"
+                  data-status="N"
+                  data-active={status === "N"}
+                  onClick={() => setStatus("N")}
+                >
+                  운영 중지
+                </StatusToggleBtn>
+              </StatusToggleGroup>
+            </FormRow>
+
+            <SplitRow>
+              <FormRow>
+                <Label>지역</Label>
+                <Input
+                  value={region}
+                  onChange={(e) => setRegion(e.target.value)}
+                  placeholder="서울"
+                  disabled
+                />
+              </FormRow>
+              <FormRow>
+                <Label>충전기 수</Label>
+                <Input
+                  type="number"
+                  min="0"
+                  max="99"
+                  placeholder="0"
+                  value={chargerCount}
+                  onChange={(e) => setChargerCount(e.target.value)}
+                  disabled
+                />
+              </FormRow>
+            </SplitRow>
+
+            <FormRow>
+              <Label>주소</Label>
+              <AddressRow>
+                <Input
+                  value={address}
+                  onChange={(e) => setAddress(e.target.value)}
+                  onKeyDown={handleEnter}
+                  placeholder="서울특별시 중구 세종대로 110"
+                />
+                <SearchBtn type="button" onClick={handleAddressSearch}>
+                  검색
+                </SearchBtn>
+              </AddressRow>
+            </FormRow>
+
+            <FormRow>
+              <Label>충전소 설명</Label>
+              <TextArea
+                value={stationDesc}
+                onChange={(e) => setStationDesc(e.target.value)}
+                placeholder="서울시청입니다."
               />
             </FormRow>
-          </SplitRow>
-          <DangerText>
-            {chargerCount !== "" && Number(chargerCount) < 0
-              ? "충전기 수는 음수 일수 없습니다."
-              : chargerCount !== "" && Number(chargerCount) > 99
-                ? "충전기 수는 99 이하만 등록 가능 합니다."
-                : " "}
-          </DangerText>
+          </FieldSection>
 
-          <FormRow>
-            <Label>주소</Label>
-            <AddressRow>
-              <Input
-                value={address}
-                onChange={(e) => setAddress(e.target.value)}
-                onKeyDown={handleEnter}
-                placeholder="서울특별시 중구 세종대로 110"
-              />
-              <SearchBtn type="button" onClick={handleAddressSearch}>
-                검색
-              </SearchBtn>
-            </AddressRow>
-          </FormRow>
+          <MapSection>
+            <Label>지도</Label>
+            <MapContainer ref={mapContainerRef} />
+          </MapSection>
+        </FormLayout>
 
-          <FormRow>
-            <Label>충전소 설명</Label>
-            <TextArea
-              value={stationDesc}
-              onChange={(e) => setStationDesc(e.target.value)}
-              placeholder="서울시청입니다."
-            />
-          </FormRow>
-        </FieldSection>
-
-        <MapSection>
-          <Label>지도</Label>
-          <MapContainer ref={mapContainerRef} />
-        </MapSection>
-      </FormLayout>
+        {tab === "chargers" && (
+          <div>
+            {chargers.length === 0 ? (
+              <EmptyMsg>등록된 충전기가 없습니다.</EmptyMsg>
+            ) : (
+              <StationTable>
+                <TableHead>
+                  <TableRow>
+                    <TableHeaderCell>충전기 번호</TableHeaderCell>
+                    <TableHeaderCell>상태</TableHeaderCell>
+                  </TableRow>
+                </TableHead>
+                <tbody>
+                  {chargers.map((c) => (
+                    <TableRow key={c.chargerNo}>
+                      <TableCell>{c.chargerNo}</TableCell>
+                      <TableCell>
+                        <ChargerStatusToggleGroup>
+                          <ChargerStatusToggleBtn
+                            type="button"
+                            data-status="Y"
+                            data-active={c.status === "Y"}
+                            onClick={() =>
+                              handleChargerStatusChange(c.chargerNo, "Y")
+                            }
+                          >
+                            정상
+                          </ChargerStatusToggleBtn>
+                          <ChargerStatusToggleBtn
+                            type="button"
+                            data-status="N"
+                            data-active={c.status === "N"}
+                            onClick={() =>
+                              handleChargerStatusChange(c.chargerNo, "N")
+                            }
+                          >
+                            고장
+                          </ChargerStatusToggleBtn>
+                        </ChargerStatusToggleGroup>
+                      </TableCell>
+                    </TableRow>
+                  ))}
+                </tbody>
+              </StationTable>
+            )}
+          </div>
+        )}
+      </TabContent>
 
       <ButtonGroup>
         <SubmitBtn type="submit">수정하기</SubmitBtn>

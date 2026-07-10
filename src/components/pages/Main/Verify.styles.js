@@ -60,8 +60,9 @@ export const VerifyModal = styled.div`
   padding: 32px;
   padding-top: 0;
   width: 45%;
-  height: 60%;
-  margin-bottom: 250px;
+  height: ${(props) => (props.$step === "time" ? "25%" : "60%")};
+  margin-bottom: 150px;
+  transition: height 0.2s ease;
 `;
 
 export const CloseButton = styled.button`
@@ -179,7 +180,7 @@ export const TimeLabel = styled.label`
 `;
 
 export const TimeInput = styled.input`
-  width: 100%;
+  width: 400px;
   padding: 10px 12px;
   border: 1px solid ${Theme.color.inputBorder};
   border-radius: ${Theme.radius.sm};
@@ -197,6 +198,11 @@ export const TimeInput = styled.input`
     color: ${Theme.color.disabled};
     cursor: not-allowed;
   }
+`;
+
+export const TimeWrap = styled.div`
+  display: flex;
+  gap: 10px;
 `;
 
 // react-datepicker는 실제 팝업 DOM을 그려주기 때문에, 전역 클래스 이름을

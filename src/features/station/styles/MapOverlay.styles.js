@@ -2,31 +2,56 @@ import styled from "styled-components";
 import { Theme } from "../../../styles/Theme";
 
 export const OverlayCard = styled.div`
-  width: 300px;
-  height: 190px;
+  width: 260px;
+  padding: 16px;
   background: ${Theme.color.bg};
-  border-radius: ${Theme.radius.sm};
+  border-radius: ${Theme.radius.md};
   border: 1px solid ${Theme.color.border};
+  box-shadow: ${Theme.shadow.md};
   display: flex;
   flex-direction: column;
+  gap: 8px;
+`;
+
+export const OverlayHeader = styled.div`
+  display: flex;
+  align-items: center;
+  gap: 8px;
+`;
+
+export const OverlayTitle = styled.h4`
+  flex: 1;
+  min-width: 0;
+  margin: 0;
+  font-size: 15px;
+  font-weight: 700;
+  color: ${Theme.color.text};
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+`;
+
+export const OverlayAddress = styled.p`
+  margin: 0;
+  font-size: 13px;
+  color: ${Theme.color.sub};
 `;
 
 export const OverlayBtnGroup = styled.div`
   display: flex;
-  align-items: center;
-  gap: 20px;
-  margin: auto;
+  gap: 8px;
+  margin-top: 4px;
 `;
 
 export const OverlayButton = styled.button`
-  width: 60px;
-  height: 32px;
+  flex: 1;
+  height: 34px;
   border: none;
-  margin-left: 10px;
-  margin-top: 10px;
   border-radius: ${Theme.radius.sm};
   background: ${Theme.color.point};
-  color: ${Theme.color.headerBg};
+  color: #fff;
+  font-size: 13px;
+  font-weight: 600;
   cursor: pointer;
 
   &:hover {
@@ -39,21 +64,17 @@ export const OverlayButton = styled.button`
 `;
 
 export const ExitButton = styled.button`
-  width: 60px;
-  height: 32px;
-  border: none;
-  margin-left: 10px;
-  margin-top: 10px;
+  flex: 1;
+  height: 34px;
+  border: 1px solid ${Theme.color.border};
   border-radius: ${Theme.radius.sm};
-  border: 1px solid ${Theme.color.point};
-  background: transparent;
-  color: ${Theme.color.point};
+  background: ${Theme.color.headerBg};
+  color: ${Theme.color.text};
+  font-size: 13px;
+  font-weight: 600;
+  cursor: pointer;
 
   &:hover {
-    background: ${Theme.color.pointSoft};
-  }
-
-  &:active {
-    background: ${Theme.color.border};
+    background: ${Theme.color.bgSoft};
   }
 `;

@@ -34,6 +34,7 @@ import {
   TimeLabel,
   TimeInput,
   DatePickerGlobalStyle,
+  TimeWrap,
 } from "./Verify.styles";
 import axios from "axios";
 import api from "../../../api/axios";
@@ -42,6 +43,7 @@ import DatePicker, { registerLocale } from "react-datepicker";
 import { ko } from "date-fns/locale";
 import "react-datepicker/dist/react-datepicker.css";
 import { format } from "date-fns";
+import { useAuth } from "../../../context/AuthContext";
 
 format(new Date(), "yyyy-MM-dd HH:mm"); // Date 띄워줄때 형식 변경 yyyy-MM-dd HH:mm 이렇게 뜸
 
@@ -68,6 +70,8 @@ const Main = () => {
   const [step, setStep] = useState("car");
   const [startTime, setStartTime] = useState(null);
   const [finishTime, setFinishTimeTime] = useState(null);
+
+  const { isLogin } = useAuth();
 
   const handleConfirmVerify = () => {
     if (finishTime <= startTime) {
@@ -122,18 +126,20 @@ const Main = () => {
             탄소배출 줄이자
           </Title>
           <BtnWrap>
-            <VerifyBtn
-              onClick={() => {
-                // 모달 열 때마다 이전 선택/입력 초기화
-                setSelectedCarNo(null);
-                setStartTime(null);
-                setFinishTimeTime(null);
-                setStep("car");
-                setIsVerifyOpen(true);
-              }}
-            >
-              전기차 이용 인증
-            </VerifyBtn>
+            {isLogin && (
+              <VerifyBtn
+                onClick={() => {
+                  // 모달 열 때마다 이전 선택/입력 초기화
+                  setSelectedCarNo(null);
+                  setStartTime(null);
+                  setFinishTimeTime(null);
+                  setStep("car");
+                  setIsVerifyOpen(true);
+                }}
+              >
+                전기차 이용 인증
+              </VerifyBtn>
+            )}
           </BtnWrap>
         </TitleWrap>
         <ChartCard>
@@ -172,7 +178,7 @@ const Main = () => {
 
       {isVerifyOpen && (
         <Overlay>
-          <VerifyModal>
+          <VerifyModal $step={step}>
             <CloseButton onClick={() => setIsVerifyOpen(false)}>×</CloseButton>
             <ModalTitle>전기차 이용 인증</ModalTitle>
 
@@ -202,37 +208,46 @@ const Main = () => {
 
             {step === "time" && (
               <>
-                <TimeFormRow>
-                  <TimeLabel>빌린 시간</TimeLabel>
-                  <DatePicker
-                    selected={startTime} // 선택된 날짜, 없으면 null
-                    onChange={(date) => setStartTime(date)}
-                    showTimeSelect // 시간 선택 input도 있는데 그거는 유저한테 너무 가혹함
-                    timeIntervals={15} // 시간 보여주는 간격 ( ex) 1 이면 1분씩)
-                    dateFormat="yyyy-MM-dd HH:mm" // 선택 했을때 보여주는 포맷
-                    placeholderText={format(new Date(), "yyyy-MM-dd HH:mm")}
-                    customInput={<TimeInput />}
-                    locale="ko" // 한국어 패치 ㅋㅋ
-                    timeCaption="시간" // 시간 선택 위에 뜨는 캡션
-                  />
-                </TimeFormRow>
-                <TimeFormRow>
-                  <TimeLabel>반납 시간</TimeLabel>
-                  <DatePicker
-                    selected={finishTime}
-                    onChange={(date) => setFinishTimeTime(date)}
-                    minDate={startTime} // 타임머신 불가
-                    filterTime={(time) => !startTime || time >= startTime} // 같은 날짜여도 빌린 시간 이전은 목록에서 제외
-                    disabled={!startTime} // startTime이 없으면 설정 못 바꿈
-                    showTimeSelect
-                    timeIntervals={15}
-                    dateFormat="yyyy-MM-dd HH:mm"
-                    placeholderText={format(new Date(), "yyyy-MM-dd HH:mm")}
-                    customInput={<TimeInput />}
-                    locale="ko"
-                    timeCaption="시간"
-                  />
-                </TimeFormRow>
+                <TimeWrap>
+                  <TimeFormRow>
+                    <TimeLabel>빌린 시간</TimeLabel>
+                    <DatePicker
+                      selected={startTime} // 선택된 날짜, 없으면 null
+                      onChange={(date) => setStartTime(date)}
+                      maxDate={new Date()} // 오늘 이후 날짜는 달력에서 선택 자체가 안 되게
+                      filterTime={(time) => time <= new Date()} // 오늘 날짜여도 지금 시간 이후는 목록에서 제외
+                      showTimeSelect // 시간 선택 input도 있는데 그거는 유저한테 너무 가혹함
+                      timeIntervals={15} // 시간 보여주는 간격 ( ex) 1 이면 1분씩)
+                      dateFormat="yyyy-MM-dd HH:mm" // 선택 했을때 보여주는 포맷
+                      placeholderText={format(new Date(), "yyyy-MM-dd HH:mm")}
+                      customInput={<TimeInput />}
+                      locale="ko" // 한국어 패치 ㅋㅋ
+                      timeCaption="시간" // 시간 선택 위에 뜨는 캡션
+                      popperPlacement="bottom-start" // 기본값(중앙 정렬)이면 입력창이 넓어서 팝업이 오른쪽으로 쏠려 보임 -> 입력창 왼쪽에 맞춤
+                    />
+                  </TimeFormRow>
+                  <TimeFormRow>
+                    <TimeLabel>반납 시간</TimeLabel>
+                    <DatePicker
+                      selected={finishTime}
+                      onChange={(date) => setFinishTimeTime(date)}
+                      minDate={startTime} // 타임머신 불가
+                      maxDate={new Date()} // 오늘 이후 날짜는 달력에서 선택 자체가 안 되게
+                      filterTime={(time) =>
+                        (!startTime || time >= startTime) && time <= new Date()
+                      } // 같은 날짜여도 빌린 시간 이전, 그리고 지금 시간 이후는 목록에서 제외
+                      disabled={!startTime} // startTime이 없으면 설정 못 바꿈
+                      showTimeSelect
+                      timeIntervals={15}
+                      dateFormat="yyyy-MM-dd HH:mm"
+                      placeholderText={format(new Date(), "yyyy-MM-dd HH:mm")}
+                      customInput={<TimeInput />}
+                      locale="ko"
+                      timeCaption="시간"
+                      popperPlacement="bottom-start"
+                    />
+                  </TimeFormRow>
+                </TimeWrap>
                 <StepButtonRow>
                   <BackButton onClick={() => setStep("car")}>이전</BackButton>
                   <ConfirmButton

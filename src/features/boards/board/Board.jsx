@@ -57,7 +57,10 @@ const Board = () => {
           </HeadRow>
 
           {notices.map((n) => (
-            <Row key={n.noticeNo} onClick={() => navi("/notices/detail")}>
+            <Row
+              key={n.noticeNo}
+              onClick={() => navi(`/notices/detail/${n.noticeNo}`)}
+            >
               <Cell>{n.noticeNo}</Cell>
               <Cell>
                 <TypeBadge data-notice={true}>공지</TypeBadge>

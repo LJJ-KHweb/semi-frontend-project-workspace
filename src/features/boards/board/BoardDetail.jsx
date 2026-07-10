@@ -29,8 +29,6 @@ const BoardDetail = () => {
 
   const { user } = useAuth();
   const isAdmin = user?.role === "[ROLE_ADMIN]";
-  console.log(user.userName);
-  console.log(board);
   const isAuthor = user?.userId === board?.userId;
 
   useEffect(() => {

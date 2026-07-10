@@ -118,6 +118,7 @@ export const MileageSection = styled.div`
   border-radius: ${Theme.radius.lg};
   box-shadow: ${Theme.shadow.sm};
   max-width: 640px;
+  margin: 0 auto;
 `;
 
 export const MileageTitle = styled.h3`

@@ -15,18 +15,20 @@ import {
   DangerText,
   MapContainer,
   SubmitBtn,
+  BackButton,
+  ButtonGroup,
 } from "./StationForm.styles";
 import api from "../../../api/axios";
 import { useNavigate } from "react-router-dom";
 
 const DEFAULT_CENTER = { lat: 37.5665, lng: 126.978 };
 
-// geocoder 결과(result[0])에서 주소 문자열과 지역(시/도)을 뽑아낸다
+// geocoder 결과(result[0])에서 주소 문자열과 지역(시/군/구)을 뽑아낸다
 const parseGeocodeResult = (item) => {
   const { road_address, address } = item;
   return {
     address: road_address ? road_address.address_name : address.address_name,
-    region: address.region_1depth_name,
+    region: address.region_2depth_name,
   };
 };
 
@@ -139,8 +141,8 @@ const StationForm = () => {
       return;
     }
 
-    if (chargerCount === "" || Number(chargerCount) <= 0) {
-      alert("충전기 수를 1대 이상 입력해주세요.");
+    if (chargerCount === "" || Number(chargerCount) < 0) {
+      alert("충전기 수를 0대 이상 입력해주세요.");
       return;
     }
 
@@ -157,8 +159,7 @@ const StationForm = () => {
       alert("충전소가 등록되었습니다.");
       navi("/admin/stations");
     } catch (err) {
-      console.log(err.response);
-      alert("등록에 실패했습니다.");
+      alert(err.response.data.msg);
     }
   };
 
@@ -237,7 +238,12 @@ const StationForm = () => {
         </MapSection>
       </FormLayout>
 
-      <SubmitBtn type="submit">등록</SubmitBtn>
+      <ButtonGroup>
+        <SubmitBtn type="submit">등록</SubmitBtn>
+        <BackButton type="button" onClick={() => navi("/admin/stations")}>
+          뒤로가기
+        </BackButton>
+      </ButtonGroup>
     </FormWrap>
   );
 };

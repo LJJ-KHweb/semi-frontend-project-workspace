@@ -40,8 +40,7 @@ const AdminBoardDetail = () => {
       alert("게시글 삭제 성공");
       navi("/admin/boards");
     } catch (e) {
-      console.log(e.response);
-      alert("게시글 삭제 실패");
+      alert(e.response.data.msg);
     }
   };
 

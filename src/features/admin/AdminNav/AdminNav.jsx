@@ -13,7 +13,6 @@ import {
 const adminNavs = [
   { content: "회원 관리", nav: "/admin/users" },
   { content: "충전소 관리", nav: "/admin/stations" },
-  { content: "충전기 관리", nav: "/admin/chargers" },
   { content: "문의사항 관리", nav: "/admin/requires" },
   { content: "공지사항 관리", nav: "/admin/notices" },
   { content: "게시판 관리", nav: "/admin/boards" },

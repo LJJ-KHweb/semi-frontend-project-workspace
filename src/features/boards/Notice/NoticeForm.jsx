@@ -21,7 +21,7 @@ import {
   OptionRow,
   RadioRow,
   RadioLabel,
-} from "../styles/BoardForm.styles";
+} from "../../boards/styles/BoardForm.styles";
 
 const NoticeForm = () => {
   const navi = useNavigate();

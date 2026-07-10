@@ -11,12 +11,14 @@ import {
   InputBox,
   SubmitButton,
 } from "./styles/Auth.styles";
+import { useNavigate } from "react-router-dom";
 
 const SignUp = () => {
   const [userId, setUserId] = useState("");
   const [userPwd, setUserPwd] = useState("");
   const [email, setEmail] = useState("");
   const [userName, setUserName] = useState("");
+  const navi = useNavigate();
   const onSubmit = (e) => {
     e.preventDefault();
     axios
@@ -26,7 +28,11 @@ const SignUp = () => {
         email: email,
         userName: userName,
       })
-      .then((result) => console.log(result))
+      .then((result) => {
+        console.log(result);
+        navi("/");
+        alert("회원가입에 성공했습니다.");
+      })
       .catch((err) => console.log(err.response));
   };
   return (

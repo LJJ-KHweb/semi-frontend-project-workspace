@@ -95,6 +95,7 @@ const Map = () => {
         region: s.region,
         address: s.address,
         chargers: s.chargerCount,
+        unableChargers: s.unableChargerCount,
         lat: s.lat,
         lng: s.lng,
       })),
@@ -147,6 +148,9 @@ const Map = () => {
                   <StationContnet>주소 : {s.address}</StationContnet>
                   <StationContnet data-type="charger">
                     충전기 {s.chargerCount}대 이용가능
+                  </StationContnet>
+                  <StationContnet data-type="charger">
+                    고장난 충전기 {s.unableChargerCount}대
                   </StationContnet>
                 </StationCard>
               ))}

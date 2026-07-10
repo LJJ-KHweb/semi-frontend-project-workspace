@@ -75,7 +75,6 @@ const App = () => {
             path="/admin/stations/:stationNo"
             element={<AdminStationDetail />}
           />
-          <Route path="/admin/chargers" element={<Spacer />} />
 
           <Route path="/admin/requires" element={<AdminRequire />} />
           <Route

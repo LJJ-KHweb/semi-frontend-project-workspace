@@ -26,37 +26,38 @@ import {
 const steps = [
   {
     no: 1,
-    icon: "👤",
-    title: "회원가입",
-    desc: "비회원도 충전소 조회는\n바로 이용할 수 있어요",
-    required: false,
-    tag: "선택",
+    icon: "🚗",
+    title: "공유 전기차 이용",
+    desc: "공유 전기차를 이용한 후\n목적지에서 반납합니다.",
   },
   {
     no: 2,
-    icon: "🗺️",
-    title: "충전소 찾기",
-    desc: "지도에서 가까운 충전소를\n찾아보세요",
+    icon: "📝",
+    title: "이용 내역 인증",
+    desc: "이용한 차량번호와\n대여·반납 시간을 입력합니다.",
+    required: true,
+    tag: "로그인 필요",
   },
   {
     no: 3,
-    icon: "⚡",
-    title: "충전하기",
-    desc: "충전소에서 바로 충전을\n시작하세요",
+    icon: "✅",
+    title: "이용 확인",
+    desc: "입력한 정보를 확인하여\n실제 이용 내역을 인증합니다.",
   },
   {
     no: 4,
-    icon: "🏆",
+    icon: "🎁",
     title: "마일리지 적립",
-    desc: "전기차를 이용해서 적립받고\n마일리지로 상품을 구매해보세요",
-    required: true,
-    tag: "로그인 필요",
+    desc: "인증된 주행거리 기준으로\n1km당 1P가 자동 적립됩니다.",
   },
 ];
 
 const mileageRows = [
-  { desc: "차량 이용", point: "100P" },
-  { desc: "랭커 상금", point: "10000 ~ 50000P" },
+  { desc: "전기차 1km이용시", point: "1P" },
+  { desc: "랭킹 1등", point: "2000P" },
+  { desc: "랭킹 2~5등", point: "1000P" },
+  { desc: "랭킹 6~10등", point: "500P" },
+  { desc: "랭킹 11~100등", point: "100P" },
 ];
 
 const Guide = () => {

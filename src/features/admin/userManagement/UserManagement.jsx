@@ -26,6 +26,13 @@ import {
   SaveButton,
 } from "../adminProducts/styles/adminProducts";
 import { Input } from "../AdminStations/StationForm.styles";
+import {
+  NextButton,
+  PageButton,
+  Pagination,
+} from "../../boards/styles/Board.styles";
+
+const PAGE_GROUP_SIZE = 5;
 
 const UserManagement = () => {
   const [users, setUsers] = useState([]);
@@ -42,17 +49,21 @@ const UserManagement = () => {
   };
   useEffect(() => {
     getUsers();
-  }, [role]);
+  }, [page, role]);
 
   const getUsers = () => {
     api
       .get(`/admin/users?page=${page + 1}&size=${pages.size}&role=${role}`)
       .then((result) => {
         console.log(result);
-        setUsers(result.data.data);
+        setUsers(result.data.data.users);
+        setPages(result.data.data.pageInfo);
       });
   };
-
+  const totalPages = Math.ceil(pages.boardCounts / pages.size);
+  const currentGroup = Math.floor(page / PAGE_GROUP_SIZE);
+  const groupStart = currentGroup * PAGE_GROUP_SIZE;
+  const groupEnd = Math.min(groupStart + PAGE_GROUP_SIZE, totalPages);
   const onUpdate = () => {
     api
       .patch("/admin/users", {
@@ -135,6 +146,42 @@ const UserManagement = () => {
           </Row>
         ))}
       </Table>
+      <Pagination>
+        {currentGroup > 0 && (
+          <PageButton
+            onClick={() => setPage(groupStart - 1)}
+            data-active={true}
+          >
+            ··
+          </PageButton>
+        )}
+        {page > 0 && (
+          <NextButton onClick={() => setPage(page - 1)}>이전</NextButton>
+        )}
+        {Array.from({ length: groupEnd - groupStart }).map((_, i) => {
+          const p = groupStart + i;
+          return (
+            <PageButton
+              key={p}
+              data-active={p === page}
+              onClick={() => setPage(p)}
+            >
+              {p + 1}
+            </PageButton>
+          );
+        })}
+        {page < totalPages - 1 && (
+          <NextButton onClick={() => setPage(page + 1)}>다음</NextButton>
+        )}
+        {groupStart + PAGE_GROUP_SIZE < totalPages && (
+          <PageButton
+            onClick={() => setPage(groupStart + PAGE_GROUP_SIZE)}
+            data-active={true}
+          >
+            ··
+          </PageButton>
+        )}
+      </Pagination>
       {updateModal && selectUser && (
         <ModalOverlay onClick={() => setUpdateModal(false)}>
           <ModalContainer onClick={(e) => e.stopPropagation()}>

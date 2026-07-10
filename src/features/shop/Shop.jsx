@@ -53,7 +53,8 @@ const Shop = () => {
   const groupStart = currentGroup * PAGE_GROUP_SIZE;
   const groupEnd = Math.min(groupStart + PAGE_GROUP_SIZE, totalPages);
   const isNotEnoughMileage =
-    selectedProduct && myMileage + selectedProduct.price < 0;
+    (selectedProduct && myMileage + selectedProduct.price < 0) ||
+    selectedProduct.amount === 0;
   const getProducts = () => {
     api
       .get(`/shop?page=${page + 1}&size=${pages.size}`)

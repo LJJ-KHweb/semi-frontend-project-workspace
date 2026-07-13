@@ -34,6 +34,7 @@ const Board = () => {
       setBoards(result.data.data.boards);
       setNotices(result.data.data.notices);
       setPages(result.data.data.pageInfo);
+      console.log(boards);
     });
   }, [page]);
   const totalPages = Math.ceil(pages.boardCounts / pages.size);

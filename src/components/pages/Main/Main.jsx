@@ -143,6 +143,7 @@ const Main = () => {
           </BtnWrap>
         </TitleWrap>
         <ChartCard>
+          {/* raspData[4].distanceSum */}
           <ChartTitle>이번주 통계</ChartTitle>
           <ResponsiveContainer width="100%" height={240}>
             <LineChart data={raspData}>

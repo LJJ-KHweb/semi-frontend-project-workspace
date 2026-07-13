@@ -17,6 +17,9 @@ import {
   TitleWrap,
   Title,
   TitlePoint,
+  RaspCard,
+  RaspWrap,
+  RaspContent,
 } from "./Main.styles";
 import {
   VerifyBtn,
@@ -70,6 +73,8 @@ const Main = () => {
   const [step, setStep] = useState("car");
   const [startTime, setStartTime] = useState(null);
   const [finishTime, setFinishTimeTime] = useState(null);
+
+  const [raspDist, setRaspDist] = useState(0);
 
   const { isLogin } = useAuth();
 
@@ -143,7 +148,16 @@ const Main = () => {
           </BtnWrap>
         </TitleWrap>
         <ChartCard>
-          {/* raspData[4].distanceSum */}
+          <RaspWrap>
+            <RaspCard>
+              <ChartTitle>이번주 이동거리</ChartTitle>
+              <RaspContent></RaspContent>
+            </RaspCard>
+            <RaspCard>
+              <ChartTitle>이번주 탄소 감축량</ChartTitle>
+              <RaspContent></RaspContent>
+            </RaspCard>
+          </RaspWrap>
           <ChartTitle>이번주 통계</ChartTitle>
           <ResponsiveContainer width="100%" height={240}>
             <LineChart data={raspData}>

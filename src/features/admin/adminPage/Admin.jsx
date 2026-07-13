@@ -38,12 +38,21 @@ import {
   SmallChartBox,
   LargeChartBox,
 } from "./Admin.styles";
+import {
+  NextButton,
+  PageButton,
+  Pagination,
+} from "../../boards/styles/Board.styles";
+
+const PAGE_GROUP_SIZE = 5;
 
 const Admin = () => {
   const [adminPage, setAdminPage] = useState(null);
   const [ranking, setRanking] = useState([]);
   const [raspStats, setRaspStats] = useState([]);
   const [purchaseCharts, setPurchaseCharts] = useState([]);
+  const [page, setPage] = useState(0);
+  const [pages, setPages] = useState({ size: 5, boardCounts: 0 });
 
   const getAdminPage = async () => {
     try {
@@ -56,12 +65,21 @@ const Admin = () => {
 
   const getRanking = async () => {
     try {
-      const result = await api.get("/admin/ranking");
-      setRanking(result.data.data);
+      const result = await api.get(
+        `/admin/ranking?page=${page + 1}&size=${pages.size}`,
+      );
+      setRanking(result.data.data.ranks);
+      setPages(result.data.data.pageInfo);
+      //console.log(result.data.data.pageInfo);
+      console.log(pages);
     } catch (e) {
-      console.error(e);
+      console.error(e.response);
     }
   };
+  const totalPages = Math.ceil(pages.boardCounts / pages.size);
+  const currentGroup = Math.floor(page / PAGE_GROUP_SIZE);
+  const groupStart = currentGroup * PAGE_GROUP_SIZE;
+  const groupEnd = Math.min(groupStart + PAGE_GROUP_SIZE, totalPages);
 
   const getRaspStats = async () => {
     try {
@@ -86,7 +104,7 @@ const Admin = () => {
     getRanking();
     getRaspStats();
     getPurchaseCharts();
-  }, []);
+  }, [page]);
 
   if (!adminPage) {
     return (
@@ -155,6 +173,44 @@ const Admin = () => {
                 <PurchaseCount>{item.purchaseCount}회</PurchaseCount>
               </RankingItem>
             ))}
+            <Pagination>
+              {currentGroup > 0 && (
+                <PageButton onClick={() => setPage(groupStart - 1)} data-active>
+                  ··
+                </PageButton>
+              )}
+
+              {page > 0 && (
+                <NextButton onClick={() => setPage(page - 1)}>이전</NextButton>
+              )}
+
+              {Array.from({ length: groupEnd - groupStart }).map((_, i) => {
+                const p = groupStart + i;
+
+                return (
+                  <PageButton
+                    key={p}
+                    data-active={p === page}
+                    onClick={() => setPage(p)}
+                  >
+                    {p + 1}
+                  </PageButton>
+                );
+              })}
+
+              {page < totalPages - 1 && (
+                <NextButton onClick={() => setPage(page + 1)}>다음</NextButton>
+              )}
+
+              {groupStart + PAGE_GROUP_SIZE < totalPages && (
+                <PageButton
+                  onClick={() => setPage(groupStart + PAGE_GROUP_SIZE)}
+                  data-active
+                >
+                  ··
+                </PageButton>
+              )}
+            </Pagination>
           </RankingList>
         </RankingSection>
 

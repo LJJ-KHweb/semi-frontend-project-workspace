@@ -1,5 +1,5 @@
 import { useEffect, useMemo, useState } from "react";
-import { useNavigate, useParams } from "react-router-dom";
+import { useLocation, useNavigate, useParams } from "react-router-dom";
 import styled from "styled-components";
 import { Spacer } from "../../../App.styles";
 import api from "../../../api/axios";
@@ -42,6 +42,7 @@ const CenteredWrap = styled.div`
 
 const StationDetail = () => {
   const navi = useNavigate();
+  const location = useLocation();
   const { stationNo } = useParams();
   const [station, setStation] = useState(null);
   const [focus, setFocus] = useState(null);
@@ -88,11 +89,7 @@ const StationDetail = () => {
             <ReadOnlyFieldSection>
               <FormRow>
                 <Label>충전소명</Label>
-                <Input
-                  value={station?.stationName ?? ""}
-                  disabled
-                  readOnly
-                />
+                <Input value={station?.stationName ?? ""} disabled readOnly />
               </FormRow>
 
               <FormRow>
@@ -116,11 +113,7 @@ const StationDetail = () => {
                 </FormRow>
                 <FormRow>
                   <Label>이용가능 충전기</Label>
-                  <Input
-                    value={station?.chargerCount ?? 0}
-                    disabled
-                    readOnly
-                  />
+                  <Input value={station?.chargerCount ?? 0} disabled readOnly />
                 </FormRow>
                 <FormRow>
                   <Label>고장 충전기</Label>
@@ -164,7 +157,9 @@ const StationDetail = () => {
             <ButtonGroup>
               <BackButton
                 type="button"
-                onClick={() => navi("/chargeStations")}
+                onClick={() =>
+                  navi(`/chargeStations${location.state?.returnSearch ?? ""}`)
+                }
               >
                 충전소 목록
               </BackButton>

@@ -119,9 +119,15 @@ const MapApi = ({
     // 컨테이너 크기가 초기화 이후에 바뀌면(예: 비동기로 받아온 데이터가 채워지며
     // flex 레이아웃이 재계산되는 경우) 카카오맵이 스스로 다시 그리지 않아서
     // 지도가 빈 화면으로 보이는 문제가 있음 -> 크기 변화를 감지해 relayout() 호출.
+    // 이때 중심을 이 effect가 마운트될 때의 center prop(고정된 값, stale closure)으로
+    // 되돌리면, focus 복원이나 마커 클릭으로 이미 다른 곳으로 옮겨둔 중심이
+    // ResizeObserver의 최초 콜백(observe 직후 자동 1회 발생)에 의해 도로 원래
+    // 위치로 튕겨나가는 문제가 있었음 -> 항상 "그 시점의 실제 지도 중심"을
+    // 다시 적용해서 현재 보고 있던 위치를 그대로 유지한다.
     const resizeObserver = new ResizeObserver(() => {
+      const currentCenter = map.getCenter();
       map.relayout();
-      map.setCenter(new window.kakao.maps.LatLng(center.lat, center.lng));
+      map.setCenter(currentCenter);
     });
     resizeObserver.observe(containerRef.current);
 
@@ -308,7 +314,9 @@ const MapOverlay = ({
     } catch (e) {
       console.log("상세 정보를 불러오지 못했습니다.", e);
     } finally {
-      navi(`/chargeStations/${stationNo}`);
+      navi(`/chargeStations/${stationNo}`, {
+        state: { returnSearch: window.location.search },
+      });
     }
   };
 

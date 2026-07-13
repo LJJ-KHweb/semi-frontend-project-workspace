@@ -1,5 +1,5 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useSearchParams } from "react-router-dom";
 import axios from "axios";
 import { Spacer } from "../../../App.styles";
 import {
@@ -36,15 +36,38 @@ const PAGE_GROUP_SIZE = 5;
 
 const Map = () => {
   const navi = useNavigate();
-  const [distance, setDistance] = useState(DISTANCES[0]);
-  const [page, setPage] = useState(0);
+  const [searchParams, setSearchParams] = useSearchParams();
+  const [distance, setDistance] = useState(() => {
+    const dist = Number(searchParams.get("dist"));
+    return DISTANCES.includes(dist) ? dist : DISTANCES[0];
+  });
+  const [page, setPage] = useState(() => {
+    const p = Number(searchParams.get("page"));
+    return Number.isInteger(p) && p > 0 ? p : 0;
+  });
   const [stations, setStations] = useState([]);
-  const [coords, setCoords] = useState(null);
+  // URL에 찍힌 핀 좌표(lat/lng/pinned=1)가 있으면 그걸로 복원하고,
+  // 없으면 geolocation 조회가 끝날 때까지 null로 대기한다.
+  const [coords, setCoords] = useState(() => {
+    const lat = searchParams.get("lat");
+    const lng = searchParams.get("lng");
+    return lat && lng && searchParams.get("pinned") === "1"
+      ? { lat: Number(lat), lng: Number(lng) }
+      : null;
+  });
   const [myLocation, setMyLocation] = useState(null); // 실제 GPS(또는 기본) 위치 - 검색 기준(coords)과 별개로 "내 위치" 마커 표시용
   const [pages, setPages] = useState({ size: 4, boardCounts: 0 });
-  const [focus, setFocus] = useState(null);
+  // 목록/지도에서 클릭해서 보고 있던 위치(focus)도 URL에 남겨서, 상세페이지
+  // 갔다가 돌아왔을 때 같은 곳을 보고 있게 복원한다.
+  const [focus, setFocus] = useState(() => {
+    const flat = searchParams.get("flat");
+    const flng = searchParams.get("flng");
+    return flat && flng ? { lat: Number(flat), lng: Number(flng) } : null;
+  });
   const [error, setError] = useState(null);
-  const [pinned, setPinned] = useState(false); // 사용자가 지도를 클릭해서 위치를 직접 찍었는지
+  const [pinned, setPinned] = useState(
+    () => searchParams.get("pinned") === "1",
+  ); // 사용자가 지도를 클릭해서 위치를 직접 찍었는지
   const [addressInput, setAddressInput] = useState("");
   const geocoderRef = useRef(null);
 
@@ -54,20 +77,41 @@ const Map = () => {
     // 1회성 조회라 자동 갱신은 못함
     // 이동갱신하려면 getCurrentPosition -> watchPosition 으로 변경해야함
     // 충전소 조회라 1회성으로 만 갱신함
+    // myLocation은 항상 갱신하지만, coords는 URL에서 이미 복원된 값이 있으면 덮어쓰지 않는다.
     navigator.geolocation.getCurrentPosition(
       (pos) => {
         const loc = { lat: pos.coords.latitude, lng: pos.coords.longitude };
-        setCoords(loc);
         setMyLocation(loc);
+        setCoords((prev) => prev ?? loc);
       },
       (err) => {
         console.log("위치 조회 실패", err);
         const loc = { lat: 37.5665, lng: 126.978 }; // 조회 실패 시 기본 좌표(서울시청)로 대체
-        setCoords(loc);
         setMyLocation(loc);
+        setCoords((prev) => prev ?? loc);
       },
     );
   }, []);
+
+  // 직접 찍은/검색한 위치(pinned), 목록·지도에서 클릭해서 보고 있던 위치(focus),
+  // 반경(distance)/페이지(page)를 쿼리스트링에 남겨서 상세페이지 갔다가
+  // 돌아왔을 때 복원할 수 있게 한다.
+  // (여러 값을 각자 다른 effect에서 setSearchParams 하면 서로 덮어써버려서 하나로 합침)
+  useEffect(() => {
+    const params = { dist: String(distance) };
+    if (page > 0) params.page = String(page);
+    if (pinned && coords) {
+      params.lat = String(coords.lat);
+      params.lng = String(coords.lng);
+      params.pinned = "1";
+    }
+    if (focus) {
+      params.flat = String(focus.lat);
+      params.flng = String(focus.lng);
+    }
+    setSearchParams(params, { replace: true });
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [distance, page, pinned, coords, focus]);
 
   useEffect(() => {
     if (!coords) return; // 아직 좌표를 확인하지 못했으면 요청하지 않음
@@ -257,8 +301,19 @@ const Map = () => {
                       <CardDetailBtn
                         type="button"
                         onClick={(e) => {
-                          e.stopPropagation(); // 카드 자체의 onClick(포커스 이동)까지 같이 안 타게 막음
-                          navi(`/chargeStations/${s.stationNo}`);
+                          e.stopPropagation(); // 카드 자체의 onClick(setFocus)까지 같이 타면
+                          // 같은 클릭 안에서 setFocus로 인한 재렌더/쿼리스트링 갱신과
+                          // navi()의 라우팅이 경쟁해서 상세페이지로 안 넘어가는 문제가
+                          // 있었음 -> 여기서는 setFocus를 부르지 않고, 돌아갈 때 쓸
+                          // returnSearch만 직접 만들어서 넘긴다.
+                          const params = new URLSearchParams(
+                            window.location.search,
+                          );
+                          params.set("flat", String(s.lat));
+                          params.set("flng", String(s.lng));
+                          navi(`/chargeStations/${s.stationNo}`, {
+                            state: { returnSearch: `?${params.toString()}` },
+                          });
                         }}
                       >
                         상세보기

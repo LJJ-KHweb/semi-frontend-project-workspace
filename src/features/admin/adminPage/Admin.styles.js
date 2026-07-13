@@ -87,6 +87,7 @@ export const ChartCard = styled.section`
 
 export const RankingSection = styled.section`
   padding: 28px;
+  height: 613px;
   background: #fff;
   border: 1px solid ${({ theme }) => theme.color.border};
   border-radius: ${({ theme }) => theme.radius.lg};

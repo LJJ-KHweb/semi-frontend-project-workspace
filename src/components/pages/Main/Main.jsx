@@ -112,6 +112,9 @@ const Main = () => {
       });
     } catch (e) {
       console.log(e.response);
+      if (e.response.data.code === 9003) {
+        alert(e.response.data.msg);
+      }
     }
   };
 

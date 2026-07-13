@@ -1,3 +1,4 @@
+import { useAuth } from "../../../context/AuthContext";
 import { useEffect, useState } from "react";
 import {
   Wrap,
@@ -25,6 +26,9 @@ const Board = () => {
   const [boards, setBoards] = useState([]);
   const [notices, setNotices] = useState([]);
   const navi = useNavigate();
+
+  const { isLogin } = useAuth();
+
   useEffect(() => {
     api.get(`/boards?page=${page + 1}&size=${pages.size}`).then((result) => {
       setBoards(result.data.data.boards);
@@ -41,9 +45,12 @@ const Board = () => {
       <Wrap>
         <Header>
           <Title>게시판</Title>
-          <WriteButton onClick={() => navi("/boards/form")}>
-            게시글 작성하기
-          </WriteButton>
+
+          {isLogin && (
+            <WriteButton onClick={() => navi("/boards/form")}>
+              게시글 작성하기
+            </WriteButton>
+          )}
         </Header>
 
         <Table>

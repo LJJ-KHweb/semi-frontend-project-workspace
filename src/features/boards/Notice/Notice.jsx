@@ -1,3 +1,4 @@
+import { useAuth } from "../../../context/AuthContext";
 import { useEffect, useState } from "react";
 import {
   Wrap,
@@ -24,6 +25,11 @@ const Notice = () => {
   const [pages, setPages] = useState({ size: 10, boardCounts: 0 });
   const [notices, setNotices] = useState([]);
   const navi = useNavigate();
+
+  const { user } = useAuth();
+
+  const isAdmin = user?.role === "ROLE_ADMIN" || user?.role === "[ROLE_ADMIN]";
+
   useEffect(() => {
     api.get(`/notices?page=${page + 1}&size=${pages.size}`).then((result) => {
       console.log(result);
@@ -41,9 +47,12 @@ const Notice = () => {
       <Wrap>
         <Header>
           <Title>공지사항</Title>
-          <WriteButton onClick={() => navi("/notices/form")}>
-            공지사항 작성하기
-          </WriteButton>
+
+          {isAdmin && (
+            <WriteButton onClick={() => navi("/notices/form")}>
+              공지사항 작성하기
+            </WriteButton>
+          )}
         </Header>
 
         <Table>

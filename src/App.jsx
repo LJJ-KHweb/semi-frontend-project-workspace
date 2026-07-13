@@ -35,6 +35,7 @@ import AdminNoticeForm from "./features/admin/notice/AdminNoticeForm";
 import AdminNoticeDetail from "./features/admin/notice/AdminNoticeDetail";
 
 import UserManagement from "./features/admin/userManagement/UserManagement";
+import Ranking from "./features/ranking/Ranking";
 
 const App = () => {
   return (
@@ -53,7 +54,7 @@ const App = () => {
         <Route path="/boards/:boardNo/edit" element={<BoardForm />} />
         <Route path="/boards/detail/:boardNo" element={<BoardDetail />} />
         <Route path="/shop" element={<Shop />} />
-        <Route path="/ranks" element={<Spacer />} />
+        <Route path="/ranks" element={<Ranking />} />
         <Route path="/login" element={<Login />} />
         <Route path="/signup" element={<SignUp />} />
         <Route path="/mypage" element={<MyPage />} />
@@ -80,7 +81,7 @@ const App = () => {
             path="/admin/requires/:requireNo"
             element={<AdminRequireDetail />}
           />
-
+          <Route path="/admin/products" element={<AdminProducts />} />
           <Route path="/admin/notices" element={<AdminNotice />} />
 
           <Route path="/admin/notices/form" element={<AdminNoticeForm />} />

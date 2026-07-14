@@ -38,7 +38,7 @@ const UserManagement = () => {
   const [users, setUsers] = useState([]);
   const [selectUser, setSelectUser] = useState(null);
   const [page, setPage] = useState(0);
-  const [pages, setPages] = useState({ size: 10, boardCounts: 0 });
+  const [pages, setPages] = useState({ size: 8, boardCounts: 0 });
   const [updateModal, setUpdateModal] = useState(false);
   const [roleOpen, setRoleOpen] = useState(false);
   const [role, setRole] = useState("ALL");

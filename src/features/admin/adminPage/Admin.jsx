@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
 import api from "../../../api/axios";
+import { Theme } from "../../../styles/Theme";
 
 import {
   LineChart,
@@ -70,7 +71,7 @@ const Admin = () => {
       );
       setRanking(result.data.data.ranks);
       setPages(result.data.data.pageInfo);
-      //console.log(result.data.data.pageInfo);
+      console.log(result.data.data.pageInfo);
       console.log(pages);
     } catch (e) {
       console.error(e.response);
@@ -230,9 +231,9 @@ const Admin = () => {
                   type="monotone"
                   dataKey="distanceSum"
                   name="주행거리"
-                  stroke="#DC2626"
+                  stroke={Theme.color.point}
                   strokeWidth={3}
-                  dot={{ r: 5, fill: "#DC2626" }}
+                  dot={{ r: 5, fill: Theme.color.point }}
                   activeDot={{ r: 7 }}
                 />
 
@@ -240,9 +241,9 @@ const Admin = () => {
                   type="monotone"
                   dataKey="carbonReduction"
                   name="탄소 절감량"
-                  stroke="#16A34A"
+                  stroke={Theme.color.success}
                   strokeWidth={3}
-                  dot={{ r: 5, fill: "#16A34A" }}
+                  dot={{ r: 5, fill: Theme.color.success }}
                   activeDot={{ r: 7 }}
                 />
               </LineChart>

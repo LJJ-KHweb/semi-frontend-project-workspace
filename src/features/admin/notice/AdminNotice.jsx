@@ -42,7 +42,7 @@ const AdminNotice = () => {
       });
   }, [page]);
 
-  const totalPages = Math.ceil(pages.noticeCounts / pages.size);
+  const totalPages = Math.ceil(pages.boardCounts / pages.size);
   const currentGroup = Math.floor(page / PAGE_GROUP_SIZE);
   const groupStart = currentGroup * PAGE_GROUP_SIZE;
   const groupEnd = Math.min(groupStart + PAGE_GROUP_SIZE, totalPages);

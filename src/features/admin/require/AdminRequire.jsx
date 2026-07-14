@@ -75,7 +75,7 @@ const AdminRequire = () => {
 
               <TitleCell flex={5}>{require.requireTitle}</TitleCell>
 
-              <Cell flex={2}>{require.requireContent}</Cell>
+              <Cell flex={2}>{require.createDate}</Cell>
             </Row>
           ))}
         </Table>

@@ -35,7 +35,6 @@ const Notice = () => {
       console.log(result);
       setNotices(result.data.data.notices);
       setPages(result.data.data.pageInfo);
-      console.log(pages.boardCounts);
     });
   }, [page]);
   const totalPages = Math.ceil(pages.boardCounts / pages.size);

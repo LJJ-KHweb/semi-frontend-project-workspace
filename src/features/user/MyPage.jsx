@@ -229,7 +229,7 @@ const MyPage = () => {
                   type="monotone"
                   dataKey="distanceSum"
                   name="km"
-                  stroke="#EC4899"
+                  stroke={Theme.color.point}
                   strokeWidth={2}
                   dot={{ r: 4 }}
                 />
@@ -237,7 +237,7 @@ const MyPage = () => {
                   type="monotone"
                   dataKey="carbonReduction"
                   name="kg"
-                  stroke="#6366F1"
+                  stroke={Theme.color.success}
                   strokeWidth={2}
                   dot={{ r: 4 }}
                 />

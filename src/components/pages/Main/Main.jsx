@@ -20,6 +20,7 @@ import {
   RaspCard,
   RaspWrap,
   RaspContent,
+  RaspLabel,
 } from "./Main.styles";
 import {
   VerifyBtn,
@@ -74,9 +75,16 @@ const Main = () => {
   const [startTime, setStartTime] = useState(null);
   const [finishTime, setFinishTimeTime] = useState(null);
 
-  const [raspDist, setRaspDist] = useState(0);
-
   const { isLogin } = useAuth();
+
+  const totalDistance = raspData.reduce(
+    (sum, r) => sum + (r.distanceSum ?? 0),
+    0,
+  );
+  const totalCarbonReduction = raspData.reduce(
+    (sum, r) => sum + (r.carbonReduction ?? 0),
+    0,
+  );
 
   const handleConfirmVerify = () => {
     if (finishTime <= startTime) {
@@ -152,13 +160,17 @@ const Main = () => {
         </TitleWrap>
         <ChartCard>
           <RaspWrap>
-            <RaspCard>
-              <ChartTitle>이번주 이동거리</ChartTitle>
-              <RaspContent></RaspContent>
+            <RaspCard $accent={Theme.color.point}>
+              <RaspLabel>이번주 이동거리</RaspLabel>
+              <RaspContent $accent={Theme.color.point}>
+                {totalDistance.toFixed(1)} km
+              </RaspContent>
             </RaspCard>
-            <RaspCard>
-              <ChartTitle>이번주 탄소 감축량</ChartTitle>
-              <RaspContent></RaspContent>
+            <RaspCard $accent={Theme.color.success}>
+              <RaspLabel>이번주 탄소 감축량</RaspLabel>
+              <RaspContent $accent={Theme.color.success}>
+                {totalCarbonReduction.toFixed(1)} kg
+              </RaspContent>
             </RaspCard>
           </RaspWrap>
           <ChartTitle>이번주 통계</ChartTitle>
@@ -177,7 +189,7 @@ const Main = () => {
                 type="monotone"
                 dataKey="distanceSum"
                 name="km"
-                stroke="#EC4899"
+                stroke={Theme.color.point}
                 strokeWidth={2}
                 dot={{ r: 4 }}
               />
@@ -185,7 +197,7 @@ const Main = () => {
                 type="monotone"
                 dataKey="carbonReduction"
                 name="kg"
-                stroke="#6366F1"
+                stroke={Theme.color.success}
                 strokeWidth={2}
                 dot={{ r: 4 }}
               />

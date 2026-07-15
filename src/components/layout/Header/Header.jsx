@@ -15,13 +15,11 @@ const navs = [
   { content: "이용방법", nav: "/guide" },
   { content: "공지사항", nav: "/notices" },
   { content: "자유게시판", nav: "/boards" },
+  { content: "마일리지 상점", nav: "/shop" },
   { content: "랭킹", nav: "/ranks" },
 ];
 
-const authNavs = [
-  { content: "마일리지 상점", nav: "/shop" },
-  { content: "문의하기", nav: "/requires" },
-];
+const authNavs = [{ content: "문의하기", nav: "/requires" }];
 
 const Header = () => {
   const navi = useNavigate();

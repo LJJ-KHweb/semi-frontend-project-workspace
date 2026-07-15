@@ -34,6 +34,7 @@ import {
 } from "../boards/styles/Board.styles";
 import { useNavigate } from "react-router-dom";
 import { Spacer } from "../../App.styles";
+import { useAuth } from "../../context/AuthContext";
 
 const PAGE_GROUP_SIZE = 5;
 
@@ -44,6 +45,7 @@ const Shop = () => {
   const [myMileage, setMyMileage] = useState(0);
   const [selectedProduct, setSelectedProduct] = useState(null);
   const [open, isOpen] = useState(false);
+  const { isLogin } = useAuth();
   const navi = useNavigate();
   useEffect(() => {
     getProducts();
@@ -95,11 +97,12 @@ const Shop = () => {
               지금까지 적립한 마일리지로 다양한 리워드를 받아보세요.
             </SubTitle>
           </TitleBox>
-
-          <MileageBox>
-            <MileageLabel>보유 마일리지</MileageLabel>
-            <MileageValue>{myMileage.toLocaleString()} P</MileageValue>
-          </MileageBox>
+          {isLogin && (
+            <MileageBox>
+              <MileageLabel>보유 마일리지</MileageLabel>
+              <MileageValue>{myMileage.toLocaleString()} P</MileageValue>
+            </MileageBox>
+          )}
         </TitleSection>
 
         <CardSection>

@@ -1,5 +1,6 @@
 import { useEffect, useRef } from "react";
 import { createRoot } from "react-dom/client";
+import { v4 as uuidv4 } from "uuid";
 import axios from "axios";
 import {
   ExitButton,
@@ -192,7 +193,7 @@ const MapApi = ({
         // 생성한다. overlay.setMap(null)이 DOM을 완전히 지우지 않고 숨기기만 해서,
         // index를 재사용하면 옛 오버레이의 id와 충돌해 "이미 createRoot된 컨테이너"
         // 에러가 났기 때문 (id를 겹치지 않게 만들면 그 충돌 자체가 발생하지 않음).
-        const containerId = `${crypto.randomUUID()}`;
+        const containerId = uuidv4();
         const overlay = new window.kakao.maps.CustomOverlay({
           content: `<div id="${containerId}" />`,
           position,
@@ -307,9 +308,7 @@ const MapOverlay = ({
 }) => {
   const toDetail = async () => {
     try {
-      const res = await axios.get(
-        `http://localhost/api/chargeStations/${stationNo}`,
-      );
+      const res = await api.get(`/chargeStations/${stationNo}`);
       // console.log(res.data);
     } catch (e) {
       console.log("상세 정보를 불러오지 못했습니다.", e);
@@ -328,9 +327,7 @@ const MapOverlay = ({
       </OverlayHeader>
       <OverlayAddress>{address}</OverlayAddress>
       <ChargerInfoRow>
-        <ChargerInfo data-type="available">
-          이용가능 {chargers}대
-        </ChargerInfo>
+        <ChargerInfo data-type="available">이용가능 {chargers}대</ChargerInfo>
         <ChargerInfo data-type="unable" data-has={unableChargers > 0}>
           고장 {unableChargers}대
         </ChargerInfo>

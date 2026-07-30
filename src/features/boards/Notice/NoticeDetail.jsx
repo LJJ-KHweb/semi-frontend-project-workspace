@@ -65,11 +65,21 @@ const NoticeDetail = () => {
             </MetaRow>
           </Header>
 
-          <Content>{notice?.noticeContent}</Content>
-          <ImgWrap>
+          <ImgWrap style={{ width: "1000px", height: "750px" }}>
             {notice?.files &&
-              files.map((n) => <Img key={n.fileOrder} src={n.filePath} />)}
+              files.map((n) => (
+                <Img
+                  style={{
+                    width: "100%",
+                    height: "100%",
+                    objectFit: "contain",
+                  }}
+                  key={n.fileOrder}
+                  src={n.filePath}
+                />
+              ))}
           </ImgWrap>
+          <Content>{notice?.noticeContent}</Content>
 
           <ButtonRow>
             <ListButton onClick={() => navi("/notices")}>목록</ListButton>

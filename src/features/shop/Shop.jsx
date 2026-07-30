@@ -49,7 +49,9 @@ const Shop = () => {
   const navi = useNavigate();
   useEffect(() => {
     getProducts();
-    getMyMileage();
+    if (isLogin) {
+      getMyMileage();
+    }
   }, [page]);
   const totalPages = Math.ceil(pages.boardCounts / pages.size);
   const currentGroup = Math.floor(page / PAGE_GROUP_SIZE);
@@ -69,13 +71,6 @@ const Shop = () => {
       .catch((e) => console.log(e.response));
   };
 
-  const getMyMileage = () => {
-    api
-      .get(`/users/mypage?page=${page + 1}&size=${pages.size}`)
-      .then((result) => {
-        setMyMileage(result.data.data.mileageSum);
-      });
-  };
   const onSunmit = () => {
     console.log(selectedProduct.productNo);
     api
@@ -83,9 +78,18 @@ const Shop = () => {
       .then(() => {
         isOpen(false);
         getProducts();
-        getMyMileage();
+        if (isLogin) {
+          getMyMileage();
+        }
       })
       .catch((e) => console.log(e.response));
+  };
+  const getMyMileage = () => {
+    api
+      .get(`/users/mypage?page=${page + 1}&size=${pages.size}`)
+      .then((result) => {
+        setMyMileage(result.data.data.mileageSum);
+      });
   };
   return (
     <Spacer>

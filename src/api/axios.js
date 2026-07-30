@@ -1,6 +1,6 @@
 import axios from "axios";
 
-const BASE_URL = "http://100.31.42.181::81/api";
+const BASE_URL = "https://ko-evre.cloud/api";
 
 const api = axios.create({ baseURL: BASE_URL });
 
@@ -26,7 +26,7 @@ api.interceptors.response.use(
     // 이정보를 가지고 있어야 우리가 실패한 요청 URL로 다시 요청을 보낼 수 있음
 
     const { config: original, response } = err;
-
+    console.log(response);
     if (response.status !== 401) {
       return Promise.reject(err);
     }

@@ -12,6 +12,7 @@ import {
   SubmitButton,
 } from "./styles/Auth.styles";
 import { useNavigate } from "react-router-dom";
+import api from "../../api/axios";
 
 const SignUp = () => {
   const [userId, setUserId] = useState("");
@@ -21,8 +22,8 @@ const SignUp = () => {
   const navi = useNavigate();
   const onSubmit = (e) => {
     e.preventDefault();
-    axios
-      .post("http://192.168.51.4/api/users", {
+    api
+      .post("/users", {
         userId: userId,
         userPwd: userPwd,
         email: email,

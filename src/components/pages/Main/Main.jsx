@@ -92,11 +92,6 @@ const Main = () => {
       return;
     }
 
-    console.log(
-      selectedCarNo,
-      format(startTime, "yyyy-MM-dd'T'HH:mm"),
-      format(finishTime, "yyyy-MM-dd'T'HH:mm"),
-    );
     setIsVerifyOpen(false);
     onSubmit();
   };
@@ -106,9 +101,7 @@ const Main = () => {
       try {
         const res = await api.get("/rasp");
         setRaspData(res.data.data);
-      } catch (e) {
-        console.log("조회 실패", e.response);
-      }
+      } catch (e) {}
     };
 
     fetchData();

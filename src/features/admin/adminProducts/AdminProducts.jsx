@@ -57,11 +57,10 @@ const AdminProducts = () => {
     api
       .get(`/admin/products?page=${page + 1}&size=${pages.size}`)
       .then((result) => {
-        console.log(result);
         setProducts(result.data.data.productList);
         setPages(result.data.data.pageInfo);
       })
-      .catch((e) => console.log(e.response));
+      .catch();
   };
 
   const totalPages = Math.ceil(pages.boardCounts / pages.size);
@@ -101,7 +100,6 @@ const AdminProducts = () => {
         getProduts();
       })
       .catch((e) => {
-        console.log(e.response);
         alert("상품 등록에 실패했습니다.");
       });
   };
@@ -132,7 +130,6 @@ const AdminProducts = () => {
         getProduts();
       })
       .catch((e) => {
-        console.log(e.response);
         alert("상품 수정에 실패했습니다.");
       });
   };
@@ -147,18 +144,16 @@ const AdminProducts = () => {
         getProduts();
       })
       .catch((e) => {
-        console.log(e.response);
         alert("삭제에 실패했습니다.");
       });
   };
   const onRestore = (product) => {
-    console.log(selectedProduct);
     api
       .patch(`/admin/products/${product.productNo}/restore`)
       .then((result) => {
         getProduts();
       })
-      .catch((e) => console.log(e.response));
+      .catch();
   };
   return (
     <Main>

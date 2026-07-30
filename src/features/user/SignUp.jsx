@@ -30,11 +30,10 @@ const SignUp = () => {
         userName: userName,
       })
       .then((result) => {
-        console.log(result);
         navi("/");
         alert("회원가입에 성공했습니다.");
       })
-      .catch((err) => console.log(err.response));
+      .catch();
   };
   return (
     <AuthWrapper>

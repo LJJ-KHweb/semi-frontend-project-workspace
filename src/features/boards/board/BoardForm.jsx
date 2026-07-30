@@ -72,10 +72,8 @@ const BoardForm = () => {
   };
 
   const removePastFile = (file) => {
-    console.log("들어옴");
     setDeleteFileOrder((prev) => [...prev, file.fileOrder]);
     setPastFiles((prev) => prev.filter((f) => f.filePath !== file.filePath));
-    //console.log(deleteFileOrder);
   };
 
   const handleSubmit = async (e) => {
@@ -84,7 +82,6 @@ const BoardForm = () => {
     const formData = new FormData();
     formData.append("boardTitle", boardTitle);
     formData.append("boardContent", boardContent);
-    console.log("pastFiles.length : ", pastFiles.length);
     if (files.length > 0) files.forEach((f) => formData.append("file", f.file));
     if (isEdit) {
       if (pastFiles.length > 0) {
@@ -102,7 +99,6 @@ const BoardForm = () => {
         });
       }
       for (const [key, value] of formData.entries()) {
-        console.log(key, value);
       }
     }
     {
@@ -118,7 +114,6 @@ const BoardForm = () => {
       const result = await api[method](url, formData);
       navi("/boards");
     } catch (err) {
-      console.log(err.response.data);
       alert("저장에 실패했습니다.");
     }
   };

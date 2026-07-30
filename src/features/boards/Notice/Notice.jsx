@@ -32,9 +32,7 @@ const Notice = () => {
 
   useEffect(() => {
     api.get(`/notices?page=${page + 1}&size=${pages.size}`).then((result) => {
-      console.log(result);
       setNotices(result.data.data.notices);
-      console.log(notices);
       setPages(result.data.data.pageInfo);
     });
   }, [page]);

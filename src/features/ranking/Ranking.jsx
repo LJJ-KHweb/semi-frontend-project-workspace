@@ -35,18 +35,16 @@ const Ranking = () => {
   const [myRank, setMyRank] = useState(null);
 
   useEffect(() => {
-    console.log(localStorage.getItem("userId"));
     api
       .get(
         `/ranks/ranking?page=${page + 1}&size=${pages.size}&userId=${localStorage.getItem("userId")}`,
       )
       .then((result) => {
-        console.log(result);
         setRanks(result.data.data.ranks);
         setPages(result.data.data.pageInfo);
         setMyRank(result.data.data.myRank);
       })
-      .catch((e) => console.log(e.response));
+      .catch();
   }, [page]);
 
   const totalPages = Math.ceil(pages.boardCounts / pages.size);

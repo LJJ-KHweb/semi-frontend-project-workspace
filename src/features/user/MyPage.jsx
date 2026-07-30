@@ -131,7 +131,7 @@ const MyPage = () => {
         setPages(result.data.data.pageInfo);
         setMileageSum(result.data.data.mileageSum);
       })
-      .catch((e) => console.log(e));
+      .catch();
   }, [page]);
 
   const totalPages = Math.ceil(pages.boardCounts / pages.size);
@@ -149,11 +149,10 @@ const MyPage = () => {
       })
       .then((result) => {
         alert("회원 정보 수정에 성공했습니다.");
-        console.log(result);
         isPwdModal(false);
         navi("/");
       })
-      .catch((e) => console.log(e.response));
+      .catch();
   };
 
   return (
@@ -321,7 +320,6 @@ const MyPage = () => {
             <ModalButtonGroup>
               <ModalCancelButton
                 onClick={() => {
-                  console.log(pwdModal);
                   isPwdModal(false);
                   setRawPwd("");
                 }}

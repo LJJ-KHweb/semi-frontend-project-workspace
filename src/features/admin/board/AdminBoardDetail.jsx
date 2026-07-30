@@ -48,15 +48,12 @@ const AdminBoardDetail = () => {
     api
       .get(`/admin/boards/${boardNo}`)
       .then((result) => {
-        console.log(result);
         setBoard(result.data.data);
         setFiles(result.data.data.files || []);
       })
       .catch((e) => {
-        console.log(e.response);
         alert("관리자 게시글 상세 조회 실패");
       });
-    console.log(board);
   }, [boardNo]);
 
   return (

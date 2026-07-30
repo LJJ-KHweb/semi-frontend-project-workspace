@@ -31,11 +31,9 @@ const Board = () => {
 
   useEffect(() => {
     api.get(`/boards?page=${page + 1}&size=${pages.size}`).then((result) => {
-      console.log(result);
       setBoards(result.data.data.boards);
       setNotices(result.data.data.notices);
       setPages(result.data.data.pageInfo);
-      console.log(boards);
     });
   }, [page]);
   const totalPages = Math.ceil(pages.boardCounts / pages.size);

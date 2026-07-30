@@ -85,7 +85,6 @@ const Map = () => {
         setCoords((prev) => prev ?? loc);
       },
       (err) => {
-        console.log("위치 조회 실패", err);
         const loc = { lat: 37.5665, lng: 126.978 }; // 조회 실패 시 기본 좌표(서울시청)로 대체
         setMyLocation(loc);
         setCoords((prev) => prev ?? loc);

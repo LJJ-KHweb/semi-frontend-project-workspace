@@ -93,9 +93,7 @@ const AdminStationDetail = () => {
         setStationDesc(s.stationDesc ?? "");
         setStatus(s.status ?? "Y");
         if (s.lat && s.lng) setPosition({ lat: s.lat, lng: s.lng });
-      } catch (e) {
-        console.log("상세 정보를 불러오지 못했습니다.", e);
-      }
+      } catch (e) {}
     };
 
     fetchData();
@@ -151,9 +149,7 @@ const AdminStationDetail = () => {
         });
         setChargers(res.data.data.chargers);
         setPages(res.data.data.pageInfo);
-      } catch (e) {
-        console.log("충전기 목록을 불러오지 못했습니다.", e);
-      }
+      } catch (e) {}
     };
 
     fetchChargers();

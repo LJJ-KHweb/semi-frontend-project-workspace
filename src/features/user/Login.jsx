@@ -36,7 +36,7 @@ const Login = () => {
         login(result.data.data);
         navi("/");
       })
-      .catch((err) => console.log(err));
+      .catch();
   };
   return (
     <AuthWrapper>

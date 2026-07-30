@@ -26,7 +26,6 @@ api.interceptors.response.use(
     // 이정보를 가지고 있어야 우리가 실패한 요청 URL로 다시 요청을 보낼 수 있음
 
     const { config: original, response } = err;
-    console.log(response);
     if (response.status !== 401) {
       return Promise.reject(err);
     }
@@ -50,7 +49,6 @@ api.interceptors.response.use(
           refreshToken,
         })
         .then((result) => {
-          console.log(result.data);
           localStorage.setItem("token", result.data.data.accessToken);
           localStorage.setItem("refreshToken", result.data.data.refreshToken);
           original.headers.Authorization = `Bearer ${localStorage.getItem("token")}`;

@@ -39,7 +39,6 @@ const NoticeForm = () => {
     if (!isEdit) return;
     api.get(`/notices/${noticeNo}`).then((result) => {
       const data = result.data.data;
-      console.log(data);
       setNoticeTitle(data.noticeTitle);
       setNoticeContent(data.noticeContent);
       setPastFiles(data.files ?? []);
@@ -78,10 +77,8 @@ const NoticeForm = () => {
   };
 
   const removePastFile = (file) => {
-    console.log("들어옴");
     setDeleteFileOrder((prev) => [...prev, file.fileOrder]);
     setPastFiles((prev) => prev.filter((f) => f.filePath !== file.filePath));
-    //console.log(deleteFileOrder);
   };
 
   const handleSubmit = async (e) => {
@@ -92,7 +89,6 @@ const NoticeForm = () => {
     formData.append("noticeContent", noticeContent);
 
     formData.append("publicYN", publicYN);
-    console.log("pastFiles.length : ", pastFiles.length);
     if (files.length > 0) files.forEach((f) => formData.append("file", f.file));
     if (isEdit) {
       if (deleteFileOrder.length > 0) {
@@ -101,7 +97,6 @@ const NoticeForm = () => {
         });
       }
       for (const [key, value] of formData.entries()) {
-        console.log(key, value);
       }
     }
     {
@@ -117,7 +112,6 @@ const NoticeForm = () => {
       const result = await api[method](url, formData);
       navi("/notices");
     } catch (err) {
-      console.log(err.response.data);
       alert("저장에 실패했습니다.");
     }
   };

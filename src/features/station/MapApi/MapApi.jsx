@@ -309,9 +309,7 @@ const MapOverlay = ({
   const toDetail = async () => {
     try {
       const res = await api.get(`/chargeStations/${stationNo}`);
-      // console.log(res.data);
     } catch (e) {
-      console.log("상세 정보를 불러오지 못했습니다.", e);
     } finally {
       navi(`/chargeStations/${stationNo}`, {
         state: { returnSearch: window.location.search },

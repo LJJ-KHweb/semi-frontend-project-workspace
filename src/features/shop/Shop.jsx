@@ -64,15 +64,13 @@ const Shop = () => {
     api
       .get(`/shop?page=${page + 1}&size=${pages.size}`)
       .then((result) => {
-        console.log(result.data.data);
         setPages(result.data.data.pageInfo);
         setProducts(result.data.data.productList);
       })
-      .catch((e) => console.log(e.response));
+      .catch();
   };
 
   const onSunmit = () => {
-    console.log(selectedProduct.productNo);
     api
       .patch(`/shop/${selectedProduct.productNo}`)
       .then(() => {
@@ -82,7 +80,7 @@ const Shop = () => {
           getMyMileage();
         }
       })
-      .catch((e) => console.log(e.response));
+      .catch();
   };
   const getMyMileage = () => {
     api

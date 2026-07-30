@@ -31,13 +31,10 @@ const AdminNotice = () => {
     api
       .get(`/notices/admin?page=${page + 1}&size=${pages.size}`)
       .then((result) => {
-        console.log(result.data.data);
-
         setNotices(result.data.data.notices);
         setPages(result.data.data.pageInfo);
       })
       .catch((err) => {
-        console.log(err);
         alert("관리자 공지사항 목록 조회 실패");
       });
   }, [page]);

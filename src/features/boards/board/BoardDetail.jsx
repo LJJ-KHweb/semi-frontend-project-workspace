@@ -39,9 +39,7 @@ const BoardDetail = () => {
         setBoard(result.data.data);
         setFiles(result.data.data.files);
       })
-      .catch((e) => {
-        console.log(e.response);
-      });
+      .catch((e) => {});
   }, [boardNo]);
 
   const handleDelete = async () => {

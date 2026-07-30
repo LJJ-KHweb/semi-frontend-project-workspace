@@ -34,13 +34,10 @@ const NoticeDetail = () => {
     api
       .get(`/notices/${noticeNo}`)
       .then((result) => {
-        console.log(result);
         setNotice(result.data.data);
         setFiles(result.data.data.files);
       })
-      .catch((e) => {
-        console.log(e.response);
-      });
+      .catch((e) => {});
   }, [noticeNo]);
 
   const handleDelete = async () => {

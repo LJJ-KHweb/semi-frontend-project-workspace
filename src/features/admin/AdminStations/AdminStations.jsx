@@ -40,7 +40,6 @@ const AdminStations = () => {
             size: pages.size,
           },
         });
-        // console.log(res.data.data.stations);
         setStations(res.data.data.stations);
         setPages(res.data.data.pageInfo);
       } catch (e) {

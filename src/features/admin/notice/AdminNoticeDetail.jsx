@@ -41,8 +41,6 @@ const AdminNoticeDetail = () => {
         setFiles(response.data.data.files ?? []);
       })
       .catch((error) => {
-        console.error("공지사항 상세조회 실패:", error);
-
         const status = error.response?.status;
 
         if (status === 404) {
@@ -83,8 +81,6 @@ const AdminNoticeDetail = () => {
         status: "N",
       }));
     } catch (error) {
-      console.error("공지사항 삭제 실패:", error);
-
       const message =
         error.response?.data?.message ??
         "공지사항 삭제 중 오류가 발생했습니다.";
@@ -120,8 +116,6 @@ const AdminNoticeDetail = () => {
         status: "Y",
       }));
     } catch (error) {
-      console.error("공지사항 삭제 취소 실패:", error);
-
       const message =
         error.response?.data?.message ??
         "공지사항 삭제 취소 중 오류가 발생했습니다.";

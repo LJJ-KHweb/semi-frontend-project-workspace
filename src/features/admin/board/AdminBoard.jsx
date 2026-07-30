@@ -34,10 +34,8 @@ const AdminBoard = () => {
         setPages(result.data.data.pageInfo);
       })
       .catch((err) => {
-        console.log(err);
         alert("관리자 게시글 목록 조회 실패");
       });
-    console.log(boards);
   }, [page]);
 
   const totalPages = Math.ceil(pages.boardCounts / pages.size);

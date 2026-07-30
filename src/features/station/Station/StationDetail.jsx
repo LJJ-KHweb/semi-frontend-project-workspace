@@ -52,9 +52,7 @@ const StationDetail = () => {
       try {
         const res = await api.get(`/chargeStations/${stationNo}`);
         setStation(res.data.data);
-      } catch (e) {
-        console.log("상세 정보를 불러오지 못했습니다.", e);
-      }
+      } catch (e) {}
     };
 
     fetchData();

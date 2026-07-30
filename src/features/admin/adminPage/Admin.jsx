@@ -60,9 +60,7 @@ const Admin = () => {
     try {
       const result = await api.get("/admin/adminPage");
       setAdminPage(result.data.data);
-    } catch (e) {
-      console.error(e);
-    }
+    } catch (e) {}
   };
 
   const getRanking = async () => {
@@ -72,11 +70,7 @@ const Admin = () => {
       );
       setRanking(result.data.data.ranks);
       setPages(result.data.data.pageInfo);
-      console.log(result.data.data.pageInfo);
-      console.log(pages);
-    } catch (e) {
-      console.error(e.response);
-    }
+    } catch (e) {}
   };
   const totalPages = Math.ceil(pages.boardCounts / pages.size);
   const currentGroup = Math.floor(page / PAGE_GROUP_SIZE);
@@ -87,18 +81,14 @@ const Admin = () => {
     try {
       const result = await api.get("/rasp");
       setRaspStats(result.data.data);
-    } catch (e) {
-      console.error(e);
-    }
+    } catch (e) {}
   };
 
   const getPurchaseCharts = async () => {
     try {
       const result = await api.get("/admin/charts");
       setPurchaseCharts(result.data.data);
-    } catch (e) {
-      console.error(e);
-    }
+    } catch (e) {}
   };
 
   useEffect(() => {

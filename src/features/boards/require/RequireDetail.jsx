@@ -45,7 +45,6 @@ const RequireDetail = () => {
         setAnswers(data.answer ?? []);
       })
       .catch((e) => {
-        console.log(e.response);
         alert("문의사항을 조회할 수 없습니다.");
         navi("/requires");
       });

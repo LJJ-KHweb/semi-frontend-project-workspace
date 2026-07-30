@@ -32,7 +32,6 @@ const Notice = () => {
 
   useEffect(() => {
     api.get(`/notices?page=${page + 1}&size=${pages.size}`).then((result) => {
-      console.log(result);
       setNotices(result.data.data.notices);
       setPages(result.data.data.pageInfo);
     });
@@ -74,7 +73,7 @@ const Notice = () => {
                 <TypeBadge data-notice={true}>공지</TypeBadge>
               </Cell>
               <Cell>{n.noticeTitle}</Cell>
-              <Cell>{n.noticeWriter}</Cell>
+              <Cell>{n.userName}</Cell>
               <Cell>{n.createDate}</Cell>
               <Cell>{n.views}</Cell>
             </Row>

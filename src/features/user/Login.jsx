@@ -13,6 +13,7 @@ import {
   InputBox,
   SubmitButton,
 } from "./styles/Auth.styles";
+import api from "../../api/axios";
 
 const Login = () => {
   const [userId, setUserId] = useState("");
@@ -22,8 +23,8 @@ const Login = () => {
 
   const onSubmit = (e) => {
     e.preventDefault();
-    axios
-      .post("http://localhost/api/auth/login", {
+    api
+      .post("/auth/login", {
         userId,
         userPwd,
       })
@@ -32,11 +33,10 @@ const Login = () => {
         // userName, role)가 res.data.data 안에 있다고 가정. 다른 조회 API들도
         // res.data.data로 감싸서 응답하는 컨벤션이라 동일하게 맞춤 - 실제 로그인
         // 응답 구조가 다르면 이 부분만 조정하면 됨.
-        console.log(result);
         login(result.data.data);
         navi("/");
       })
-      .catch((err) => console.log(err.response));
+      .catch();
   };
   return (
     <AuthWrapper>
@@ -49,7 +49,9 @@ const Login = () => {
             <InputBox
               type="text"
               placeholder="아이디를 입력하세요"
-              onChange={(e) => setUserId(e.target.value)}
+              onChange={(e) => {
+                setUserId(e.target.value);
+              }}
             />
           </FieldGroup>
           <FieldGroup>
@@ -57,7 +59,9 @@ const Login = () => {
             <InputBox
               type="password"
               placeholder="비밀번호를 입력하세요"
-              onChange={(e) => setUserPwd(e.target.value)}
+              onChange={(e) => {
+                setUserPwd(e.target.value);
+              }}
             />
           </FieldGroup>
           <SubmitButton type="submit">로그인</SubmitButton>

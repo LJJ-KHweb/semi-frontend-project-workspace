@@ -58,7 +58,6 @@ const AdminRequireDetail = () => {
       setFiles(data.files ?? []);
       setAnswers(data.answer ?? []);
     } catch (e) {
-      console.log(e.response);
       alert("답변 등록에 실패했습니다.");
     }
   };
@@ -74,7 +73,6 @@ const AdminRequireDetail = () => {
         setAnswers(data.answer ?? []);
       })
       .catch((e) => {
-        console.log(e.response);
         alert("문의사항을 조회할 수 없습니다.");
         navi("/admin/requires");
       });

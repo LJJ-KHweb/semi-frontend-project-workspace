@@ -35,9 +35,7 @@ const AdminRequire = () => {
         setRequires(result.data.data.requires);
         setPages(result.data.data.pageInfo);
       })
-      .catch((err) => {
-        console.log(err.response);
-      });
+      .catch((err) => {});
   }, [page]);
 
   const totalPages = Math.max(

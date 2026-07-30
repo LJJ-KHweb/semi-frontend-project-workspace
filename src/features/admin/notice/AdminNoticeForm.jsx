@@ -59,15 +59,11 @@ const AdminNoticeForm = () => {
         const response = await api.get(`/notices/admin/${noticeNo}`);
         const data = response.data.data;
 
-        console.log("공지사항 상세조회 결과:", data);
-
         setNoticeTitle(data.noticeTitle);
         setNoticeContent(data.noticeContent);
         setPublicYN(data.publicYN);
         setPastFiles(data.files ?? []);
       } catch (error) {
-        console.error("공지사항 조회 실패:", error);
-
         alert("공지사항 정보를 불러오지 못했습니다.");
         navi("/admin/notices");
       }
@@ -191,8 +187,6 @@ const AdminNoticeForm = () => {
         navi("/admin/notices");
       }
     } catch (error) {
-      console.error("공지사항 저장 실패:", error);
-
       const message =
         error.response?.data?.message ?? "공지사항 저장에 실패했습니다.";
 

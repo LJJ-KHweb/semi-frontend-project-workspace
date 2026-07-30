@@ -15,6 +15,7 @@ import {
 import { Spacer } from "../../../App.styles";
 import api from "../../../api/axios";
 import { useNavigate } from "react-router-dom";
+import { Theme } from "../../../styles/Theme";
 
 const PAGE_GROUP_SIZE = 5;
 
@@ -22,13 +23,19 @@ const Require = () => {
   const [page, setPage] = useState(0);
   const [pages, setPages] = useState({ size: 10, boardCounts: 0 });
   const [requires, setRequires] = useState([]);
+  const [any, setAny] = useState(true);
   const navi = useNavigate();
 
   useEffect(() => {
-    api.get(`/requires?page=${page + 1}&size=${pages.size}`).then((result) => {
-      setRequires(result.data.data.requires);
-      setPages(result.data.data.pageInfo);
-    });
+    api
+      .get(`/requires?page=${page + 1}&size=${pages.size}`)
+      .then((result) => {
+        setRequires(result.data.data.requires);
+        setPages(result.data.data.pageInfo);
+      })
+      .catch((e) => {
+        setAny(false);
+      });
   }, [page]);
 
   const totalPages = Math.max(
@@ -50,24 +57,29 @@ const Require = () => {
           </WriteButton>
         </Header>
 
-        <Table>
-          <HeadRow>
-            <Cell flex={1}>번호</Cell>
-            <Cell flex={6}>제목</Cell>
-            <Cell flex={2}>작성일</Cell>
-          </HeadRow>
-
-          {requires.map((require) => (
-            <Row
-              key={require.requireNo}
-              onClick={() => navi(`/requires/${require.requireNo}`)}
-            >
-              <Cell flex={1}>{require.requireNo}</Cell>
-              <Cell flex={6}>{require.requireTitle}</Cell>
-              <Cell flex={2}>{require.createDate}</Cell>
-            </Row>
-          ))}
-        </Table>
+        {any ? (
+          requires.map((require) => (
+            <Table>
+              <HeadRow>
+                <Cell flex={1}>번호</Cell>
+                <Cell flex={6}>제목</Cell>
+                <Cell flex={2}>작성일</Cell>
+              </HeadRow>
+              <Row
+                key={require.requireNo}
+                onClick={() => navi(`/requires/${require.requireNo}`)}
+              >
+                <Cell flex={1}>{require.requireNo}</Cell>
+                <Cell flex={6}>{require.requireTitle}</Cell>
+                <Cell flex={2}>{require.createDate}</Cell>
+              </Row>
+            </Table>
+          ))
+        ) : (
+          <p style={{ margin: "auto", color: `${Theme.color.text}` }}>
+            문의사항이 없습니다.
+          </p>
+        )}
 
         {totalPages > 1 && (
           <Pagination>

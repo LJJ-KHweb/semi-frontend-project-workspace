@@ -49,7 +49,9 @@ const Shop = () => {
   const navi = useNavigate();
   useEffect(() => {
     getProducts();
-    getMyMileage();
+    if (isLogin) {
+      getMyMileage();
+    }
   }, [page]);
   const totalPages = Math.ceil(pages.boardCounts / pages.size);
   const currentGroup = Math.floor(page / PAGE_GROUP_SIZE);
@@ -62,30 +64,30 @@ const Shop = () => {
     api
       .get(`/shop?page=${page + 1}&size=${pages.size}`)
       .then((result) => {
-        console.log(result.data.data);
         setPages(result.data.data.pageInfo);
         setProducts(result.data.data.productList);
       })
-      .catch((e) => console.log(e.response));
+      .catch();
   };
 
+  const onSunmit = () => {
+    api
+      .patch(`/shop/${selectedProduct.productNo}`)
+      .then(() => {
+        isOpen(false);
+        getProducts();
+        if (isLogin) {
+          getMyMileage();
+        }
+      })
+      .catch();
+  };
   const getMyMileage = () => {
     api
       .get(`/users/mypage?page=${page + 1}&size=${pages.size}`)
       .then((result) => {
         setMyMileage(result.data.data.mileageSum);
       });
-  };
-  const onSunmit = () => {
-    console.log(selectedProduct.productNo);
-    api
-      .patch(`/shop/${selectedProduct.productNo}`)
-      .then(() => {
-        isOpen(false);
-        getProducts();
-        getMyMileage();
-      })
-      .catch((e) => console.log(e.response));
   };
   return (
     <Spacer>

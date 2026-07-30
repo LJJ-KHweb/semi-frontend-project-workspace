@@ -81,7 +81,6 @@ const RequireForm = () => {
       alert("문의사항이 등록되었습니다.");
       navi("/requires");
     } catch (err) {
-      console.log(err.response?.data);
       alert("문의사항 등록에 실패했습니다.");
     }
   };

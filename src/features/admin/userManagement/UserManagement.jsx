@@ -55,7 +55,6 @@ const UserManagement = () => {
     api
       .get(`/admin/users?page=${page + 1}&size=${pages.size}&role=${role}`)
       .then((result) => {
-        console.log(result);
         setUsers(result.data.data.users);
         setPages(result.data.data.pageInfo);
       });
@@ -71,11 +70,10 @@ const UserManagement = () => {
         role: selectUser.role,
       })
       .then((result) => {
-        console.log(result);
         setUpdateModal(false);
         getUsers();
       })
-      .catch((e) => console.log(e.response));
+      .catch();
   };
   return (
     <Main>

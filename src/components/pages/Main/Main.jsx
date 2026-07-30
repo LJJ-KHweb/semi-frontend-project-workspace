@@ -92,11 +92,6 @@ const Main = () => {
       return;
     }
 
-    console.log(
-      selectedCarNo,
-      format(startTime, "yyyy-MM-dd'T'HH:mm"),
-      format(finishTime, "yyyy-MM-dd'T'HH:mm"),
-    );
     setIsVerifyOpen(false);
     onSubmit();
   };
@@ -104,11 +99,9 @@ const Main = () => {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const res = await axios.get("http://192.168.51.26/api/rasp");
+        const res = await api.get("/rasp");
         setRaspData(res.data.data);
-      } catch (e) {
-        console.log("조회 실패", e.response);
-      }
+      } catch (e) {}
     };
 
     fetchData();

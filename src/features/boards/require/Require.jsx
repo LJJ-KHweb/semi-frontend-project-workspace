@@ -4,14 +4,11 @@ import {
   Header,
   Title,
   WriteButton,
-  Table,
-  HeadRow,
-  Row,
-  Cell,
   Pagination,
   PageButton,
   NextButton,
 } from "../styles/Board.styles";
+import { Table, HeadRow, Row, Cell } from "./styles/Require.styles";
 import { Spacer } from "../../../App.styles";
 import api from "../../../api/axios";
 import { useNavigate } from "react-router-dom";
@@ -57,29 +54,24 @@ const Require = () => {
           </WriteButton>
         </Header>
 
-        {any ? (
-          requires.map((require) => (
-            <Table>
-              <HeadRow>
-                <Cell flex={1}>번호</Cell>
-                <Cell flex={6}>제목</Cell>
-                <Cell flex={2}>작성일</Cell>
-              </HeadRow>
-              <Row
-                key={require.requireNo}
-                onClick={() => navi(`/requires/${require.requireNo}`)}
-              >
-                <Cell flex={1}>{require.requireNo}</Cell>
-                <Cell flex={6}>{require.requireTitle}</Cell>
-                <Cell flex={2}>{require.createDate}</Cell>
-              </Row>
-            </Table>
-          ))
-        ) : (
-          <p style={{ margin: "auto", color: `${Theme.color.text}` }}>
-            문의사항이 없습니다.
-          </p>
-        )}
+        <Table>
+          <HeadRow>
+            <Cell>번호</Cell>
+            <Cell>제목</Cell>
+            <Cell>작성일</Cell>
+          </HeadRow>
+
+          {requires.map((require) => (
+            <Row
+              key={require.requireNo}
+              onClick={() => navi(`/requires/${require.requireNo}`)}
+            >
+              <Cell>{require.requireNo}</Cell>
+              <Cell>{require.requireTitle}</Cell>
+              <Cell>{require.createDate}</Cell>
+            </Row>
+          ))}
+        </Table>
 
         {totalPages > 1 && (
           <Pagination>

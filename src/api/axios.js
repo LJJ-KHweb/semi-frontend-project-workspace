@@ -1,6 +1,6 @@
 import axios from "axios";
 
-const BASE_URL = "https://ko-evre.cloud/api";
+const BASE_URL = "http://localhost:8889/api";
 
 const api = axios.create({ baseURL: BASE_URL });
 

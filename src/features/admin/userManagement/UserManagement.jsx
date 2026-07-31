@@ -24,7 +24,7 @@ import {
   ModalOverlay,
   ModalTitle,
   SaveButton,
-} from "../adminProducts/styles/adminProducts";
+} from "../adminProducts/styles/AdminProducts";
 import { Input } from "../AdminStations/StationForm.styles";
 import {
   NextButton,
